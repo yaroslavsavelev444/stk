@@ -1,4 +1,4 @@
-import { FieldHook } from 'payload'
+import type { FieldHook } from 'payload'
 
 /**
  * Нормализует строку для группировки товаров:

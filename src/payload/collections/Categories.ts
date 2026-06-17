@@ -1,7 +1,7 @@
-import { CollectionConfig } from 'payload'
-import { seoField } from '@/payload/fields/seo'
-import { isAdminOrManager } from '@/payload/access/isAdminOrManager'
-import { generateSlug } from '@/utils/generateSlug'
+import type { CollectionConfig } from 'payload'
+import { isAdminOrManager } from '../access/isAdminOrManager.ts'
+import { generateSlug } from '../../utils/generateSlug.ts'
+import { seoField } from '../fields/seo.ts'
 
 export const Categories: CollectionConfig = {
   slug: 'categories',

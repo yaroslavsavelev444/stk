@@ -1,9 +1,8 @@
-// src/services/payload/products.ts
 import { unstable_cache } from 'next/cache'
 import { getPayloadInstance } from './getPayload'
-import type { IProduct } from '@/types/product'
 import type { Where } from 'payload'
 import { ObjectId } from 'mongodb'
+import { Product } from '@/payload-types'
 
 export interface GetProductsOptions {
   category?: string
@@ -33,7 +32,7 @@ async function fetchProducts(options: GetProductsOptions) {
     page: options.page || 1,
     depth: 1,
   })
-  return { docs: result.docs as IProduct[], totalDocs: result.totalDocs }
+  return { docs: result.docs as unknown as Product[], totalDocs: result.totalDocs }
 }
 
 export const getCachedProducts = (options: GetProductsOptions) =>
@@ -52,7 +51,7 @@ async function fetchProductBySlug(slug: string) {
     limit: 1,
     depth: 1,
   })
-  return result.docs[0] as IProduct | null
+  return result.docs[0] as unknown as Product | null
 }
 
 export const getCachedProductBySlug = (slug: string) =>
@@ -72,7 +71,7 @@ export async function getProductGroups(categoryId?: string): Promise<string[]> {
 
   if (!collection) return []
 
-  const filter: any = { isPublished: true }
+  const filter: Record<string, unknown> = { isPublished: true }
   if (categoryId && ObjectId.isValid(categoryId)) {
     filter.category = new ObjectId(categoryId)
   }

@@ -1,12 +1,12 @@
-// src/services/payload/settings.ts
 import { unstable_cache } from 'next/cache'
 import { getPayloadInstance } from './getPayload'
-import type { ISettings } from '@/types/settings'
+import type { Setting } from '@/payload-types' // импортируем правильный тип
 
-async function fetchSettings(): Promise<ISettings | null> {
+async function fetchSettings(): Promise<Setting | null> {
   const payload = await getPayloadInstance()
   const result = await payload.findGlobal({ slug: 'settings', depth: 1 })
-  return result as ISettings | null
+  // findGlobal возвращает один документ типа Setting, приведение безопасно
+  return result as Setting | null
 }
 
 export const getCachedSettings = unstable_cache(

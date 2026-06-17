@@ -1,0 +1,114 @@
+:root {
+  /* ===========================
+     Brand Colors
+  =========================== */
+
+  --primary: #2E2D8F;
+  --primary-hover: #24226F;
+  --primary-light: #F3F3FC;
+
+  --accent: #FF2B00;
+  --accent-hover: #E22500;
+  --accent-light: #FFF2EF;
+
+  /* ===========================
+     Backgrounds
+  =========================== */
+
+  --background: #FFFFFF;
+  --surface: #FAFAFB;
+  --surface-secondary: #F5F5F7;
+
+  /* ===========================
+     Text
+  =========================== */
+
+  --text-primary: #18181B;
+  --text-secondary: #52525B;
+  --text-muted: #71717A;
+  --text-inverse: #FFFFFF;
+
+  /* ===========================
+     Borders
+  =========================== */
+
+  --border: #E4E4E7;
+  --border-light: #F1F1F3;
+
+  /* ===========================
+     Status
+  =========================== */
+
+  --success: #16A34A;
+  --success-light: #F0FDF4;
+
+  --warning: #F59E0B;
+  --warning-light: #FFFBEB;
+
+  --danger: #DC2626;
+  --danger-light: #FEF2F2;
+
+  --info: #2563EB;
+  --info-light: #EFF6FF;
+
+  /* ===========================
+     Layout
+  =========================== */
+
+  --shadow-color: rgba(0,0,0,0.08);
+  --overlay: rgba(0,0,0,0.45);
+
+  /* ===========================
+     Radius
+  =========================== */
+
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+
+
+
+  --primary-50: #F3F3FC;
+
+  --primary-100: #E5E4F8;
+
+  --primary-200: #C8C6EF;
+
+  --primary-500: #2E2D8F;
+
+  --primary-700: #24226F;
+
+  /* semantic alias (очень важно) */
+
+  --primary: var(--primary-500);
+
+  --primary-hover: var(--primary-700);
+
+  --primary-soft: var(--primary-100);
+
+  /* ===========================
+
+     Accent scale
+
+  =========================== */
+
+  --accent-50: #FFF2EF;
+
+  --accent-100: #FFE0D8;
+
+  --accent-200: #FFC0B3;
+
+  --accent-500: #FF2B00;
+
+  --accent-700: #D92300;
+
+  /* semantic alias */
+
+  --accent: var(--accent-500);
+
+  --accent-hover: var(--accent-700);
+
+  --accent-soft: var(--accent-50);
+  
+}

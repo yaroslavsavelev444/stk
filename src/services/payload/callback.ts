@@ -1,6 +1,5 @@
-// src/services/payload/callback.ts
+import { CallbackRequest } from '@/payload-types'
 import { getPayloadInstance } from './getPayload'
-import type { ICallbackRequest } from '@/types/callbackRequest'
 
 export interface CreateCallbackData {
   name?: string
@@ -13,7 +12,7 @@ export interface CreateCallbackData {
  * Создание заявки. Статус проставляется автоматически через defaultValue коллекции.
  * Для защиты от спама рекомендуется добавить rate limit и капчу на уровне API/Server Action.
  */
-export async function createCallbackRequest(data: CreateCallbackData): Promise<ICallbackRequest> {
+export async function createCallbackRequest(data: CreateCallbackData): Promise<CallbackRequest> {
   const payload = await getPayloadInstance()
   const result = await payload.create({
     collection: 'callback-requests',
@@ -25,5 +24,6 @@ export async function createCallbackRequest(data: CreateCallbackData): Promise<I
       // status не передаём – полагаемся на defaultValue: 'new'
     },
   })
-  return result as ICallbackRequest
+  // Приведение через unknown, т.к. Payload возвращает общий тип, но мы уверены в структуре
+  return result as unknown as CallbackRequest
 }

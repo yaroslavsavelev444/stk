@@ -1,4 +1,4 @@
-import { FieldHook } from 'payload'
+import type { FieldHook } from 'payload'
 import { slugify } from 'transliteration'
 
 export const generateSlug: FieldHook = ({ value, data, originalDoc }) => {

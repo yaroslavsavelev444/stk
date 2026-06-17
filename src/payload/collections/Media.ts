@@ -1,11 +1,11 @@
-import { CollectionConfig } from 'payload'
-import { isAdminOrManager } from '@/payload/access/isAdminOrManager'
+import type { CollectionConfig } from 'payload'
+import { isAdminOrManager } from '../access/isAdminOrManager.ts'
 
 export const Media: CollectionConfig = {
   slug: 'media',
   upload: {
     staticDir: 'media',
-    staticURL: '/media',
+    // staticURL: '/media',
     focalPoint: true,
     imageSizes: [
       { name: 'thumbnail', width: 400, height: 300, crop: 'center' },

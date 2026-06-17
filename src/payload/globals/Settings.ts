@@ -1,5 +1,5 @@
-import { GlobalConfig } from 'payload'
-import { seoField } from '@/payload/fields/seo'
+import type { GlobalConfig } from 'payload'
+import { seoField } from '../fields/seo.ts'
 
 export const Settings: GlobalConfig = {
   slug: 'settings',

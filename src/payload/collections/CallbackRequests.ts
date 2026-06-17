@@ -1,6 +1,6 @@
-import { CollectionConfig } from 'payload'
-import { authenticated } from '@/payload/access/authenticated'
-import { isAdmin } from '@/payload/access/isAdmin'
+import type { CollectionConfig } from 'payload'
+import { authenticated } from '../access/authenticated.ts'
+import { isAdmin } from '../access/isAdmin.ts'
 
 export const CallbackRequests: CollectionConfig = {
   slug: 'callback-requests',

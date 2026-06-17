@@ -1,10 +1,10 @@
-import { CollectionConfig } from 'payload'
-import { seoField } from '@/payload/fields/seo'
-import { attributesField } from '@/payload/fields/attributes'
-import { documentsField } from '@/payload/fields/documents'
-import { normalizeGroup } from '@/payload/hooks/normalizeGroup'
-import { isAdminOrManager } from '@/payload/access/isAdminOrManager'
-import { generateSlug } from '@/utils/generateSlug'
+import type { CollectionConfig } from 'payload'
+import { isAdminOrManager } from '../access/isAdminOrManager.ts'
+import { generateSlug } from '../../utils/generateSlug.ts'
+import { normalizeGroup } from '../hooks/normalizeGroup.ts'
+import { attributesField } from '../fields/attributes.ts'
+import { documentsField } from '../fields/documents.ts'
+import { seoField } from '../fields/seo.ts'
 
 export const Products: CollectionConfig = {
   slug: 'products',

@@ -1,10 +1,9 @@
-// src/services/payload/categories.ts
 import { unstable_cache } from 'next/cache'
 import { getPayloadInstance } from './getPayload'
-import type { ICategory } from '@/types/category'
 import type { Where } from 'payload'
+import { Category } from '@/payload-types'
 
-export async function getCategories(): Promise<ICategory[]> {
+export async function getCategories(): Promise<Category[]> {
   const payload = await getPayloadInstance()
   const where: Where = { isPublished: { equals: true } }
   const result = await payload.find({
@@ -13,16 +12,17 @@ export async function getCategories(): Promise<ICategory[]> {
     sort: 'order',
     depth: 1,
   })
-  return result.docs
+  // Приведение через unknown, т.к. Payload возвращает общий тип, но мы уверены в структуре
+  return result.docs as unknown as Category[]
 }
 
 export const getCachedCategories = unstable_cache(
   getCategories,
   ['categories-all'],
-  { tags: ['categories'], revalidate: false } // revalidate через теги
+  { tags: ['categories'], revalidate: false }
 )
 
-export async function getCategoryBySlug(slug: string): Promise<ICategory | null> {
+export async function getCategoryBySlug(slug: string): Promise<Category | null> {
   const payload = await getPayloadInstance()
   const where: Where = { slug: { equals: slug }, isPublished: { equals: true } }
   const result = await payload.find({
@@ -31,7 +31,7 @@ export async function getCategoryBySlug(slug: string): Promise<ICategory | null>
     limit: 1,
     depth: 1,
   })
-  return result.docs[0] || null
+  return (result.docs[0] || null) as unknown as Category | null
 }
 
 export const getCachedCategoryBySlug = (slug: string) =>
