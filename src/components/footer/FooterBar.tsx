@@ -1,6 +1,7 @@
 "use client";
 
-import { Row, Column, Text, IconButton, SmartLink, Button } from "@once-ui-system/core";
+import { Row, Column, Text, IconButton } from "@once-ui-system/core";
+import Image from "next/image"; // оптимизированное изображение
 import styles from "./Footer.module.scss";
 
 export const Footer = () => {
@@ -16,7 +17,7 @@ export const Footer = () => {
       fillWidth
       padding="8"
       horizontal="center"
-      background="surface-secondary" // серый фон (из ваших переменных)
+      background="surface"   // можно раскомментировать, если нужен фон
       className={styles.footer}
     >
       <Column
@@ -25,21 +26,23 @@ export const Footer = () => {
         paddingX="16"
         gap="24"
         fillWidth
-        s={{ paddingX: "12", gap: "16" }}
+        // адаптивность через CSS-класс (или оставить только padding и gap, если нужно)
+        className={styles.column}
       >
-        {/* Верхняя строка: логотип + ссылки + кнопка наверх */}
+        {/* Верхняя строка */}
         <Row
           fillWidth
           horizontal="between"
           vertical="center"
-          s={{ direction: "column", gap: "16", align: "center" }}
+          className={styles.topRow} // адаптивность через CSS
         >
           {/* Логотип */}
           <Row gap="8" vertical="center">
-            <img
-              src="/images/logo.svg" // замените на свой логотип
+            <Image
+              src="/images/logo.png"
               alt="СТК-Актив"
               height={40}
+              width={40} // укажите реальную ширину, либо используйте layout="intrinsic"
               style={{ display: "block" }}
             />
             <Text variant="heading-default-s" weight="strong">
@@ -47,19 +50,19 @@ export const Footer = () => {
             </Text>
           </Row>
 
-          {/* Быстрые ссылки */}
-          <Row gap="24" s={{ gap: "16" }}>
-            <SmartLink href="/about" variant="body-default-s" onBackground="neutral-weak">
+          {/* Ссылки */}
+          <Row gap="24" className={styles.linksRow}>
+            <Text as="a" href="/about" variant="body-default-s">
               О нас
-            </SmartLink>
-            <SmartLink href="/contacts" variant="body-default-s" onBackground="neutral-weak">
+            </Text>
+            <Text as="a" href="/contacts" variant="body-default-s">
               Контакты
-            </SmartLink>
+            </Text>
           </Row>
 
           {/* Кнопка наверх */}
           <IconButton
-            icon="arrow-up"
+            icon="chevron-up"
             size="m"
             variant="secondary"
             onClick={scrollToTop}
@@ -67,31 +70,23 @@ export const Footer = () => {
           />
         </Row>
 
-        {/* Нижняя строка: копирайт и юридические ссылки */}
+        {/* Нижняя строка */}
         <Row
           fillWidth
           horizontal="between"
           vertical="center"
-          s={{ direction: "column", gap: "12", align: "center" }}
+          className={styles.bottomRow} // адаптивность через CSS
         >
           <Text variant="body-default-s" onBackground="neutral-strong">
             © {currentYear} СТК-Актив. Все права защищены.
           </Text>
-          <Row gap="16" s={{ gap: "12" }}>
-            <SmartLink
-              href="/terms"
-              variant="body-default-s"
-              onBackground="neutral-weak"
-            >
+          <Row gap="16" className={styles.legalLinks}>
+            <Text as="a" href="/terms" variant="body-default-s">
               Пользовательское соглашение
-            </SmartLink>
-            <SmartLink
-              href="/privacy"
-              variant="body-default-s"
-              onBackground="neutral-weak"
-            >
+            </Text>
+            <Text as="a" href="/privacy" variant="body-default-s">
               Согласие на обработку данных
-            </SmartLink>
+            </Text>
           </Row>
         </Row>
       </Column>

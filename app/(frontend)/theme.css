@@ -2,7 +2,11 @@
   /* ===========================
      Brand Colors
   =========================== */
+--font-body: var(--font-sans);
 
+    --font-heading: var(--font-sans);
+
+    --font-code: var(--font-mono);
   --primary: #2E2D8F;
   --primary-hover: #24226F;
   --primary-light: #F3F3FC;
