@@ -10,7 +10,7 @@ import { home, baseURL } from "@/resources/content";
 import { Providers } from "@/components/Providers";
 import { Manrope, IBM_Plex_Mono } from "next/font/google";
 import { SearchPalette } from "@/components/search/SearchPalette";
-import { ModalRoot } from "@/components/ModalRoot";
+import { Header } from "@/components/header/Header";
 
 const manrope = Manrope({
   weight: ["200", "300", "400", "500", "600", "700"],
@@ -59,7 +59,11 @@ export default function RootLayout({
           horizontal="center"
         >
           {/* Основной контент – без SearchPalette */}
-          <TopHeader />
+            <Flex direction="column" fillWidth>
+            <TopHeader />
+            <Header />
+          </Flex>
+
           <Flex zIndex={0} fillWidth padding="l" horizontal="center" flex={1}>
             <Flex horizontal="center" fillWidth minHeight="0">
               {children}
@@ -68,8 +72,6 @@ export default function RootLayout({
           <Footer />
         </Column>
       </Flex>
-       <ModalRoot />   
-      {/* SearchPalette размещаем снаружи Column, чтобы он не влиял на layout */}
       <SearchPalette />
     </Providers>
   );

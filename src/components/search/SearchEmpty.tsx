@@ -17,7 +17,9 @@ export const SearchEmpty = observer(() => {
           <p className="text-sm">Попробуйте изменить запрос</p>
         </>
       ) : (
-        <p className="text-sm">Начните вводить запрос для поиска</p>
+        <>
+         
+        </>
       )}
     </div>
   );

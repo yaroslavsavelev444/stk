@@ -1,30 +1,32 @@
-// components/search/SearchInput.tsx
 import { forwardRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useSearchStore } from '../context/RootStoreContext';
-import { Icon } from '@once-ui-system/core';
+import { Input } from 'antd';
+import type { InputRef } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
 export const SearchInput = observer(
-  forwardRef<HTMLInputElement>(function SearchInputRef(props, ref) {
+  forwardRef<InputRef>(function SearchInputRef(props, ref) {
     const searchStore = useSearchStore();
 
     return (
-      <div className="flex items-center px-4 py-3 border-b border-gray-100 dark:border-gray-800">
-        <Icon name="search" className="w-5 h-5 text-gray-400 mr-3" />
-        <input
+      <div className="flex items-center px-4 py-3 border-b border-black/40 dark:border-white/30">
+        <Input
           ref={ref}
-          type="text"
           value={searchStore.query}
           onChange={(e) => searchStore.setQuery(e.target.value)}
           placeholder="Поиск товаров и категорий..."
-          className="flex-1 bg-transparent outline-none text-gray-900 dark:text-white placeholder-gray-400"
+          variant="borderless"
+          className="flex-1 bg-transparent text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:shadow-none"
           autoComplete="off"
           autoCorrect="off"
           spellCheck={false}
+          suffix={
+            searchStore.loading ? (
+              <LoadingOutlined className="text-[var(--text-muted)]" />
+            ) : null
+          }
         />
-        {searchStore.loading && (
-          <div className="w-4 h-4 border-2 border-t-transparent border-primary-500 rounded-full animate-spin" />
-        )}
       </div>
     );
   })
