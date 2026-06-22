@@ -1,16 +1,22 @@
+// app/(frontend)/layout.tsx — исправленный и готовый к использованию
+
 import "@once-ui-system/core/css/styles.css";
 import "@once-ui-system/core/css/tokens.css";
 import "./theme.css";
-
+import "./globals.css";
 import classNames from "classnames";
 import { Flex, Column, Meta } from "@once-ui-system/core";
-import { TopHeader } from "@/components/header/TopHeader";
 import { Footer } from "@/components/footer/FooterBar";
 import { home, baseURL } from "@/resources/content";
 import { Providers } from "@/components/Providers";
 import { Manrope, IBM_Plex_Mono } from "next/font/google";
 import { SearchPalette } from "@/components/search/SearchPalette";
-import { Header } from "@/components/header/Header";
+import { StickyHeader } from "@/components/header/StickyHeader";
+
+// Импорты для плавающих контактов
+import { getCachedSettings } from '@/services/payload/settings';
+import { mapSettingsContacts } from '@/components/contact-btn/mapContact';
+import { FloatingContacts } from '@/components/contact-btn/FloatingContacts';
 
 const manrope = Manrope({
   weight: ["200", "300", "400", "500", "600", "700"],
@@ -34,14 +40,17 @@ export async function generateMetadata() {
   });
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // 🔥 Получаем контакты на сервере (кешируется)
+  const settings = await getCachedSettings();
+  const contacts = mapSettingsContacts(settings);
+
   return (
     <Providers>
-      {/* html и body – без лишних overflow, просто fillWidth */}
       <Flex
         as="html"
         lang="ru"
@@ -58,21 +67,22 @@ export default function RootLayout({
           padding="0"
           horizontal="center"
         >
-          {/* Основной контент – без SearchPalette */}
-            <Flex direction="column" fillWidth>
-            <TopHeader />
-            <Header />
-          </Flex>
+          <StickyHeader />
 
           <Flex zIndex={0} fillWidth padding="l" horizontal="center" flex={1}>
             <Flex horizontal="center" fillWidth minHeight="0">
               {children}
             </Flex>
           </Flex>
+
           <Footer />
         </Column>
       </Flex>
+
       <SearchPalette />
+
+      {/* Плавающая кнопка с контактами – отображается поверх всего */}
+      <FloatingContacts contacts={contacts} />
     </Providers>
   );
 }

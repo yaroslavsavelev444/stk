@@ -12,8 +12,9 @@ import {
   Line,
 } from "@once-ui-system/core";
 import { home, about, person, baseURL } from "@/resources/content";
+import { CategoriesGrid } from "@/components/categories";
 // import { Projects } from "@/components/work/Projects";
-
+import { CallbackSection } from "@/components/callback-form/CallbackSection";
 export async function generateMetadata() {
   return Meta.generate({
     title: home.title,
@@ -98,6 +99,11 @@ export default function Home() {
           </RevealFx>
         </Column>
       </Column>
+       <RevealFx translateY="16" delay={0.6} fillWidth>
+    <CategoriesGrid />
+  </RevealFx>
+
+  <CallbackSection />
       {/* <RevealFx translateY="16" delay={0.6}>
         <Projects range={[1, 3]} /> 
       </RevealFx> */}

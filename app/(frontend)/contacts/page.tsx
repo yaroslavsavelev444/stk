@@ -59,7 +59,7 @@ export default async function ContactsPage() {
           {socials.length > 0 && <SocialLinks socials={socials} />}
 
          <MapEmbed map={map || ''} fullWidth />
-
+         <ContactsPageUsage />
         </Flex>
       </Column>
     </>

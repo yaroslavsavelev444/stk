@@ -13,9 +13,8 @@ export const TopHeader = async () => {
       fillWidth
       paddingX="16"
       paddingY="8"
-      className="bg-surface-secondary border-b border-border"
+      className="bg-white/50 backdrop-blur-md"
       horizontal="center"
-      // Без position:sticky — уходит при скролле
     >
       <Row
         maxWidth="m"
