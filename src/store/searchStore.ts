@@ -1,57 +1,66 @@
 // store/SearchStore.ts
+// ИЗМЕНЕНИЯ:
+// 1. Убран массив `categories` — поиск теперь только по товарам
+// 2. `setResults` принимает один массив вместо двух
+// 3. `totalResults` считает только products.length
+// 4. Тип продукта вынесен в отдельный интерфейс для ясности
+
 import { makeAutoObservable } from 'mobx';
 import type { RootStore } from './RootStore';
-import type { Category, Product } from '@/types/payload-types';
+import type { Category, Product } from '@/payload-types';
+
+// Продукт с обязательно подгруженной категорией (depth: 1 в API)
+export type ProductWithCategory = Product & {
+  category?: Pick<Category, 'id' | 'name' | 'slug'> | string;
+};
 
 export class SearchStore {
   isOpen = false;
   query = '';
   loading = false;
-  categories: Category[] = [];
-  products: (Product & { category?: Category })[] = [];
+  products: ProductWithCategory[] = [];
   activeIndex = -1;
 
   constructor(private root: RootStore) {
     makeAutoObservable(this);
   }
 
-  // Вычисляемое свойство – общее количество результатов
-  get totalResults() {
-    return this.categories.length + this.products.length;
+  // Вычисляемое свойство — только товары
+  get totalResults(): number {
+    return this.products.length;
   }
 
-  open() {
+  open(): void {
     this.isOpen = true;
     this.activeIndex = -1;
   }
 
-  close() {
+  close(): void {
     this.isOpen = false;
     this.reset();
   }
 
-  setQuery(q: string) {
+  setQuery(q: string): void {
     this.query = q;
   }
 
-  setLoading(loading: boolean) {
+  setLoading(loading: boolean): void {
     this.loading = loading;
   }
 
-  setResults(categories: Category[], products: (Product & { category?: Category })[]) {
-    this.categories = categories;
+  // Упрощённый setResults — только товары
+  setResults(products: ProductWithCategory[]): void {
     this.products = products;
     this.activeIndex = -1;
   }
 
-  setActiveIndex(index: number) {
+  setActiveIndex(index: number): void {
     this.activeIndex = index;
   }
 
-  reset() {
+  reset(): void {
     this.query = '';
     this.loading = false;
-    this.categories = [];
     this.products = [];
     this.activeIndex = -1;
   }

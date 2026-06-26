@@ -35,7 +35,7 @@ export const Header = async () => {
           transition-all duration-300
         "
       >
-        <Logo src={logoUrl} alt={companyName} />
+        <Logo  src="/images/logo.png" alt={companyName} />
         <CallbackButton />
         <div className="flex items-center gap-3 md:gap-4 sm:gap-2">
           <CatalogButton />

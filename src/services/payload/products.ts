@@ -1,7 +1,6 @@
 import { unstable_cache } from 'next/cache'
 import { getPayloadInstance } from './getPayload'
 import type { Where } from 'payload'
-import { ObjectId } from 'mongodb'
 import { Product } from '@/payload-types'
 
 export interface GetProductsOptions {
@@ -12,12 +11,13 @@ export interface GetProductsOptions {
   sort?: string
 }
 
-// Стабильный ключ для кэша
+// ---- Вспомогательная генерация ключа ----
 function getProductsKey(options: GetProductsOptions): string {
   const { category, group, limit, page, sort } = options
   return `products-cat-${category || 'all'}-grp-${group || 'all'}-l-${limit || 20}-p-${page || 1}-s-${sort || 'order'}`
 }
 
+// ---- Базовые функции (без кэша) ----
 async function fetchProducts(options: GetProductsOptions) {
   const payload = await getPayloadInstance()
   const where: Where = { isPublished: { equals: true } }
@@ -35,36 +35,20 @@ async function fetchProducts(options: GetProductsOptions) {
   return { docs: result.docs as unknown as Product[], totalDocs: result.totalDocs }
 }
 
-export const getCachedProducts = (options: GetProductsOptions) =>
-  unstable_cache(
-    () => fetchProducts(options),
-    [getProductsKey(options)],
-    { tags: ['products'], revalidate: false }
-  )
-
 async function fetchProductBySlug(slug: string) {
   const payload = await getPayloadInstance()
   const where: Where = { slug: { equals: slug }, isPublished: { equals: true } }
+
   const result = await payload.find({
     collection: 'products',
     where,
     limit: 1,
-    depth: 1,
+    depth: 2,                    // ← Важно! Подтягиваем recommendedProducts
   })
-  return result.docs[0] as unknown as Product | null
+  return result.docs[0] as Product | null
 }
 
-export const getCachedProductBySlug = (slug: string) =>
-  unstable_cache(
-    () => fetchProductBySlug(slug),
-    [`product-${slug}`],
-    { tags: ['products'], revalidate: false }
-  )
-
-/**
- * Получение уникальных групп товаров (масштабируемо через distinct)
- */
-export async function getProductGroups(categoryId?: string): Promise<string[]> {
+async function fetchProductGroups(categoryId?: string): Promise<string[]> {
   const payload = await getPayloadInstance()
   const db = payload.db
   const collection = db.collections?.products
@@ -72,18 +56,47 @@ export async function getProductGroups(categoryId?: string): Promise<string[]> {
   if (!collection) return []
 
   const filter: Record<string, unknown> = { isPublished: true }
-  if (categoryId && ObjectId.isValid(categoryId)) {
-    filter.category = new ObjectId(categoryId)
+  if (categoryId) {
+    filter.category = categoryId // строка – драйвер сам преобразует в ObjectId
   }
 
   const groups = await collection.distinct('group', filter)
-  // отфильтровываем null/undefined и сортируем
   return (groups as string[]).filter(Boolean).sort()
 }
 
-export const getCachedProductGroups = (categoryId?: string) =>
-  unstable_cache(
-    () => getProductGroups(categoryId),
+// ---- Экспортируемые обёртки с условным кэшированием ----
+// ВСЕГДА возвращают функцию, которую нужно вызвать для получения данных.
+// В dev – просто обёртка над fetch*, в prod – мемоизированная через unstable_cache.
+
+export const getCachedProducts = (options: GetProductsOptions) => {
+  if (process.env.NODE_ENV === 'development') {
+    return () => fetchProducts(options)
+  }
+  return unstable_cache(
+    () => fetchProducts(options),
+    [getProductsKey(options)],
+    { tags: ['products'], revalidate: false }
+  )
+}
+
+export const getCachedProductBySlug = (slug: string) => {
+  if (process.env.NODE_ENV === 'development') {
+    return () => fetchProductBySlug(slug)
+  }
+  return unstable_cache(
+    () => fetchProductBySlug(slug),
+    [`product-${slug}`],
+    { tags: ['products'], revalidate: false }
+  )
+}
+
+export const getCachedProductGroups = (categoryId?: string) => {
+  if (process.env.NODE_ENV === 'development') {
+    return () => fetchProductGroups(categoryId)
+  }
+  return unstable_cache(
+    () => fetchProductGroups(categoryId),
     [`product-groups-${categoryId || 'all'}`],
     { tags: ['products'], revalidate: false }
   )
+}

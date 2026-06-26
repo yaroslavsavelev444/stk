@@ -1,38 +1,35 @@
-'use client'
+'use client';
 
-import { useEffect, useRef } from 'react'
-import { RemoveScroll } from 'react-remove-scroll'
-import { CallbackForm } from './CallbackForm'
+import { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
+import { RemoveScroll } from 'react-remove-scroll';
+import { CallbackForm } from './CallbackForm';
 
 interface CallbackModalProps {
-  open: boolean
-  onClose: () => void
+  open: boolean;
+  onClose: () => void;
 }
 
-/**
- * Модалка для вызова формы с любой страницы (например, по клику на кнопку
- * "Заказать звонок" в хедере). Закрытие по Escape, клику на оверлей и кнопке.
- * Фокус переносится на диалог при открытии — базовая доступность.
- */
 export function CallbackModal({ open, onClose }: CallbackModalProps) {
-  const dialogRef = useRef<HTMLDivElement>(null)
+  const dialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!open) return
+    if (!open) return;
 
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'Escape') onClose()
-    }
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') onClose();
+    };
 
-    document.addEventListener('keydown', handleKeyDown)
-    dialogRef.current?.focus()
+    document.addEventListener('keydown', handleKeyDown);
+    dialogRef.current?.focus();
 
-    return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [open, onClose])
+    return () => document.removeEventListener('keydown', handleKeyDown);
+  }, [open, onClose]);
 
-  if (!open) return null
+  if (!open) return null;
 
-  return (
+  // Рендерим через портал в body
+  return createPortal(
     <RemoveScroll>
       <div
         className="fixed inset-0 z-[100] flex items-center justify-center p-4"
@@ -77,6 +74,7 @@ export function CallbackModal({ open, onClose }: CallbackModalProps) {
           <CallbackForm variant="panel" onSuccess={() => undefined} />
         </div>
       </div>
-    </RemoveScroll>
-  )
+    </RemoveScroll>,
+    document.body
+  );
 }

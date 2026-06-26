@@ -1,0 +1,202 @@
+/* ═══════════════════════════════════════════════════════════════════
+   ProductCard — bento-style card for industrial product catalog
+   Relies on CSS variables from theme.css
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* ── Card container ──────────────────────────────────────────────── */
+
+.product-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  background-color: var(--background);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+
+  /* Subtle lift — separation without drama */
+  box-shadow: 0 1px 3px var(--shadow-color);
+
+  /* Smooth hover transition */
+  transition:
+    box-shadow 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+
+  text-decoration: none;
+  color: inherit;
+}
+
+.product-card:hover {
+  box-shadow: 0 4px 16px var(--shadow-color);
+  border-color: var(--primary-200);
+  transform: translateY(-2px);
+}
+
+.product-card:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
+}
+
+/* ── Image block ─────────────────────────────────────────────────── */
+
+.product-image-wrap {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  /* No extra border-radius — card overflow:hidden handles top corners */
+  background-color: var(--surface-secondary);
+  flex-shrink: 0;
+}
+
+.product-image {
+  object-fit: cover;
+  transition: transform 0.45s ease;
+}
+
+/* Preserve existing hover zoom */
+.product-card:hover .product-image {
+  transform: scale(1.05);
+}
+
+.product-image-placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--surface-secondary);
+}
+
+.product-image-placeholder span {
+  font-size: 0.8125rem;
+  color: var(--text-muted);
+}
+
+/* ── Badges — overlaid on image ──────────────────────────────────── */
+
+.product-badges {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  /* Pointer events transparent so image hover still fires */
+  pointer-events: none;
+}
+
+.product-badge {
+  display: inline-block;
+  padding: 3px 9px;
+  border-radius: 999px;
+  font-size: 0.6875rem;  /* 11px */
+  font-weight: 600;
+  line-height: 1.4;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+}
+
+/* Новинка — brand blue tint */
+.badge-new {
+  background-color: var(--primary-100);
+  color: var(--primary-700);
+}
+
+/* Хит — warm amber */
+.badge-hit {
+  background-color: var(--warning-light);
+  color: #92400E; /* amber-800, dark enough on warning-light */
+}
+
+/* Акция — accent red */
+.badge-sale {
+  background-color: var(--accent-soft);
+  color: var(--accent-700);
+}
+
+/* ГОСТ — neutral/dark */
+.badge-gost {
+  background-color: var(--surface-secondary);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
+}
+
+/* ── Content area ────────────────────────────────────────────────── */
+
+.product-content {
+  display: flex;
+  flex-direction: column;
+  flex: 1;              /* fills remaining card height */
+  padding: 14px 16px 16px;
+  gap: 10px;
+}
+
+/* ── Product name ────────────────────────────────────────────────── */
+
+.product-name {
+  margin: 0;
+  font-size: 0.9375rem;  /* 15px */
+  font-weight: 600;
+  line-height: 1.45;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+
+  /* Clamp to 3 lines — prevents layout shifts */
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  overflow: hidden;
+
+  /* Let this area grow so footer is always pinned bottom */
+  flex: 1;
+}
+
+/* ── Footer (price) ──────────────────────────────────────────────── */
+
+.product-footer {
+  flex-shrink: 0;
+  padding-top: 4px;
+  border-top: 1px solid var(--border-light);
+}
+
+/* ── Price ───────────────────────────────────────────────────────── */
+
+.product-price {
+  font-size: 1.0625rem;  /* 17px */
+  font-weight: 700;
+  line-height: 1;
+  color: var(--primary);
+  letter-spacing: -0.01em;
+}
+
+/* Invisible placeholder when price is absent — keeps footer height */
+.product-price-empty {
+  height: 1.0625rem;
+}
+
+/* ═══════════════════════════════════════════════════════════════════
+   Responsive tweaks
+   ═══════════════════════════════════════════════════════════════════ */
+
+/* Mobile ≤ 480px — loosen padding a little */
+@media (max-width: 480px) {
+  .product-content {
+    padding: 12px 14px 14px;
+  }
+
+  .product-name {
+    font-size: 0.875rem;
+    -webkit-line-clamp: 2;
+  }
+
+  .product-price {
+    font-size: 1rem;
+  }
+
+  .product-badge {
+    font-size: 0.625rem;  /* 10px */
+    padding: 2px 7px;
+  }
+}

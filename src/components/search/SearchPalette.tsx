@@ -3,15 +3,19 @@
 import { useEffect, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useSearchStore } from '../context/RootStoreContext';
-import { useSearch } from '../hooks/useSearch';
-import { useKeyboard } from '../hooks/useKeyboard';
 import { Modal } from '@once-ui-system/core';
 import { SearchInput } from './SearchInput';
-import { SearchCategories } from './SearchCategories';
 import { SearchProducts } from './SearchProducts';
 import { SearchEmpty } from './SearchEmpty';
 import type { InputRef } from 'antd';
-import { ArrowUpOutlined, ArrowDownOutlined, EnterOutlined, XOutlined, } from '@ant-design/icons';
+import {
+  ArrowUpOutlined,
+  ArrowDownOutlined,
+  EnterOutlined,
+  CloseOutlined,
+} from '@ant-design/icons';
+import { useSearch } from '../hooks/useSearch';
+import { useKeyboard } from '../hooks/useKeyboard';
 
 export const SearchPalette = observer(() => {
   const searchStore = useSearchStore();
@@ -22,7 +26,11 @@ export const SearchPalette = observer(() => {
 
   useEffect(() => {
     if (searchStore.isOpen) {
-      requestAnimationFrame(() => inputRef.current?.focus());
+      // Фокусируем только если инпут ещё не в фокусе
+      const inputElement = inputRef.current?.input;
+      if (inputElement && document.activeElement !== inputElement) {
+        setTimeout(() => inputElement.focus(), 0);
+      }
     }
   }, [searchStore.isOpen]);
 
@@ -30,29 +38,35 @@ export const SearchPalette = observer(() => {
     <Modal
       isOpen={searchStore.isOpen}
       onClose={() => searchStore.close()}
-      backdrop={<div className="fixed inset-0 bg-black/40 backdrop-blur-sm" />}
+      backdrop={<div className="fixed inset-0 bg-black/30 backdrop-blur-md" />}
       title={null}
     >
-      <div className="w-full rounded-2xl overflow-hidden shadow-2xl bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl border border-white/30 dark:border-white/10">
+      <div
+        className="
+          search-palette-wrapper w-full max-w-2xl mx-auto rounded-3xl overflow-hidden
+          shadow-2xl bg-white/95 backdrop-blur-2xl border border-white/60
+        "
+      >
         <SearchInput ref={inputRef} />
-        <div className="p-4 max-h-[60vh] overflow-y-auto">
-          <SearchCategories />
+
+        <div className="p-5 max-h-[60vh] overflow-y-auto">
           <SearchProducts />
           <SearchEmpty />
         </div>
-        <div className="px-4 py-2 border-t border-white/20 dark:border-white/5 text-xs text-gray-400/60 dark:text-gray-500/60 flex items-center justify-between backdrop-blur-sm bg-white/5">
+
+        <div className="px-5 py-3 border-t border-black/5 text-xs text-gray-400 flex items-center justify-between bg-white/70">
           <span className="flex items-center gap-1.5">
             <ArrowUpOutlined className="w-3 h-3" />
             <ArrowDownOutlined className="w-3 h-3" />
-            <span className="ml-1 opacity-70">навигация</span>
+            <span className="ml-1">навигация</span>
           </span>
           <span className="flex items-center gap-1.5">
             <EnterOutlined className="w-3 h-3" />
-            <span className="ml-1 opacity-70">выбор</span>
+            <span>выбор</span>
           </span>
           <span className="flex items-center gap-1.5">
-            <XOutlined className="w-3 h-3" />
-            <span className="ml-1 opacity-70">закрыть</span>
+            <CloseOutlined className="w-3 h-3" />
+            <span>закрыть</span>
           </span>
         </div>
       </div>

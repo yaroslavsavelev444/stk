@@ -11,12 +11,12 @@ import {
 import { iconLibrary } from "../resources/icons";
 import { dataStyle } from "@/resources/content";
 import {RootStoreProvider} from "./context/RootStoreContext";
-
+import {CallbackModalProvider} from "./context/CallbackModalContext";
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <LayoutProvider>
       <RootStoreProvider>
-
+<CallbackModalProvider>
         <DataThemeProvider
           variant={dataStyle.variant as ChartVariant}
           mode={dataStyle.mode as ChartMode}
@@ -34,6 +34,8 @@ export function Providers({ children }: { children: React.ReactNode }) {
             <IconProvider icons={iconLibrary}>{children}</IconProvider>
           </ToastProvider>
         </DataThemeProvider>
+        </CallbackModalProvider>
+
         </RootStoreProvider>
     </LayoutProvider>
   );

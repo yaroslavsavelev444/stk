@@ -1,5 +1,6 @@
-'use server'
 
+'use server'
+import { isValidRussianPhone } from '@/utils/phone';
 import { z } from 'zod'
 import { createCallbackRequest } from '@/services/payload/callback'
 import type { CallbackActionResult, CallbackFormErrors } from '@/types/callback-form'
@@ -18,12 +19,12 @@ const callbackSchema = z.object({
     .optional()
     .or(z.literal('')),
   phone: z
-    .string()
-    .trim()
-    .min(1, 'Укажите телефон')
-    .refine((value) => value.replace(/\D/g, '').length >= 10, {
-      message: 'Введите корректный номер телефона',
-    }),
+  .string()
+  .trim()
+  .min(1, 'Укажите телефон')
+  .refine(isValidRussianPhone, {
+    message: 'Введите корректный номер телефона',
+  }),
   email: z
     .string()
     .trim()

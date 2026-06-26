@@ -1,26 +1,24 @@
-// components/search/SearchResultItem.tsx
 import { observer } from 'mobx-react-lite';
 import { useSearchStore } from '../context/RootStoreContext';
-import { Category, Product } from '@/payload-types';
-
-type SearchItem = Category | (Product & { category?: Category });
+import type { ProductWithCategory } from '@/store/searchStore';
 
 interface Props {
-  item: SearchItem;
+  item: ProductWithCategory;
   isActive: boolean;
   index: number;
 }
 
 export const SearchResultItem = observer(({ item, isActive, index }: Props) => {
   const searchStore = useSearchStore();
-  const isCategory = 'category' in item;
-  const name = item.name;
-  const slug = item.slug;
-  const categoryName = isCategory ? (item as Product).category?.name : null;
 
-  const handleClick = () => {
-    const type = isCategory ? 'product' : 'category';
-    window.location.href = `/${type}s/${slug}`;
+  const categoryName =
+    typeof item.category === 'object' && item.category !== null
+      ? item.category.name
+      : null;
+
+  const handleClick = (): void => {
+    if (!item.slug) return;
+    window.location.href = `/products/${item.slug}`;
     searchStore.close();
   };
 
@@ -29,20 +27,19 @@ export const SearchResultItem = observer(({ item, isActive, index }: Props) => {
       onMouseEnter={() => searchStore.setActiveIndex(index)}
       onClick={handleClick}
       className={`
-        flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer
-        ${isActive ? 'bg-primary-50 dark:bg-primary-900/20' : 'hover:bg-gray-50 dark:hover:bg-gray-800/50'}
+        grid grid-cols-[1fr_auto] gap-2 px-3 py-2 rounded-lg cursor-pointer
         transition-colors duration-150
+        ${
+          isActive
+            ? 'bg-blue-100 dark:bg-primary-900/40' // яркий фон для активного состояния
+            : 'hover:bg-gray-100 dark:hover:bg-gray-800/50'
+        }
       `}
     >
-      <div>
-        <span className="text-gray-800 dark:text-gray-200">{name}</span>
-        {categoryName && (
-          <span className="ml-2 text-sm text-gray-400">· {categoryName}</span>
-        )}
-      </div>
-      <span className="text-xs text-gray-400">
-        {isCategory ? '📦' : '📁'}
-      </span>
+      <span className="text-black break-words min-w-0">{item.name}</span>
+      {categoryName && (
+        <span className="text-black text-right break-words">{categoryName}</span>
+      )}
     </li>
   );
 });

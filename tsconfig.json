@@ -14,14 +14,14 @@
     "allowImportingTsExtensions": true,
     "jsx": "react-jsx",
     "incremental": true,
-    "baseUrl": ".",                           // ← добавляем (опционально, но полезно)
+    "baseUrl": ".",                         
     "plugins": [
       {
         "name": "next"
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],            // главный алиас – корень проекта
+      "@/*": ["./src/*"],           
       "@/payload-types": ["./payload-types.ts"],
       "@/payloadconfig": ["./payload.config.ts"]
     }

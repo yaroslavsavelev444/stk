@@ -66,3 +66,90 @@ img {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
 }
+
+
+/* === Убираем border и крестик у SearchPalette Modal === */
+
+/* Основной контейнер Modal */
+.once-modal-content,
+[role="dialog"],
+div[class*="default-border"],
+div[class*="page-background"] {
+  border: none !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+}
+
+/* Убираем все внутренние бордеры */
+.default-border,
+.border-solid,
+.border-reset,
+.border-top-1,
+.border-x-1 {
+  border: none !important;
+}
+
+/* Крестик (close button) */
+.once-modal-close,
+.modal-close,
+[aria-label*="Close"],
+button.close,
+.close-button,
+svg + button,
+button[aria-label="Close modal"] {
+  display: none !important;
+}
+
+/* Дополнительная страховка по классам из devtools */
+div[class*="px-8"][class*="page-background"][class*="default-border"] {
+  border: none !important;
+  padding: 0 !important;
+  border-radius: 24px !important;
+}
+
+/* Убираем отступы, которые добавляет библиотека */
+div[class*="px-8"].flex-column {
+  padding: 0 !important;
+}
+
+/* === SearchPalette — высокий z-index + fullscreen на мобильных === */
+
+.search-palette-wrapper,
+.search-palette-wrapper [role="dialog"],
+.search-palette-wrapper .once-modal-content,
+.search-palette-wrapper div[class*="default-border"] {
+  z-index: 99999 !important;
+}
+
+/* Fullscreen на мобильных */
+@media (max-width: 768px) {
+  .search-palette-wrapper {
+    max-width: 100% !important;
+    width: 100% !important;
+    min-height: 100dvh !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    box-shadow: none !important;
+  }
+
+  /* Принудительно растягиваем модалку на весь экран */
+  .search-palette-wrapper .once-modal-content,
+  .search-palette-wrapper [role="dialog"] {
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Дополнительная изоляция */
+.search-palette-wrapper {
+  isolation: isolate;
+}

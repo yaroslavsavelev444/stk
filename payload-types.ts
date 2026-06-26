@@ -92,14 +92,14 @@ export interface Config {
   db: {
     defaultIDType: string;
   };
-  fallbackLocale: null;
+  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('ru' | 'en') | ('ru' | 'en')[];
   globals: {
     settings: Setting;
   };
   globalsSelect: {
     settings: SettingsSelect<false> | SettingsSelect<true>;
   };
-  locale: null;
+  locale: 'ru' | 'en';
   widgets: {
     collections: CollectionsWidget;
   };
@@ -235,6 +235,10 @@ export interface Product {
       }[]
     | null;
   badges?: ('new' | 'hit' | 'sale' | 'gost')[] | null;
+  /**
+   * Выберите товары, которые будут показаны в блоке "Рекомендуемые" на странице этого товара. Порядок важен.
+   */
+  recommendedProducts?: (string | Product)[] | null;
   order?: number | null;
   isPublished?: boolean | null;
   seo?: {
@@ -427,6 +431,7 @@ export interface ProductsSelect<T extends boolean = true> {
         id?: T;
       };
   badges?: T;
+  recommendedProducts?: T;
   order?: T;
   isPublished?: T;
   seo?:
@@ -580,7 +585,7 @@ export interface Setting {
     | {
         title: string;
         value: string;
-        type?: ('text' | 'phone' | 'email' | 'link') | null;
+        type?: ('text' | 'phone' | 'email' | 'link' | 'whatsapp' | 'telegram') | null;
         icon?: string | null;
         order?: number | null;
         id?: string | null;

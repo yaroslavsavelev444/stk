@@ -6,7 +6,7 @@ import { submitCallbackRequest } from './actions'
 import { CallbackField } from './CallbackField'
 import { CallbackSuccessState } from './CallbackSuccessState'
 import type { CallbackActionResult } from '@/types/callback-form'
-
+import {PhoneInput} from './PhoneInput'
 const initialState: CallbackActionResult = { ok: false }
 
 interface CallbackFormProps {
@@ -112,14 +112,13 @@ export function CallbackForm({
           error={state.errors?.name}
         />
 
-        <CallbackField
-          label="Телефон"
+       
+        {/* Заменяем обычное поле на PhoneInput */}
+        <PhoneInput
           name="phone"
-          type="tel"
-          placeholder="+7 (999) 000-00-00"
-          autoComplete="tel"
+          label="Телефон"
           required
-          error={state.errors?.phone}
+          error={state.errors?.phone}   // серверная ошибка, если не прошла валидация
         />
 
         <CallbackField

@@ -8,7 +8,10 @@ import { seoField } from '../fields/seo.ts'
 
 export const Products: CollectionConfig = {
   slug: 'products',
-  admin: { useAsTitle: 'name', defaultColumns: ['name', 'category', 'group', 'price'] },
+  admin: {
+    useAsTitle: 'name',
+    defaultColumns: ['name', 'category', 'group', 'price', 'isPublished'],
+  },
   access: {
     read: () => true,
     create: isAdminOrManager,
@@ -43,8 +46,10 @@ export const Products: CollectionConfig = {
     },
     { name: 'price', type: 'number', admin: { step: 0.01 } },
     { name: 'showPrice', type: 'checkbox', defaultValue: true },
+
     attributesField,
     documentsField,
+
     {
       name: 'badges',
       type: 'select',
@@ -57,6 +62,25 @@ export const Products: CollectionConfig = {
       ],
       label: 'Бейджи',
     },
+
+    // === Новое поле ===
+    {
+      name: 'recommendedProducts',
+      type: 'relationship',
+      relationTo: 'products',
+      hasMany: true,
+      label: 'Рекомендуемые товары',
+      admin: {
+        description: 'Выберите товары, которые будут показаны в блоке "Рекомендуемые" на странице этого товара. Порядок важен.',
+        position: 'sidebar',
+        isSortable: true,           // можно менять порядок
+      },
+      filterOptions: ({ data }) => ({
+        id: { not_equals: data?.id },        // исключаем сам товар
+        isPublished: { equals: true },
+      }),
+    },
+
     { name: 'order', type: 'number', defaultValue: 0 },
     { name: 'isPublished', type: 'checkbox', defaultValue: true },
     seoField,

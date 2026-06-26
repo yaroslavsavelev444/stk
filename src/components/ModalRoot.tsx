@@ -1,20 +1,10 @@
-// components/ModalRoot.tsx
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useCallbackModal } from '@/components/context/CallbackModalContext';
+import { CallbackModal } from '@/components/callback-form/CallbackModal';
 
-export const ModalRoot = () => {
-  const [mounted, setMounted] = useState(false);
+export function ModalRoot() {
+  const { isOpen, close } = useCallbackModal();
 
-  useEffect(() => {
-    setMounted(true);
-    const root = document.createElement('div');
-    root.id = 'modal-root';
-    document.body.appendChild(root);
-    return () => {
-      root.remove();
-    };
-  }, []);
-
-  return null;
-};
+  return <CallbackModal open={isOpen} onClose={close} />;
+}

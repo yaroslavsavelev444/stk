@@ -1,6 +1,5 @@
 import { getCachedSettings } from '@/services/payload/settings'
 import { Column, Flex, Heading, Text } from '@once-ui-system/core'
-import { Breadcrumbs } from '@/components/contacts/Breadcrumbs'
 import { ContactsList } from '@/components/contacts/ContactsList'
 import { SocialLinks } from '@/components/contacts/SocialLinks'
 import { MapEmbed } from '@/components/contacts/MapEmbed'
@@ -8,6 +7,7 @@ import { OrganizationJsonLd } from '@/components/contacts/OrganizationJsonLd'
 import { BreadcrumbJsonLd } from '@/components/contacts/BreadcrumbJsonLd'
 import type { Metadata } from 'next'
 import { generateContactsMetadata } from '@/utils/contacts-metadata'
+import { AutoBreadcrumbs } from '@/components/UI/Breadcrumbs/AutoBreadcrumbs'
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL
 if (!siteUrl) {
@@ -39,7 +39,7 @@ export default async function ContactsPage() {
 
       <Column fillWidth horizontal="center" padding="l" gap="l">
         <Flex maxWidth={65} fillWidth direction="column" gap="m">
-          <Breadcrumbs />
+          <AutoBreadcrumbs />
 
           <Heading variant="display-strong-s" as="h1">
             Контакты {companyName}
@@ -59,7 +59,7 @@ export default async function ContactsPage() {
           {socials.length > 0 && <SocialLinks socials={socials} />}
 
          <MapEmbed map={map || ''} fullWidth />
-         <ContactsPageUsage />
+         {/* <ContactsPageUsage /> */}
         </Flex>
       </Column>
     </>

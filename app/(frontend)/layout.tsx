@@ -17,6 +17,7 @@ import { StickyHeader } from "@/components/header/StickyHeader";
 import { getCachedSettings } from '@/services/payload/settings';
 import { mapSettingsContacts } from '@/components/contact-btn/mapContact';
 import { FloatingContacts } from '@/components/contact-btn/FloatingContacts';
+import { ModalRoot } from "@/components/ModalRoot";
 
 const manrope = Manrope({
   weight: ["200", "300", "400", "500", "600", "700"],
@@ -76,6 +77,7 @@ export default async function RootLayout({
           </Flex>
 
           <Footer />
+          <ModalRoot /> 
         </Column>
       </Flex>
 
