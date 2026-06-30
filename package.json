@@ -2,7 +2,7 @@
   "name": "stk",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "pnpm@10",
+"packageManager": "pnpm@11.8.0",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -26,6 +26,7 @@
     "framer-motion": "^12.40.0",
     "graphql": "^16.14.2",
     "libphonenumber-js": "^1.13.7",
+    "lucide-react": "^1.21.0",
     "mobx": "^6.16.1",
     "mobx-react-lite": "^4.1.1",
     "mongodb": "^7.3.0",

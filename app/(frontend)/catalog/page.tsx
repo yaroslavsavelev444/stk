@@ -16,7 +16,7 @@ export async function generateMetadata() {
     description: "Полный каталог товаров и услуг. Все категории в удобном виде.",
     baseURL: baseURL,
     path: "/catalog",
-    image: "/og/catalog.jpg", // можно поменять на нужное изображение
+    image: "/og/catalog.jpg", 
   });
 }
 

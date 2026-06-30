@@ -1,4 +1,5 @@
 // src/components/header/StickyHeader.tsx
+
 import { Flex } from '@once-ui-system/core';
 import { TopHeader } from './TopHeader';
 import { Header } from './Header';
@@ -10,10 +11,10 @@ export const StickyHeader = () => {
       direction="column"
       fillWidth
       style={{
-        position: 'sticky',
-        top: 0,
-        zIndex: 20,
-        background: 'transparent', // чтобы не перекрывать контент
+        position: 'fixed',
+        inset: '0 0 auto 0',
+        zIndex: 1000,
+        background: 'transparent',
       }}
     >
       <TopHeader />

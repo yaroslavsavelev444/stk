@@ -49,9 +49,9 @@ const home: Home = {
   label: "Главная",
   title: "СТК-Актив – производство дорожных знаков",
   description: "Производство и поставка дорожных знаков и средств безопасности для дорог федерального значения",
-  headline: <>Качество и надёжность на каждой дороге</>,
+  headline: <>СТК АКТИВ</>,
   featured: {
-    display: true,
+    display: false,
     title: (
       <Row gap="12" vertical="center">
         <strong className="ml-4">Производитель</strong>

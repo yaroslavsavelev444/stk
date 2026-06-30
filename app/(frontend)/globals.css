@@ -1,6 +1,10 @@
 @import "tailwindcss";
 @import "./theme.css";
+:root {
 
+  --sticky-header-height: 124px;
+
+}
 *,
 *::before,
 *::after {
@@ -152,4 +156,19 @@ div[class*="px-8"].flex-column {
 /* Дополнительная изоляция */
 .search-palette-wrapper {
   isolation: isolate;
+}
+body {
+  background: transparent !important;
+}
+
+/* Once UI может ставить фон через data-атрибуты или CSS vars */
+[data-theme] body,
+.once-body {
+  background: transparent !important;
+}
+
+main {
+
+  padding-top: var(--sticky-header-height);
+
 }

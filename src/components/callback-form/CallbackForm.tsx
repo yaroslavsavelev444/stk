@@ -6,22 +6,29 @@ import { submitCallbackRequest } from './actions'
 import { CallbackField } from './CallbackField'
 import { CallbackSuccessState } from './CallbackSuccessState'
 import type { CallbackActionResult } from '@/types/callback-form'
-import {PhoneInput} from './PhoneInput'
+import { PhoneInput } from './PhoneInput'
+
 const initialState: CallbackActionResult = { ok: false }
 
+interface CallbackContextData {
+  productTitle?: string
+  productSlug?: string
+  productSku?: string
+  subject?: string
+  customMessage?: string
+}
+
 interface CallbackFormProps {
-  /** Заголовок над формой. По умолчанию скрыт в variant="compact" внутри модалки, где заголовок задаёт обёртка. */
   title?: string
   description?: string
-  /** "panel" — форма с заголовком, как самостоятельный блок. "bare" — без заголовка, для использования внутри модалки/кастомной обёртки. */
   variant?: 'panel' | 'bare'
   onSuccess?: () => void
   className?: string
+  initialData?: CallbackContextData
 }
 
 function SubmitButton() {
   const { pending } = useFormStatus()
-
   return (
     <button
       type="submit"
@@ -34,19 +41,8 @@ function SubmitButton() {
       {pending ? (
         <>
           <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="3"
-            />
-            <path
-              className="opacity-90"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z"
-            />
+            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+            <path className="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z" />
           </svg>
           Отправляем
         </>
@@ -63,10 +59,21 @@ export function CallbackForm({
   variant = 'panel',
   onSuccess,
   className,
+  initialData,
 }: CallbackFormProps) {
   const [state, formAction] = useActionState(submitCallbackRequest, initialState)
   const [isSuccess, setIsSuccess] = useState(false)
   const formRef = useRef<HTMLFormElement>(null)
+
+  // Формируем текст комментария из initialData
+  let defaultComment = ''
+  if (initialData) {
+    if (initialData.customMessage) {
+      defaultComment = initialData.customMessage
+    } else if (initialData.productTitle) {
+      defaultComment = `Запрос консультации по товару: ${initialData.productTitle}`
+    }
+  }
 
   useEffect(() => {
     if (state.ok) {
@@ -94,7 +101,7 @@ export function CallbackForm({
       )}
 
       <form ref={formRef} action={formAction} noValidate className="flex flex-col gap-4">
-        {/* Honeypot: визуально и для скринридеров скрыт, реальные пользователи не заполнят */}
+        {/* Honeypot */}
         <input
           type="text"
           name="company_site"
@@ -104,6 +111,11 @@ export function CallbackForm({
           className="absolute left-[-9999px] h-0 w-0 opacity-0"
         />
 
+        {/* Скрытые поля для контекста товара */}
+        <input type="hidden" name="productSku" defaultValue={initialData?.productSku || ''} />
+        <input type="hidden" name="productTitle" defaultValue={initialData?.productTitle || ''} />
+        <input type="hidden" name="subject" defaultValue={initialData?.subject || ''} />
+
         <CallbackField
           label="Ваше имя"
           name="name"
@@ -112,13 +124,11 @@ export function CallbackForm({
           error={state.errors?.name}
         />
 
-       
-        {/* Заменяем обычное поле на PhoneInput */}
         <PhoneInput
           name="phone"
           label="Телефон"
           required
-          error={state.errors?.phone}   // серверная ошибка, если не прошла валидация
+          error={state.errors?.phone}
         />
 
         <CallbackField
@@ -135,6 +145,7 @@ export function CallbackForm({
           label="Комментарий"
           name="comment"
           placeholder="Расскажите, что вас интересует"
+          defaultValue={defaultComment}
           error={state.errors?.comment}
         />
 
@@ -150,8 +161,7 @@ export function CallbackForm({
         <SubmitButton />
 
         <p className="text-center text-[13px] leading-relaxed text-[var(--text-muted)]">
-          Нажимая «Отправить заявку», вы соглашаетесь на обработку
-          персональных данных.
+          Нажимая «Отправить заявку», вы соглашаетесь на обработку персональных данных.
         </p>
       </form>
     </div>

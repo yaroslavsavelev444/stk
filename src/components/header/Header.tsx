@@ -3,10 +3,10 @@ import { getCachedSettings } from '@/services/payload';
 import { Logo } from './Logo';
 import { CatalogButton } from './CatalogButton';
 import { SearchButton } from '../search/SearchButton';
-import {CallbackButton} from '../callback-form/header-trigger-usage';
+import { CallbackButton } from '../callback-form/header-trigger-usage';
+
 export const Header = async () => {
   const settings = await getCachedSettings();
-
   let logoUrl: string | null = null;
   if (settings?.logo && typeof settings.logo === 'object' && 'url' in settings.logo) {
     logoUrl = settings.logo.url || null;
@@ -17,7 +17,7 @@ export const Header = async () => {
     <Row
       fillWidth
       horizontal="center"
-      className="py-2" // отступ сверху/снизу
+      className="py-2"
     >
       <Row
         maxWidth="m"
@@ -31,11 +31,11 @@ export const Header = async () => {
           rounded-2xl
           border border-white/40
           shadow-[0_4px_20px_rgba(0,0,0,0.06)]
-          relative overflow-hidden isolate
+          relative z-30
           transition-all duration-300
         "
       >
-        <Logo  src="/images/logo.png" alt={companyName} />
+        <Logo src="/images/logo.png" alt={companyName} />
         <CallbackButton />
         <div className="flex items-center gap-3 md:gap-4 sm:gap-2">
           <CatalogButton />

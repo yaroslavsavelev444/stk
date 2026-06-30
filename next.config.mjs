@@ -1,18 +1,22 @@
-import { withPayload } from '@payloadcms/next/withPayload'
+import path from "path";
+import { withPayload } from "@payloadcms/next/withPayload";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
- images: {
+  turbopack: {
+    root: process.cwd(),
+  },
+
+  images: {
     remotePatterns: [
       {
-        protocol: 'http',
-        hostname: 'localhost',
-        port: '3000', // Укажите порт, на котором работает ваше приложение
-        pathname: '/api/media/**', // Разрешаем все пути внутри /api/media/
+        protocol: "http",
+        hostname: "localhost",
+        port: "3000",
+        pathname: "/api/media/**",
       },
     ],
   },
+};
 
-}
-
-export default withPayload(nextConfig)
+export default withPayload(nextConfig);

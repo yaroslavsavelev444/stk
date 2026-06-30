@@ -4,31 +4,27 @@ import { useEffect, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { RemoveScroll } from 'react-remove-scroll';
 import { CallbackForm } from './CallbackForm';
+import { useCallbackModal } from '@/components/context/CallbackModalContext';
 
-interface CallbackModalProps {
-  open: boolean;
-  onClose: () => void;
-}
-
-export function CallbackModal({ open, onClose }: CallbackModalProps) {
+export function CallbackModal() {
+  const { isOpen, contextData, close } = useCallbackModal();
   const dialogRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!open) return;
+    if (!isOpen) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') onClose();
+      if (event.key === 'Escape') close();
     };
 
     document.addEventListener('keydown', handleKeyDown);
     dialogRef.current?.focus();
 
     return () => document.removeEventListener('keydown', handleKeyDown);
-  }, [open, onClose]);
+  }, [isOpen, close]);
 
-  if (!open) return null;
+  if (!isOpen) return null;
 
-  // Рендерим через портал в body
   return createPortal(
     <RemoveScroll>
       <div
@@ -37,7 +33,7 @@ export function CallbackModal({ open, onClose }: CallbackModalProps) {
       >
         <div
           className="absolute inset-0 bg-[var(--overlay)]"
-          onClick={onClose}
+          onClick={close}
           aria-hidden="true"
         />
 
@@ -52,7 +48,7 @@ export function CallbackModal({ open, onClose }: CallbackModalProps) {
         >
           <button
             type="button"
-            onClick={onClose}
+            onClick={close}
             aria-label="Закрыть"
             className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full
               text-[var(--text-muted)] transition-colors hover:bg-[var(--surface-secondary)] hover:text-[var(--text-primary)]"
@@ -71,7 +67,13 @@ export function CallbackModal({ open, onClose }: CallbackModalProps) {
             Заказать звонок
           </h2>
 
-          <CallbackForm variant="panel" onSuccess={() => undefined} />
+          <CallbackForm
+            variant="panel"
+            onSuccess={close}
+            initialData={contextData || undefined}
+            title={contextData?.modalTitle || 'Заказать звонок'}
+            description={contextData?.modalDescription || 'Заполните форму — перезвоним и ответим на все вопросы.'}
+          />
         </div>
       </div>
     </RemoveScroll>,

@@ -25,11 +25,8 @@ export default async function RelatedProducts({
   return (
     <div className="product-page-constraint my-16 lg:my-32">
       <div className="flex flex-col items-center text-center mb-12">
-        <span className="text-sm uppercase tracking-widest text-gray-500 mb-3">
-          Рекомендуем
-        </span>
         <p className="text-2xl font-medium text-balance">
-          Вам также может понравиться
+          С этим товаром покупают
         </p>
       </div>
 

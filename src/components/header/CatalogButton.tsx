@@ -1,24 +1,22 @@
-'use client';
+// src/components/header/CatalogButton.tsx
+// Server component — получает данные, передаёт в клиентский CatalogMenu
 
-import { Button } from 'antd';
-import { MenuOutlined } from '@ant-design/icons';
-import { useRouter } from 'next/navigation';
+import { getCachedCategories } from '@/services/payload/categories'
+import { getCachedProductGroups } from '@/services/payload/products'
+import { CatalogMenu, type CategoryWithGroups } from './CatalogMenu'
 
-export const CatalogButton = () => {
-  const router = useRouter();
+export const CatalogButton = async () => {
+  // 1. Все опубликованные категории
+  const categories = await getCachedCategories()
 
-  const handleClick = () => {
-    router.push('/catalog');
-  };
+  // 2. Для каждой категории — уникальные группы продуктов
+  const items: CategoryWithGroups[] = await Promise.all(
+    categories.map(async (category) => {
+      const getGroups = getCachedProductGroups(String(category.id))
+      const groups = await getGroups()
+      return { category, groups }
+    }),
+  )
 
-  return (
-    <Button
-      type="primary"
-      icon={<MenuOutlined />}
-      aria-label="Каталог"
-      onClick={handleClick}
-    >
-      Каталог
-    </Button>
-  );
-};
+  return <CatalogMenu items={items} />
+}

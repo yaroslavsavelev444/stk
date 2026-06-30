@@ -1,9 +1,4 @@
 // hooks/useKeyboard.ts
-// ИЗМЕНЕНИЯ:
-// 1. Навигация теперь только по products (categories убраны)
-// 2. Исправлена инверсная логика определения типа элемента при Enter
-// 3. URL исправлен: /products/<slug> вместо случайного /${type}s/
-// 4. runInAction заменён на вызов setActiveIndex — MobX action уже настроен в store
 
 import { useEffect } from 'react';
 import { useSearchStore } from '@/components/context/RootStoreContext';
@@ -33,11 +28,9 @@ export function useKeyboard(): void {
 
       if (e.key === 'ArrowDown') {
         e.preventDefault();
-        // Циклическая навигация вниз
         searchStore.setActiveIndex((searchStore.activeIndex + 1) % total);
       } else if (e.key === 'ArrowUp') {
         e.preventDefault();
-        // Циклическая навигация вверх
         searchStore.setActiveIndex(
           (searchStore.activeIndex - 1 + total) % total
         );
@@ -46,10 +39,20 @@ export function useKeyboard(): void {
         const selected = searchStore.products[searchStore.activeIndex];
         if (!selected) return;
 
-        // Все элементы теперь — товары, URL всегда /products/<slug>
-        const slug = selected.slug;
-        if (slug) {
-          window.location.href = `/products/${slug}`;
+        const productSlug = selected.slug;
+        if (!productSlug) return;
+
+        // Получаем slug категории
+        // Предполагается, что selected.category — объект с полем slug
+        const categorySlug = (selected.category as { slug?: string })?.slug;
+
+        if (categorySlug) {
+          window.location.href = `/catalog/${categorySlug}/${productSlug}`;
+        } else {
+          // fallback – если категория не определена (например, в результатах поиска нет)
+          // можно использовать /products/${productSlug} или не переходить
+          console.warn('Категория не найдена для товара', selected);
+          // По желанию: window.location.href = `/products/${productSlug}`;
         }
         searchStore.close();
       }
