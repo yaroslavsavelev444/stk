@@ -1,46 +1,39 @@
 /**
  * CategoryGridSkeleton
- * Loading placeholder that mirrors the Bento grid structure.
- * Uses the same grid system as the real grid so the layout shift is minimal.
+ * Плейсхолдер загрузки, зеркалящий реальную структуру карточки:
+ * текстовый блок сверху + фото-зона снизу. Раскладка повторяет
+ * CategoryCard 1:1, чтобы исключить визуальный "скачок" при гидратации.
  */
 
-const SKELETON_CELLS = [
-  'col-span-12 md:col-span-6 lg:col-span-8 lg:row-span-2',
-  'col-span-12 md:col-span-6 lg:col-span-4 lg:row-span-1',
-  'col-span-12 md:col-span-6 lg:col-span-4 lg:row-span-1',
-  'col-span-12 md:col-span-6 lg:col-span-4 lg:row-span-1',
-  'col-span-12 md:col-span-6 lg:col-span-4 lg:row-span-1',
-  'col-span-12 md:col-span-6 lg:col-span-4 lg:row-span-1',
-]
+const SKELETON_COUNT = 6
 
-function SkeletonCard({ className }: { className: string }) {
+function SkeletonCard() {
   return (
     <div
-      className={`${className} animate-pulse`}
-      style={{
-        borderRadius: 'var(--radius-xl)',
-        background: 'var(--surface-secondary)',
-      }}
+      className="relative aspect-[4/5] w-full overflow-hidden border border-[var(--border)]"
+      style={{ borderRadius: 'var(--radius-xl)', background: 'var(--surface)' }}
     >
-      <div className="w-full h-full relative overflow-hidden" style={{ borderRadius: 'var(--radius-xl)' }}>
-        {/* Shimmer sweep */}
+      <div className="absolute inset-0 overflow-hidden" style={{ borderRadius: 'var(--radius-xl)' }}>
+        {/* Shimmer sweep по всей карточке */}
         <div
           className="absolute inset-0"
           style={{
-            background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.4) 50%, transparent 100%)',
+            background: 'linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.5) 50%, transparent 100%)',
             animation: 'skeleton-sweep 1.8s ease-in-out infinite',
           }}
         />
-        {/* Bottom text placeholder */}
-        <div className="absolute bottom-5 left-5 right-5 space-y-2">
-          <div
-            className="h-4 rounded-md"
-            style={{ background: 'rgba(0,0,0,0.08)', width: '60%' }}
-          />
-          <div
-            className="h-6 rounded-md"
-            style={{ background: 'rgba(0,0,0,0.12)', width: '85%' }}
-          />
+
+        {/* Зона фото снизу */}
+        <div
+          className="absolute inset-x-0 bottom-0"
+          style={{ top: '38%', background: 'var(--surface-secondary)' }}
+        />
+
+        {/* Плейсхолдеры заголовка и описания сверху */}
+        <div className="absolute top-0 inset-x-0 flex flex-col gap-2 p-5 md:p-6">
+          <div className="h-5 rounded-md" style={{ background: 'rgba(0,0,0,0.08)', width: '70%' }} />
+          <div className="h-3.5 rounded-md" style={{ background: 'rgba(0,0,0,0.06)', width: '90%' }} />
+          <div className="h-3.5 rounded-md" style={{ background: 'rgba(0,0,0,0.06)', width: '55%' }} />
         </div>
       </div>
     </div>
@@ -56,9 +49,9 @@ export function CategoryGridSkeleton() {
           100% { transform: translateX(100%); }
         }
       `}</style>
-      <div className="grid grid-cols-12 auto-rows-[200px] gap-3 md:gap-4 lg:gap-5">
-        {SKELETON_CELLS.map((cls, i) => (
-          <SkeletonCard key={i} className={cls} />
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-5 lg:gap-6">
+        {Array.from({ length: SKELETON_COUNT }).map((_, i) => (
+          <SkeletonCard key={i} />
         ))}
       </div>
     </>
