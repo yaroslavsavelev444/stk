@@ -17,6 +17,7 @@ import { mapSettingsContacts } from '@/components/contact-btn/mapContact';
 import { FloatingContacts } from '@/components/contact-btn/FloatingContacts';
 import { ModalRoot } from "@/components/ModalRoot";
 import { HeroBackground } from "@/components/hero/HeroBackground"; // ← добавили
+import { HeaderSpacer } from "@/components/header/HeaderSpacer";
 
 const manrope = Manrope({
   weight: ["200", "300", "400", "500", "600", "700"],
@@ -67,6 +68,7 @@ export default async function RootLayout({
           <HeroBackground />
 
           <StickyHeader />
+          <HeaderSpacer />
 
          <Flex
 

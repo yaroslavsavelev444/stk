@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Lightbox from 'yet-another-react-lightbox';
 import 'yet-another-react-lightbox/styles.css';
 
-import type { Product, Media } from '@/payload-types';
+import type { Product } from '@/payload-types'; // Media удалён
 import { resolveImages } from '@/utils/resolveImages';
 
 interface ImageGalleryProps {
@@ -41,7 +41,6 @@ export default function ImageGallery({ product }: ImageGalleryProps) {
                 position: 'relative',
                 width: '500px',
                 height: '500px',
-                // border: '3px solid red', // ❌ удалено
                 cursor: 'pointer',
               }}
               onClick={() => {
@@ -62,38 +61,41 @@ export default function ImageGallery({ product }: ImageGalleryProps) {
       })}
 
       <Lightbox
-  open={lightboxOpen}
-  close={() => setLightboxOpen(false)}
-  slides={slides}
-  index={lightboxIndex}
-  onIndexChange={setLightboxIndex}
-  render={{
-    buttonClose: () => (
-      <button
-        onClick={() => setLightboxOpen(false)}
-        style={{
-          position: 'absolute',
-          top: 20,
-          right: 20,
-          color: '#fff',
-          fontSize: 32,
-          background: 'rgba(0,0,0,0.5)',
-          border: 'none',
-          borderRadius: '50%',
-          width: 44,
-          height: 44,
-          cursor: 'pointer',
-          zIndex: 10000,
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'center',
+        open={lightboxOpen}
+        close={() => setLightboxOpen(false)}
+        slides={slides}
+        index={lightboxIndex}
+        on={{
+          view: ({ index: currentIndex }) => setLightboxIndex(currentIndex),
         }}
-      >
-        ✕
-      </button>
-    ),
-  }}
-/>
+        render={{
+          buttonClose: () => (
+            <button
+              key="close-button" // добавляем ключ
+              onClick={() => setLightboxOpen(false)}
+              style={{
+                position: 'absolute',
+                top: 20,
+                right: 20,
+                color: '#fff',
+                fontSize: 32,
+                background: 'rgba(0,0,0,0.5)',
+                border: 'none',
+                borderRadius: '50%',
+                width: 44,
+                height: 44,
+                cursor: 'pointer',
+                zIndex: 10000,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              ✕
+            </button>
+          ),
+        }}
+      />
     </div>
   );
 }

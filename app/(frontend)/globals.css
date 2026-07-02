@@ -166,9 +166,3 @@ body {
 .once-body {
   background: transparent !important;
 }
-
-main {
-
-  padding-top: var(--sticky-header-height);
-
-}

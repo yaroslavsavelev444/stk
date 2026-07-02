@@ -68,7 +68,6 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({ product }) => {
       <style>{`
         .product-page {
           --col-gap: clamp(1.5rem, 3vw, 2.5rem);
-          background: var(--background);
           min-height: 80vh;
         }
         .product-page__breadcrumbs {
