@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import styles from './HeroBackground.module.scss';
+import { useEffect, useRef } from "react";
+import styles from "./HeroBackground.module.scss";
 
 export function HeroBackground() {
   const bgRef = useRef<HTMLDivElement>(null);
@@ -11,20 +11,14 @@ export function HeroBackground() {
     const handleScroll = () => {
       if (!ticking) {
         requestAnimationFrame(() => {
-          if (bgRef.current) {
-            const scrollY = window.scrollY;
-            // Фон движется ВВЕРХ при скролле вниз — это правильный параллакс
-            // Фактор -0.5: фон идёт вдвое медленнее контента
-            // bgRef.current.style.transform = `translateY(${-scrollY * 0.5}px)`;
-          }
           ticking = false;
         });
         ticking = true;
       }
     };
 
-    window.addEventListener('scroll', handleScroll, { passive: true });
-    return () => window.removeEventListener('scroll', handleScroll);
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   return (

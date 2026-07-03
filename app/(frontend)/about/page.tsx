@@ -1,17 +1,17 @@
-import { Column, Schema, Meta } from "@once-ui-system/core";
-import { baseURL, aboutPage } from "@/resources/content";
+import { Column, Meta, Schema } from "@once-ui-system/core";
+import { CallbackSection } from "@/components/callback-form/CallbackSection";
 import { AutoBreadcrumbs } from "@/components/UI/Breadcrumbs/AutoBreadcrumbs";
 import {
+  AboutCallout,
+  AboutCertificates,
+  AboutDirections,
   AboutHero,
   AboutMediaShowcase,
-  AboutCallout,
-  AboutStats,
   AboutStandards,
+  AboutStats,
   AboutTimeline,
-  AboutDirections,
-  AboutCertificates,
 } from "@/modules/about";
-import { CallbackSection } from "@/components/callback-form/CallbackSection";
+import { aboutPage, baseURL } from "@/resources/content";
 
 export async function generateMetadata() {
   return Meta.generate({
@@ -43,7 +43,11 @@ export default function AboutPage() {
         <AboutHero hero={aboutPage.hero} />
 
         {aboutPage.mediaBlocks.map((block, index) => (
-          <AboutMediaShowcase key={index} block={block} reverse={index % 2 === 1} />
+          <AboutMediaShowcase
+            key={index}
+            block={block}
+            reverse={index % 2 === 1}
+          />
         ))}
 
         <AboutCallout text={aboutPage.callout.text} />
@@ -58,7 +62,10 @@ export default function AboutPage() {
           events={aboutPage.timeline.events}
         />
 
-        <AboutDirections heading={aboutPage.directions.heading} items={aboutPage.directions.items} />
+        <AboutDirections
+          heading={aboutPage.directions.heading}
+          items={aboutPage.directions.items}
+        />
 
         <AboutCertificates
           heading={aboutPage.certificates.heading}
@@ -71,7 +78,9 @@ export default function AboutPage() {
             <h2 className="text-[clamp(1.375rem,2.6vw,1.875rem)] font-bold text-[var(--text-primary)]">
               {aboutPage.cta.heading}
             </h2>
-            <p className="mx-auto max-w-xl text-[var(--text-secondary)]">{aboutPage.cta.description}</p>
+            <p className="mx-auto max-w-xl text-[var(--text-secondary)]">
+              {aboutPage.cta.description}
+            </p>
           </div>
           <CallbackSection />
         </div>

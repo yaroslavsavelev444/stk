@@ -1,34 +1,35 @@
-'use client'
+"use client";
 
-import { useActionState, useEffect, useRef, useState } from 'react'
-import { useFormStatus } from 'react-dom'
-import { submitCallbackRequest } from './actions'
-import { CallbackField } from './CallbackField'
-import { CallbackSuccessState } from './CallbackSuccessState'
-import type { CallbackActionResult } from '@/types/callback-form'
-import { PhoneInput } from './PhoneInput'
+import { useActionState, useEffect, useRef, useState } from "react";
+import { useFormStatus } from "react-dom";
+import { appToast } from "@/shared/lib/toast";
+import { submitCallbackRequest } from "./actions";
+import { CallbackField } from "./CallbackField";
+import { CallbackSuccessState } from "./CallbackSuccessState";
+import { CallbackActionResult } from "./callback-form";
+import { PhoneInput } from "./PhoneInput";
 
-const initialState: CallbackActionResult = { ok: false }
+const initialState: CallbackActionResult = { ok: false };
 
 interface CallbackContextData {
-  productTitle?: string
-  productSlug?: string
-  productSku?: string
-  subject?: string
-  customMessage?: string
+  productTitle?: string;
+  productSlug?: string;
+  productSku?: string;
+  subject?: string;
+  customMessage?: string;
 }
 
 interface CallbackFormProps {
-  title?: string
-  description?: string
-  variant?: 'panel' | 'bare'
-  onSuccess?: () => void
-  className?: string
-  initialData?: CallbackContextData
+  title?: string;
+  description?: string;
+  variant?: "panel" | "bare";
+  onSuccess?: () => void;
+  className?: string;
+  initialData?: CallbackContextData;
 }
 
 function SubmitButton() {
-  const { pending } = useFormStatus()
+  const { pending } = useFormStatus();
   return (
     <button
       type="submit"
@@ -40,67 +41,115 @@ function SubmitButton() {
     >
       {pending ? (
         <>
-          <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
-            <path className="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z" />
+          <svg
+            className="h-4 w-4 animate-spin"
+            viewBox="0 0 24 24"
+            fill="none"
+            aria-hidden="true"
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="3"
+            />
+            <path
+              className="opacity-90"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8v3a5 5 0 00-5 5H4z"
+            />
           </svg>
           Отправляем
         </>
       ) : (
-        'Отправить заявку'
+        "Отправить заявку"
       )}
     </button>
-  )
+  );
 }
 
 export function CallbackForm({
-  title = 'Заказать звонок',
-  description = 'Заполните форму — перезвоним и ответим на все вопросы.',
-  variant = 'panel',
+  title = "Заказать звонок",
+  description = "Заполните форму — перезвоним и ответим на все вопросы.",
+  variant = "panel",
   onSuccess,
   className,
   initialData,
 }: CallbackFormProps) {
-  const [state, formAction] = useActionState(submitCallbackRequest, initialState)
-  const [isSuccess, setIsSuccess] = useState(false)
-  const formRef = useRef<HTMLFormElement>(null)
+  const [state, formAction] = useActionState(
+    submitCallbackRequest,
+    initialState,
+  );
+  const [isSuccess, setIsSuccess] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+  const prevStateRef = useRef<CallbackActionResult | null>(null);
 
   // Формируем текст комментария из initialData
-  let defaultComment = ''
+  let defaultComment = "";
   if (initialData) {
     if (initialData.customMessage) {
-      defaultComment = initialData.customMessage
+      defaultComment = initialData.customMessage;
     } else if (initialData.productTitle) {
-      defaultComment = `Запрос консультации по товару: ${initialData.productTitle}`
+      defaultComment = `Запрос консультации по товару: ${initialData.productTitle}`;
     }
   }
 
+  // appToast-уведомления об успехе или ошибке
+  useEffect(() => {
+    // Пропускаем первый рендер (prevState === null)
+    if (prevStateRef.current === null) {
+      prevStateRef.current = state;
+      return;
+    }
+
+    // Если состояние изменилось
+    if (state.ok) {
+      appToast.success("✅ Заявка успешно отправлена!");
+    } else if (state.message) {
+      appToast.error(`❌ ${state.message}`);
+    }
+
+    prevStateRef.current = state;
+  }, [state]);
+
+  // Переключение в состояние успеха и сброс формы
   useEffect(() => {
     if (state.ok) {
-      setIsSuccess(true)
-      formRef.current?.reset()
-      onSuccess?.()
+      setIsSuccess(true);
+      formRef.current?.reset();
+      onSuccess?.();
     }
-  }, [state, onSuccess])
+  }, [state, onSuccess]);
 
   if (isSuccess) {
     return (
       <div className={className}>
         <CallbackSuccessState onReset={() => setIsSuccess(false)} />
       </div>
-    )
+    );
   }
 
   return (
     <div className={className}>
-      {variant === 'panel' && (
+      {variant === "panel" && (
         <div className="mb-6 flex flex-col gap-1.5">
-          <h3 className="text-[20px] font-semibold text-[var(--text-primary)]">{title}</h3>
-          <p className="text-[15px] text-[var(--text-secondary)]">{description}</p>
+          <h3 className="text-[20px] font-semibold text-[var(--text-primary)]">
+            {title}
+          </h3>
+          <p className="text-[15px] text-[var(--text-secondary)]">
+            {description}
+          </p>
         </div>
       )}
 
-      <form ref={formRef} action={formAction} noValidate className="flex flex-col gap-4">
+      <form
+        ref={formRef}
+        action={formAction}
+        noValidate
+        className="flex flex-col gap-4"
+      >
         {/* Honeypot */}
         <input
           type="text"
@@ -112,9 +161,21 @@ export function CallbackForm({
         />
 
         {/* Скрытые поля для контекста товара */}
-        <input type="hidden" name="productSku" defaultValue={initialData?.productSku || ''} />
-        <input type="hidden" name="productTitle" defaultValue={initialData?.productTitle || ''} />
-        <input type="hidden" name="subject" defaultValue={initialData?.subject || ''} />
+        <input
+          type="hidden"
+          name="productSku"
+          defaultValue={initialData?.productSku || ""}
+        />
+        <input
+          type="hidden"
+          name="productTitle"
+          defaultValue={initialData?.productTitle || ""}
+        />
+        <input
+          type="hidden"
+          name="subject"
+          defaultValue={initialData?.subject || ""}
+        />
 
         <CallbackField
           label="Ваше имя"
@@ -161,9 +222,10 @@ export function CallbackForm({
         <SubmitButton />
 
         <p className="text-center text-[13px] leading-relaxed text-[var(--text-muted)]">
-          Нажимая «Отправить заявку», вы соглашаетесь на обработку персональных данных.
+          Нажимая «Отправить заявку», вы соглашаетесь на обработку персональных
+          данных.
         </p>
       </form>
     </div>
-  )
+  );
 }

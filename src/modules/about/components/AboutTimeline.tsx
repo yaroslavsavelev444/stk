@@ -1,45 +1,53 @@
-import { RevealFx } from '@once-ui-system/core'
-import type { AboutTimelineEvent } from '@/modules/about/types'
+import { Reveal } from "@/components/UI/Reveal/Reveal";
+import type { AboutTimelineEvent } from "@/modules/about/types";
 
 interface AboutTimelineProps {
-  heading: string
-  subheading: string
-  events: AboutTimelineEvent[]
+  heading: string;
+  subheading: string;
+  events: AboutTimelineEvent[];
 }
 
-/**
- * Вертикальный зигзаг-таймлайн: сверху самый свежий год, вниз — история.
- * Центральная линия + маркеры на десктопе, левая линия на мобильных.
- * Каждая карточка появляется через RevealFx со ступенчатой задержкой.
- */
-export function AboutTimeline({ heading, subheading, events }: AboutTimelineProps) {
+export function AboutTimeline({
+  heading,
+  subheading,
+  events,
+}: AboutTimelineProps) {
   return (
     <section className="about-timeline w-full max-w-5xl mx-auto px-4 sm:px-6">
-      <RevealFx translateY="16" fillWidth trigger={true}>
+      <Reveal translateY={16} fillWidth>
         <div className="flex flex-col items-center text-center gap-3 mb-12 md:mb-16">
-          <h2 className="text-[clamp(1.5rem,3vw,2.25rem)] font-bold text-[var(--text-primary)]">{heading}</h2>
+          <h2 className="text-[clamp(1.5rem,3vw,2.25rem)] font-bold text-[var(--text-primary)]">
+            {heading}
+          </h2>
           <p className="max-w-xl text-[var(--text-secondary)]">{subheading}</p>
         </div>
-      </RevealFx>
+      </Reveal>
 
       <div className="about-timeline__track">
         <span className="about-timeline__line" aria-hidden="true" />
 
         {events.map((event, index) => {
-          const side = index % 2 === 0 ? 'left' : 'right'
+          const side = index % 2 === 0 ? "left" : "right";
           return (
-            <div key={event.year} className={`about-timeline__item about-timeline__item--${side}`}>
+            <div
+              key={event.year}
+              className={`about-timeline__item about-timeline__item--${side}`}
+            >
               <span className="about-timeline__dot" aria-hidden="true" />
-              <RevealFx translateY="20" fillWidth trigger={true} delay={index * 0.05}>
+              <Reveal translateY={20} fillWidth delay={index * 0.05}>
                 <div className="about-timeline__card">
                   <span className="about-timeline__year">{event.year}</span>
                   <h3 className="about-timeline__title">{event.title}</h3>
                   <p className="about-timeline__desc">{event.description}</p>
-                  {event.highlight && <span className="about-timeline__highlight">{event.highlight}</span>}
+                  {event.highlight && (
+                    <span className="about-timeline__highlight">
+                      {event.highlight}
+                    </span>
+                  )}
                 </div>
-              </RevealFx>
+              </Reveal>
             </div>
-          )
+          );
         })}
       </div>
 
@@ -139,5 +147,5 @@ export function AboutTimeline({ heading, subheading, events }: AboutTimelineProp
         }
       `}</style>
     </section>
-  )
+  );
 }

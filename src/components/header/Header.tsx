@@ -1,24 +1,24 @@
-import { Row } from '@once-ui-system/core';
-import { getCachedSettings } from '@/services/payload';
-import { Logo } from './Logo';
-import { CatalogButton } from './CatalogButton';
-import { SearchButton } from '../search/SearchButton';
-import { CallbackButton } from '../callback-form/header-trigger-usage';
+import { Row } from "@once-ui-system/core";
+import { getCachedSettings } from "@/services/payload";
+import { CallbackButton } from "../callback-form/header-trigger-usage";
+import { SearchButton } from "../search/SearchButton";
+import { CatalogButton } from "./CatalogButton";
+import { Logo } from "./Logo";
 
 export const Header = async () => {
   const settings = await getCachedSettings();
   let logoUrl: string | null = null;
-  if (settings?.logo && typeof settings.logo === 'object' && 'url' in settings.logo) {
+  if (
+    settings?.logo &&
+    typeof settings.logo === "object" &&
+    "url" in settings.logo
+  ) {
     logoUrl = settings.logo.url || null;
   }
-  const companyName = settings?.companyName || 'Магазин';
+  const companyName = settings?.companyName || "Магазин";
 
   return (
-    <Row
-      fillWidth
-      horizontal="center"
-      className="py-2"
-    >
+    <Row fillWidth horizontal="center" className="py-2">
       <Row
         maxWidth="m"
         fillWidth
