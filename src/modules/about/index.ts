@@ -1,9 +1,11 @@
-export { AboutHero } from './components/AboutHero'
-export { AboutMediaShowcase } from './components/AboutMediaShowcase'
-export { AboutCallout } from './components/AboutCallout'
-export { AboutStats } from './components/AboutStats'
-export { AboutStandards } from './components/AboutStandards'
-export { AboutTimeline } from './components/AboutTimeline'
-export { AboutDirections } from './components/AboutDirections'
-export { AboutCertificates } from './components/AboutCertificates'
-export * from './types'
+export { AboutCallout } from "./components/AboutCallout";
+export { AboutCertificates } from "./components/AboutCertificates";
+export { AboutDirections } from "./components/AboutDirections";
+export { AboutHero } from "./components/AboutHero";
+export { AboutMediaShowcase } from "./components/AboutMediaShowcase";
+export { AboutStandards } from "./components/AboutStandards";
+export { AboutTimeline } from "./components/AboutTimeline";
+export { GeographySection } from "./components/GeographySection";
+export { ProductionProcessSection } from "./components/ProductionProcessSection";
+export { QualityControlSection } from "./components/QualityControlSection";
+export * from "./types";

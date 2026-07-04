@@ -8,8 +8,10 @@ import {
   AboutHero,
   AboutMediaShowcase,
   AboutStandards,
-  AboutStats,
   AboutTimeline,
+  GeographySection,
+  ProductionProcessSection,
+  QualityControlSection,
 } from "@/modules/about";
 import { aboutPage, baseURL } from "@/resources/content";
 
@@ -52,9 +54,27 @@ export default function AboutPage() {
 
         <AboutCallout text={aboutPage.callout.text} />
 
-        <AboutStats stats={aboutPage.stats} />
+        <ProductionProcessSection
+          heading={aboutPage.production.heading}
+          subheading={aboutPage.production.subheading}
+          steps={aboutPage.production.steps}
+        />
 
         <AboutStandards standards={aboutPage.standards} />
+
+        <QualityControlSection
+          heading={aboutPage.quality.heading}
+          subheading={aboutPage.quality.subheading}
+          checks={aboutPage.quality.checks}
+          brands={aboutPage.standards.filmBrands}
+        />
+
+        <GeographySection
+          heading={aboutPage.geography.heading}
+          subheading={aboutPage.geography.subheading}
+          regionsCount={aboutPage.geography.regionsCount}
+          routes={aboutPage.geography.routes}
+        />
 
         <AboutTimeline
           heading={aboutPage.timeline.heading}
