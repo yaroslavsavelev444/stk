@@ -72,6 +72,7 @@ export interface Config {
     media: Media;
     'callback-requests': CallbackRequest;
     users: User;
+    consents: Consent;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -84,6 +85,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     'callback-requests': CallbackRequestsSelect<false> | CallbackRequestsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
+    consents: ConsentsSelect<false> | ConsentsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -294,6 +296,46 @@ export interface User {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "consents".
+ */
+export interface Consent {
+  id: string;
+  title: string;
+  /**
+   * Автоматически генерируется из названия
+   */
+  slug: string;
+  /**
+   * Показывается в списке на странице /consents
+   */
+  excerpt?: string | null;
+  /**
+   * Полный текст. Разделяйте абзацы пустой строкой.
+   */
+  content: string;
+  /**
+   * Внешняя ссылка на документ (например, на Яндекс.Диск). Файл не хранится в проекте — используется только URL, указанный здесь.
+   */
+  documentUrl?: string | null;
+  /**
+   * Например: «Скачать PDF». Необязательно.
+   */
+  documentLabel?: string | null;
+  order?: number | null;
+  isPublished?: boolean | null;
+  seo?: {
+    title?: string | null;
+    description?: string | null;
+    /**
+     * Пример: знаки, светофоры, дорожные ограждения
+     */
+    keywords?: string | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -335,6 +377,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'users';
         value: string | User;
+      } | null)
+    | ({
+        relationTo: 'consents';
+        value: string | Consent;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -532,6 +578,29 @@ export interface UsersSelect<T extends boolean = true> {
         createdAt?: T;
         expiresAt?: T;
       };
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "consents_select".
+ */
+export interface ConsentsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  excerpt?: T;
+  content?: T;
+  documentUrl?: T;
+  documentLabel?: T;
+  order?: T;
+  isPublished?: T;
+  seo?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        keywords?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

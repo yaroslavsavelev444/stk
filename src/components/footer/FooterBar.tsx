@@ -1,15 +1,20 @@
-"use client";
-
-import { Row, Column, Text, IconButton } from "@once-ui-system/core";
-import Image from "next/image"; // оптимизированное изображение
+import { Column, Row, Text } from "@once-ui-system/core";
+import Image from "next/image";
+import { getCachedConsents } from "@/services/payload/consents";
 import styles from "./Footer.module.scss";
+import { FooterLegalLinks } from "./FooterLegalLinks";
+import { ScrollToTopButton } from "./ScrollToTopButton";
 
-export const Footer = () => {
+/**
+ * Server Component: тянет опубликованные соглашения через кэширующий
+ * сервис (та же стратегия, что и у Categories/Products/Settings —
+ * unstable_cache в prod, прямой fetch в dev) и передаёт их в
+ * презентационный FooterLegalLinks. Никакой бизнес-логики здесь нет —
+ * только композиция.
+ */
+export const Footer = async () => {
   const currentYear = new Date().getFullYear();
-
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
-  };
+  const consents = await getCachedConsents();
 
   return (
     <Row
@@ -17,7 +22,7 @@ export const Footer = () => {
       fillWidth
       padding="8"
       horizontal="center"
-      background="surface"   // можно раскомментировать, если нужен фон
+      background="surface"
       className={styles.footer}
     >
       <Column
@@ -26,7 +31,6 @@ export const Footer = () => {
         paddingX="16"
         gap="24"
         fillWidth
-        // адаптивность через CSS-класс (или оставить только padding и gap, если нужно)
         className={styles.column}
       >
         {/* Верхняя строка */}
@@ -34,7 +38,7 @@ export const Footer = () => {
           fillWidth
           horizontal="between"
           vertical="center"
-          className={styles.topRow} // адаптивность через CSS
+          className={styles.topRow}
         >
           {/* Логотип */}
           <Row gap="8" vertical="center">
@@ -42,7 +46,7 @@ export const Footer = () => {
               src="/images/logo.png"
               alt="СТК-Актив"
               height={40}
-              width={40} // укажите реальную ширину, либо используйте layout="intrinsic"
+              width={40}
               style={{ display: "block" }}
             />
             <Text variant="heading-default-s" weight="strong">
@@ -60,14 +64,8 @@ export const Footer = () => {
             </Text>
           </Row>
 
-          {/* Кнопка наверх */}
-          <IconButton
-            icon="chevron-up"
-            size="m"
-            variant="secondary"
-            onClick={scrollToTop}
-            aria-label="Наверх"
-          />
+          {/* Кнопка наверх — единственная интерактивная часть, вынесена в клиентский компонент */}
+          <ScrollToTopButton />
         </Row>
 
         {/* Нижняя строка */}
@@ -75,19 +73,14 @@ export const Footer = () => {
           fillWidth
           horizontal="between"
           vertical="center"
-          className={styles.bottomRow} // адаптивность через CSS
+          className={styles.bottomRow}
         >
           <Text variant="body-default-s" onBackground="neutral-strong">
             © {currentYear} СТК-Актив. Все права защищены.
           </Text>
-          <Row gap="16" className={styles.legalLinks}>
-            <Text as="a" href="/terms" variant="body-default-s">
-              Пользовательское соглашение
-            </Text>
-            <Text as="a" href="/privacy" variant="body-default-s">
-              Согласие на обработку данных
-            </Text>
-          </Row>
+
+          {/* Соглашения — динамически из Payload, без хардкода /terms и /privacy */}
+          <FooterLegalLinks consents={consents} />
         </Row>
       </Column>
     </Row>
