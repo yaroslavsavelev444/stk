@@ -6,6 +6,7 @@ import { CallbackRequests } from "./src/payload/collections/CallbackRequests.ts"
 import { Categories } from "./src/payload/collections/Categories.ts";
 import { Consents } from "./src/payload/collections/Consents.ts";
 import { Media } from "./src/payload/collections/Media.ts";
+import { MediaGalleries } from "./src/payload/collections/MediaGalleries.ts";
 import { Products } from "./src/payload/collections/Products.ts";
 import { Users } from "./src/payload/collections/Users.ts";
 import { Settings } from "./src/payload/globals/Settings.ts";
@@ -21,7 +22,15 @@ export default buildConfig({
     fallbackLanguage: "ru",
   },
   // editor: lexicalEditor({}),
-  collections: [Categories, Products, Media, CallbackRequests, Users, Consents],
+  collections: [
+    Categories,
+    Products,
+    Media,
+    CallbackRequests,
+    Users,
+    Consents,
+    MediaGalleries,
+  ],
   globals: [Settings],
   typescript: {
     outputFile: path.resolve(process.cwd(), "payload-types.ts"),

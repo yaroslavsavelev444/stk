@@ -5,6 +5,8 @@ import { HeroSection } from "@/components/hero/HeroSection";
 import { Reveal } from "@/components/UI/Reveal/Reveal";
 import { AboutHero } from "@/modules/about";
 import { TrustBar, WhyUsSection } from "@/modules/home";
+import { CertificatesSection } from "@/modules/home/components/CertificatesSection";
+import { ReviewsSection } from "@/modules/home/components/ReviewsSection";
 import {
   baseURL,
   home,
@@ -53,6 +55,14 @@ export default function Home() {
 
         <Reveal translateY={16} fillWidth delay={0.1}>
           <CategoriesGrid />
+        </Reveal>
+
+        <Reveal translateY={16} fillWidth delay={0.1}>
+          <CertificatesSection />
+        </Reveal>
+
+        <Reveal translateY={16} fillWidth delay={0.1}>
+          <ReviewsSection />
         </Reveal>
 
         <Reveal translateY={16} fillWidth delay={0.15}>

@@ -73,6 +73,7 @@ export interface Config {
     'callback-requests': CallbackRequest;
     users: User;
     consents: Consent;
+    'media-galleries': MediaGallery;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -86,6 +87,7 @@ export interface Config {
     'callback-requests': CallbackRequestsSelect<false> | CallbackRequestsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     consents: ConsentsSelect<false> | ConsentsSelect<true>;
+    'media-galleries': MediaGalleriesSelect<false> | MediaGalleriesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -335,6 +337,38 @@ export interface Consent {
   createdAt: string;
 }
 /**
+ * Универсальные медиа-подборки для блоков сайта (сертификаты, отзывы и т.д.)
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media-galleries".
+ */
+export interface MediaGallery {
+  id: string;
+  /**
+   * Стабильный технический идентификатор, например "certificates" или "reviews". По нему блок ищется на фронтенде — после создания лучше не менять.
+   */
+  key: string;
+  label: string;
+  title?: string | null;
+  description?: string | null;
+  /**
+   * Порядок в списке = порядок отображения. Перетаскивайте для сортировки.
+   */
+  items?:
+    | {
+        image: string | Media;
+        /**
+         * Необязательно. Если не указано — используется Alt файла.
+         */
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  isPublished?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -381,6 +415,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'consents';
         value: string | Consent;
+      } | null)
+    | ({
+        relationTo: 'media-galleries';
+        value: string | MediaGallery;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -599,6 +637,26 @@ export interface ConsentsSelect<T extends boolean = true> {
         description?: T;
         keywords?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media-galleries_select".
+ */
+export interface MediaGalleriesSelect<T extends boolean = true> {
+  key?: T;
+  label?: T;
+  title?: T;
+  description?: T;
+  items?:
+    | T
+    | {
+        image?: T;
+        caption?: T;
+        id?: T;
+      };
+  isPublished?: T;
   updatedAt?: T;
   createdAt?: T;
 }

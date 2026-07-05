@@ -1,5 +1,5 @@
-import { Flex, Text, Button } from '@once-ui-system/core';
-import React from 'react';
+import { Button, Flex, Text } from "@once-ui-system/core";
+import React from "react";
 
 interface MapEmbedProps {
   map?: string;
@@ -8,7 +8,12 @@ interface MapEmbedProps {
   fullWidth?: boolean; // новый проп
 }
 
-export const MapEmbed = ({ map, title, address, fullWidth = false }: MapEmbedProps) => {
+export const MapEmbed = ({
+  map,
+  title,
+  address,
+  fullWidth = false,
+}: MapEmbedProps) => {
   if (!map) return null;
 
   let src = map;
@@ -17,28 +22,36 @@ export const MapEmbed = ({ map, title, address, fullWidth = false }: MapEmbedPro
     src = iframeMatch[1];
   }
 
-  if (src.includes('<') || src.includes('>')) {
-    console.warn('MapEmbed: потенциально опасный контент, пропущен');
+  if (src.includes("<") || src.includes(">")) {
+    console.warn("MapEmbed: потенциально опасный контент, пропущен");
     return null;
   }
 
-  const isYandex = src.includes('yandex.ru/maps');
+  const isYandex = src.includes("yandex.ru/maps");
   const openLink = isYandex ? src : null;
 
   // Стили для fullWidth: отрицательные отступы и ширина вьюпорта
   const fullWidthStyles = fullWidth
     ? {
-        marginLeft: 'calc(-50vw + 50%)',
-        marginRight: 'calc(-50vw + 50%)',
-        width: '100vw',
-        maxWidth: '100vw',
+        marginLeft: "calc(-50vw + 50%)",
+        marginRight: "calc(-50vw + 50%)",
+        width: "100vw",
+        maxWidth: "100vw",
       }
     : {};
 
   return (
-    <Flex direction="column" className="w-full mt-4" style={fullWidth ? { overflow: 'hidden' } : {}}>
+    <Flex
+      direction="column"
+      className="w-full mt-4"
+      style={fullWidth ? { overflow: "hidden" } : {}}
+    >
       {title && (
-        <Text variant="heading-m" className="mb-2" style={fullWidth ? { paddingLeft: '1rem', paddingRight: '1rem' } : {}}>
+        <Text
+          variant="heading-m"
+          className="mb-2"
+          style={fullWidth ? { paddingLeft: "1rem", paddingRight: "1rem" } : {}}
+        >
           {title}
         </Text>
       )}
@@ -47,7 +60,7 @@ export const MapEmbed = ({ map, title, address, fullWidth = false }: MapEmbedPro
         className="w-full rounded-xl overflow-hidden shadow-lg bg-surface-secondary"
         style={{
           ...fullWidthStyles,
-          minHeight: '400px',
+          minHeight: "400px",
         }}
       >
         <iframe
@@ -65,7 +78,7 @@ export const MapEmbed = ({ map, title, address, fullWidth = false }: MapEmbedPro
         className="mt-3 w-full flex-wrap items-center justify-between gap-2"
         horizontal="between"
         vertical="center"
-        style={fullWidth ? { paddingLeft: '1rem', paddingRight: '1rem' } : {}}
+        style={fullWidth ? { paddingLeft: "1rem", paddingRight: "1rem" } : {}}
       >
         {address && (
           <Text variant="body-default-m" onBackground="neutral-weak">
