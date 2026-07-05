@@ -1,13 +1,13 @@
-import { getCachedSettings } from "@/services/payload/settings";
 import { Column, Flex, Heading, Text } from "@once-ui-system/core";
-import { ContactsList } from "@/components/contacts/ContactsList";
-import { SocialLinks } from "@/components/contacts/SocialLinks";
-import { MapEmbed } from "@/components/contacts/MapEmbed";
-import { OrganizationJsonLd } from "@/components/seo/OrganizationJsonLd";
-import { BreadcrumbJsonLd } from "@/components/contacts/BreadcrumbJsonLd";
 import type { Metadata } from "next";
-import { generateContactsMetadata } from "@/utils/contacts-metadata";
+import { BreadcrumbJsonLd } from "@/components/contacts/BreadcrumbJsonLd";
+import { ContactsList } from "@/components/contacts/ContactsList";
+import { MapEmbed } from "@/components/contacts/MapEmbed";
+import { SocialLinks } from "@/components/contacts/SocialLinks";
+import { OrganizationJsonLd } from "@/components/seo/OrganizationJsonLd";
 import { AutoBreadcrumbs } from "@/components/UI/Breadcrumbs/AutoBreadcrumbs";
+import { getCachedSettings } from "@/services/payload/settings";
+import { generateContactsMetadata } from "@/utils/contacts-metadata";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
 if (!siteUrl) {

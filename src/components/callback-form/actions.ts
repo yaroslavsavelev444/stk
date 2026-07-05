@@ -1,9 +1,8 @@
-
-'use server'
-import { isValidRussianPhone } from '@/utils/phone';
-import { z } from 'zod'
-import { createCallbackRequest } from '@/services/payload/callback'
-import type { CallbackActionResult, CallbackFormErrors } from '@/types/callback-form'
+"use server";
+import { z } from "zod";
+import { createCallbackRequest } from "@/services/payload/callback";
+import { isValidRussianPhone } from "@/utils/phone";
+import { CallbackActionResult, CallbackFormErrors } from "./callback-form";
 
 /**
  * Валидация повторяет требования коллекции CallbackRequests:
@@ -15,39 +14,39 @@ const callbackSchema = z.object({
   name: z
     .string()
     .trim()
-    .max(120, 'Слишком длинное имя')
+    .max(120, "Слишком длинное имя")
     .optional()
-    .or(z.literal('')),
+    .or(z.literal("")),
   phone: z
-  .string()
-  .trim()
-  .min(1, 'Укажите телефон')
-  .refine(isValidRussianPhone, {
-    message: 'Введите корректный номер телефона',
-  }),
+    .string()
+    .trim()
+    .min(1, "Укажите телефон")
+    .refine(isValidRussianPhone, {
+      message: "Введите корректный номер телефона",
+    }),
   email: z
     .string()
     .trim()
-    .email('Введите корректный email')
+    .email("Введите корректный email")
     .optional()
-    .or(z.literal('')),
+    .or(z.literal("")),
   comment: z
     .string()
     .trim()
-    .max(2000, 'Слишком длинный комментарий')
+    .max(2000, "Слишком длинный комментарий")
     .optional()
-    .or(z.literal('')),
-})
+    .or(z.literal("")),
+});
 
 function zodErrorsToFieldErrors(error: z.ZodError): CallbackFormErrors {
-  const errors: CallbackFormErrors = {}
+  const errors: CallbackFormErrors = {};
   for (const issue of error.issues) {
-    const key = issue.path[0]
-    if (typeof key === 'string' && !(key in errors)) {
-      errors[key as keyof CallbackFormErrors] = issue.message
+    const key = issue.path[0];
+    if (typeof key === "string" && !(key in errors)) {
+      errors[key as keyof CallbackFormErrors] = issue.message;
     }
   }
-  return errors
+  return errors;
 }
 
 export async function submitCallbackRequest(
@@ -55,21 +54,21 @@ export async function submitCallbackRequest(
   formData: FormData,
 ): Promise<CallbackActionResult> {
   const raw = {
-    name: String(formData.get('name') ?? ''),
-    phone: String(formData.get('phone') ?? ''),
-    email: String(formData.get('email') ?? ''),
-    comment: String(formData.get('comment') ?? ''),
-  }
+    name: String(formData.get("name") ?? ""),
+    phone: String(formData.get("phone") ?? ""),
+    email: String(formData.get("email") ?? ""),
+    comment: String(formData.get("comment") ?? ""),
+  };
 
   // Honeypot-поле против простых ботов: если оно заполнено — тихо считаем, что заявка "отправлена"
-  const honeypot = String(formData.get('company_site') ?? '')
+  const honeypot = String(formData.get("company_site") ?? "");
   if (honeypot.trim().length > 0) {
-    return { ok: true }
+    return { ok: true };
   }
 
-  const parsed = callbackSchema.safeParse(raw)
+  const parsed = callbackSchema.safeParse(raw);
   if (!parsed.success) {
-    return { ok: false, errors: zodErrorsToFieldErrors(parsed.error) }
+    return { ok: false, errors: zodErrorsToFieldErrors(parsed.error) };
   }
 
   try {
@@ -78,13 +77,14 @@ export async function submitCallbackRequest(
       phone: parsed.data.phone,
       email: parsed.data.email || undefined,
       comment: parsed.data.comment || undefined,
-    })
-    return { ok: true }
+    });
+    return { ok: true };
   } catch (error) {
-    console.error('[CallbackForm] Failed to create callback request', error)
+    console.error("[CallbackForm] Failed to create callback request", error);
     return {
       ok: false,
-      message: 'Не удалось отправить заявку. Попробуйте ещё раз или позвоните нам напрямую.',
-    }
+      message:
+        "Не удалось отправить заявку. Попробуйте ещё раз или позвоните нам напрямую.",
+    };
   }
 }

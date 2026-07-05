@@ -16,22 +16,18 @@ import LenisProvider from "./Providers/LenisProvider";
 export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <LayoutProvider>
-      {/* <LenisProvider> */}
-      <RootStoreProvider>
-        <CallbackModalProvider>
-          <DataThemeProvider
-            variant={dataStyle.variant as ChartVariant}
-            mode={dataStyle.mode as ChartMode}
-            height={dataStyle.height}
-          >
-            <IconProvider icons={iconLibrary}>
-              {children}
-              <AppToaster />
-            </IconProvider>
-          </DataThemeProvider>
-        </CallbackModalProvider>
-      </RootStoreProvider>
-      {/* </LenisProvider> */}
+      <LenisProvider>
+        <RootStoreProvider>
+          <CallbackModalProvider>
+            <DataThemeProvider variant={dataStyle.variant as ChartVariant}>
+              <IconProvider icons={iconLibrary}>
+                {children}
+                <AppToaster />
+              </IconProvider>
+            </DataThemeProvider>
+          </CallbackModalProvider>
+        </RootStoreProvider>
+      </LenisProvider>
     </LayoutProvider>
   );
 }

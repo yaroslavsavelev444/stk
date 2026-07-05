@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
-import { RemoveScroll } from 'react-remove-scroll';
-import { CallbackForm } from './CallbackForm';
-import { useCallbackModal } from '@/components/context/CallbackModalContext';
+import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
+import { RemoveScroll } from "react-remove-scroll";
+import { useCallbackModal } from "@/components/context/CallbackModalContext";
+import { CallbackForm } from "./CallbackForm";
 
 export function CallbackModal() {
   const { isOpen, contextData, close } = useCallbackModal();
@@ -14,13 +14,13 @@ export function CallbackModal() {
     if (!isOpen) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') close();
+      if (event.key === "Escape") close();
     };
 
-    document.addEventListener('keydown', handleKeyDown);
+    document.addEventListener("keydown", handleKeyDown);
     dialogRef.current?.focus();
 
-    return () => document.removeEventListener('keydown', handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
   }, [isOpen, close]);
 
   if (!isOpen) return null;
@@ -53,7 +53,13 @@ export function CallbackModal() {
             className="absolute right-4 top-4 flex h-8 w-8 items-center justify-center rounded-full
               text-[var(--text-muted)] transition-colors hover:bg-[var(--surface-secondary)] hover:text-[var(--text-primary)]"
           >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <svg
+              width="16"
+              height="16"
+              viewBox="0 0 24 24"
+              fill="none"
+              aria-hidden="true"
+            >
               <path
                 d="M6 6l12 12M18 6L6 18"
                 stroke="currentColor"
@@ -71,12 +77,15 @@ export function CallbackModal() {
             variant="panel"
             onSuccess={close}
             initialData={contextData || undefined}
-            title={contextData?.modalTitle || 'Заказать звонок'}
-            description={contextData?.modalDescription || 'Заполните форму — перезвоним и ответим на все вопросы.'}
+            title={contextData?.modalTitle || "Заказать звонок"}
+            description={
+              contextData?.modalDescription ||
+              "Заполните форму — перезвоним и ответим на все вопросы."
+            }
           />
         </div>
       </div>
     </RemoveScroll>,
-    document.body
+    document.body,
   );
 }

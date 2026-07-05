@@ -68,10 +68,10 @@ export default function Home() {
         <Reveal translateY={16} fillWidth delay={0.15}>
           <div className="w-full max-w-6xl mx-auto px-4 sm:px-6">
             <div className="mb-8 flex flex-col gap-2 text-center">
-              <h2 className="text-[clamp(1.375rem,2.6vw,1.875rem)] font-bold text-[var(--text-primary)]">
+              <h2 className="text-[clamp(1.375rem,2.6vw,1.875rem)] font-bold text-(--text-primary)">
                 Обсудим ваш проект?
               </h2>
-              <p className="mx-auto max-w-xl text-[var(--text-secondary)]">
+              <p className="mx-auto max-w-xl text-(--text-secondary)">
                 Оставьте заявку — рассчитаем стоимость и сроки поставки в
                 течение рабочего дня.
               </p>

@@ -2,7 +2,7 @@
 // Пример того, как блок встраивается в существующую страницу контактов.
 // Замените на реальный импорт остальных секций страницы (ContactsList, MapEmbed и т.д.)
 
-import { CallbackSection } from '@/components/callback-form'
+import { CallbackSection } from "@/components/callback-form";
 
 export default function ContactsPage() {
   return (
@@ -11,5 +11,5 @@ export default function ContactsPage() {
 
       <CallbackSection />
     </main>
-  )
+  );
 }

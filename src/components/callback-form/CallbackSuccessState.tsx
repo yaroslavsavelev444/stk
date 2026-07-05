@@ -1,7 +1,7 @@
-'use client'
+"use client";
 
 interface CallbackSuccessStateProps {
-  onReset?: () => void
+  onReset?: () => void;
 }
 
 /**
@@ -31,7 +31,9 @@ export function CallbackSuccessState({ onReset }: CallbackSuccessStateProps) {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <h3 className="text-[18px] font-semibold text-[var(--text-primary)]">Заявка отправлена</h3>
+        <h3 className="text-[18px] font-semibold text-[var(--text-primary)]">
+          Заявка отправлена
+        </h3>
         <p className="max-w-[320px] text-[15px] leading-relaxed text-[var(--text-secondary)]">
           Менеджер перезвонит вам в свободное время.
         </p>
@@ -47,5 +49,5 @@ export function CallbackSuccessState({ onReset }: CallbackSuccessStateProps) {
         </button>
       )}
     </div>
-  )
+  );
 }
