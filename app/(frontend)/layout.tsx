@@ -4,20 +4,22 @@ import "@once-ui-system/core/css/styles.css";
 import "@once-ui-system/core/css/tokens.css";
 import "./theme.css";
 import "./globals.css";
+import { Column, Flex, Meta } from "@once-ui-system/core";
 import classNames from "classnames";
-import { Flex, Column, Meta } from "@once-ui-system/core";
+import { IBM_Plex_Mono, Manrope } from "next/font/google";
+import { FloatingContacts } from "@/components/contact-btn/FloatingContacts";
+import { mapSettingsContacts } from "@/components/contact-btn/mapContact";
 import { Footer } from "@/components/footer/FooterBar";
-import { home, baseURL } from "@/resources/content";
-import { Providers } from "@/components/Providers";
-import { Manrope, IBM_Plex_Mono } from "next/font/google";
-import { SearchPalette } from "@/components/search/SearchPalette";
-import { StickyHeader } from "@/components/header/StickyHeader";
-import { getCachedSettings } from '@/services/payload/settings';
-import { mapSettingsContacts } from '@/components/contact-btn/mapContact';
-import { FloatingContacts } from '@/components/contact-btn/FloatingContacts';
-import { ModalRoot } from "@/components/ModalRoot";
-import { HeroBackground } from "@/components/hero/HeroBackground"; // ← добавили
 import { HeaderSpacer } from "@/components/header/HeaderSpacer";
+import { StickyHeader } from "@/components/header/StickyHeader";
+import { HeroBackground } from "@/components/hero/HeroBackground"; // ← добавили
+import { ModalRoot } from "@/components/ModalRoot";
+import { Providers } from "@/components/Providers";
+import { SearchPalette } from "@/components/search/SearchPalette";
+import { baseURL, home } from "@/resources/content";
+import { getCachedSettings } from "@/services/payload/settings";
+
+export const dynamic = "force-dynamic"; // ← добавить
 
 const manrope = Manrope({
   weight: ["200", "300", "400", "500", "600", "700"],
@@ -58,7 +60,7 @@ export default async function RootLayout({
       >
         <Column
           as="body"
-          fillWidth           // ← убираем background="page" отсюда!
+          fillWidth // ← убираем background="page" отсюда!
           style={{ minHeight: "100vh", background: "transparent" }}
           margin="0"
           padding="0"
@@ -70,21 +72,14 @@ export default async function RootLayout({
           <StickyHeader />
           <HeaderSpacer />
 
-         <Flex
-
-  as="main"
-
-  zIndex={0}
-
-  fillWidth
-
-  padding="l"
-
-  horizontal="center"
-
-  flex={1}
-
->
+          <Flex
+            as="main"
+            zIndex={0}
+            fillWidth
+            padding="l"
+            horizontal="center"
+            flex={1}
+          >
             <Flex horizontal="center" fillWidth minHeight="0">
               {children}
             </Flex>

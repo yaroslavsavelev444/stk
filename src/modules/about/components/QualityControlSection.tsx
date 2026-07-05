@@ -1,4 +1,8 @@
+"use client";
+
 import { BadgeCheck, ClipboardCheck, Eye, ShieldCheck } from "lucide-react";
+import Marquee from "react-fast-marquee";
+import { usePrefersReducedMotion } from "@/components/hooks/usePrefersReducedMotion";
 import { Reveal } from "@/components/UI/Reveal/Reveal";
 import type { QualityCheckItem } from "@/modules/about/types";
 
@@ -13,9 +17,14 @@ interface QualityControlSectionProps {
 
 /**
  * Сплит-секция: слева — чек-лист этапов контроля (статичный, читаемый),
- * справа — карточка с бесконечной CSS-marquee лентой брендов плёнок поверх
- * статичного bento-грида тех же брендов (для доступности и печати/reduced-motion).
- * Единственный анимированный "живой" блок на странице — намеренный акцент.
+ * справа — бесконечная лента брендов плёнок (react-fast-marquee) поверх
+ * статичного bento-грида тех же брендов (доступность, печать, reduced-motion).
+ *
+ * ВАЖНО про вёрстку: `[&>*]:min-w-0` на grid-контейнере и `min-w-0` на card
+ * обязательны — без них любой "убегающий" по ширине контент внутри правой
+ * колонки (в т.ч. лента) распирает grid-track и ломает горизонтальный
+ * скролл всей страницы, т.к. grid/flex-элементы по умолчанию не сжимаются
+ * ниже min-content своего содержимого.
  */
 export function QualityControlSection({
   heading = "Контроль качества на каждом этапе",
@@ -23,12 +32,12 @@ export function QualityControlSection({
   checks,
   brands,
 }: QualityControlSectionProps) {
-  const marqueeBrands = [...brands, ...brands, ...brands];
+  const prefersReducedMotion = usePrefersReducedMotion();
 
   return (
-    <section className="w-full">
-      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[1.05fr_1fr] lg:gap-14">
+    <section className="w-full overflow-x-hidden">
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+        <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-14 [&>*]:min-w-0">
           <div>
             <Reveal translateY={16} fillWidth>
               <span className="mb-3 inline-block text-sm font-semibold uppercase tracking-[0.08em] text-[var(--primary)]">
@@ -63,7 +72,7 @@ export function QualityControlSection({
                           color="var(--success)"
                         />
                       </div>
-                      <div>
+                      <div className="min-w-0">
                         <p className="text-sm font-bold text-[var(--text-primary)]">
                           {check.title}
                         </p>
@@ -80,7 +89,7 @@ export function QualityControlSection({
 
           <Reveal translateY={18} fillWidth delay={0.15}>
             <div
-              className="relative overflow-hidden p-8 md:p-10"
+              className="relative min-w-0 overflow-hidden p-8 md:p-10"
               style={{
                 background: "var(--surface)",
                 border: "1px solid var(--border)",
@@ -91,17 +100,20 @@ export function QualityControlSection({
                 Работаем с сертифицированными плёнками
               </p>
 
-              <div className="quality-marquee-mask">
-                <div className="quality-marquee-track">
-                  {marqueeBrands.map((brand, index) => (
-                    <span
-                      key={`${brand}-${index}`}
-                      className="quality-brand-pill"
-                    >
+              <div className="quality-marquee-mask min-w-0">
+                <Marquee
+                  play={!prefersReducedMotion}
+                  pauseOnHover
+                  autoFill
+                  speed={36}
+                  gradient={false}
+                >
+                  {brands.map((brand) => (
+                    <span key={brand} className="quality-brand-pill">
                       {brand}
                     </span>
                   ))}
-                </div>
+                </Marquee>
               </div>
 
               <div className="mt-6 grid grid-cols-2 gap-3">
@@ -129,14 +141,9 @@ export function QualityControlSection({
           -webkit-mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
           mask-image: linear-gradient(to right, transparent, black 12%, black 88%, transparent);
         }
-        .quality-marquee-track {
-          display: flex;
-          width: max-content;
-          gap: 0.75rem;
-          animation: quality-marquee-scroll 18s linear infinite;
-        }
         .quality-brand-pill {
-          flex-shrink: 0;
+          display: inline-flex;
+          margin-right: 0.75rem;
           padding: 0.5rem 1.1rem;
           border-radius: 999px;
           font-size: 0.8125rem;
@@ -145,13 +152,6 @@ export function QualityControlSection({
           color: var(--text-secondary);
           background: var(--surface-secondary);
           border: 1px solid var(--border);
-        }
-        @keyframes quality-marquee-scroll {
-          0% { transform: translateX(0); }
-          100% { transform: translateX(-33.333%); }
-        }
-        @media (prefers-reduced-motion: reduce) {
-          .quality-marquee-track { animation: none; }
         }
       `}</style>
     </section>
