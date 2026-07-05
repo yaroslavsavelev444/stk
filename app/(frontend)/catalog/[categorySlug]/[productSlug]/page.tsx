@@ -1,18 +1,18 @@
-import ProductTemplate from '@/modules/products/templates/product-template'
-import { getCachedProductBySlug } from '@/services/payload'
-import { Metadata } from 'next'
-import { notFound } from 'next/navigation'
-
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
+import { ProductJsonLd } from "@/components/seo/ProductJsonLd";
+import ProductTemplate from "@/modules/products/templates/product-template";
+import { baseURL } from "@/resources/content";
+import { getCachedProductBySlug } from "@/services/payload";
 
 type ProductPageProps = {
   params: Promise<{
-
     categorySlug: string;
 
     productSlug: string;
-
   }>;
-}
+};
 
 /**
  * app/(frontend)/catalog/[slug]/[slug]/page.tsx
@@ -28,46 +28,86 @@ type ProductPageProps = {
  *
  * Medusa: region, countryCode — удалены.
  */
-export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
-  // Получаем параметры (Next.js 16 — params это Promise)
-  const resolvedParams = await params
-  // Slug продукта — последний сегмент
-  const productSlug = resolvedParams.productSlug ?? resolvedParams.categorySlug
+export async function generateMetadata({
+  params,
+}: ProductPageProps): Promise<Metadata> {
+  const resolvedParams = await params;
+  const productSlug = resolvedParams.productSlug ?? resolvedParams.categorySlug;
+  const product = await getCachedProductBySlug(productSlug)();
 
-  const fetcher = getCachedProductBySlug(productSlug)
-  const product = await fetcher()
+  if (!product) return { title: "Товар не найден", robots: { index: false } };
 
-  if (!product) {
-    return {
-      title: 'Товар не найден',
-    }
-  }
+  const seo = product.seo as
+    | { title?: string; description?: string }
+    | undefined;
+  const category =
+    typeof product.category === "object" ? product.category : null;
+  const canonicalPath = `/catalog/${category?.slug ?? resolvedParams.categorySlug}/${product.slug}`;
 
-  // SEO-поля из Payload (fields/seo.ts)
-  const seo = product.seo as { title?: string; description?: string; image?: unknown } | undefined
+  const mainImage = product.images?.[0];
+  const media = typeof mainImage === "object" ? mainImage : null;
+  const ogImage = media?.url
+    ? `${baseURL}${media.url}`
+    : `${baseURL}/api/og?title=${encodeURIComponent(product.name)}`;
+
+  const title = seo?.title ?? product.name;
+  const description = seo?.description ?? product.description;
 
   return {
-    title: seo?.title ?? product.name,
-    description: seo?.description ?? (product.description as string | undefined),
+    title,
+    description,
+    alternates: { canonical: `${baseURL}${canonicalPath}` },
     openGraph: {
-      title: seo?.title ?? product.name,
-      description: seo?.description ?? (product.description as string | undefined),
-      type: 'website',
+      title,
+      description,
+      url: `${baseURL}${canonicalPath}`,
+      type: "website",
+      images: [{ url: ogImage }],
     },
-  }
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description,
+      images: [ogImage],
+    },
+    robots: product.isPublished
+      ? { index: true, follow: true }
+      : { index: false, follow: false },
+  };
 }
 
 export default async function ProductPage({ params }: ProductPageProps) {
-  const resolvedParams = await params
+  const resolvedParams = await params;
   // Slug продукта — последний сегмент маршрута
-  const productSlug = resolvedParams.productSlug ?? resolvedParams.categorySlug
+  const productSlug = resolvedParams.productSlug ?? resolvedParams.categorySlug;
 
-  const fetcher = getCachedProductBySlug(productSlug)
-  const product = await fetcher()
+  const fetcher = getCachedProductBySlug(productSlug);
+  const product = await fetcher();
 
   if (!product) {
-    return notFound()
+    return notFound();
   }
+  const category =
+    typeof product.category === "object" ? product.category : null;
 
-  return <ProductTemplate product={product} />
+  return (
+    <>
+      <ProductJsonLd product={product} siteUrl={baseURL} />
+      <BreadcrumbJsonLd
+        siteUrl={baseURL}
+        items={[
+          { name: "Главная", path: "/" },
+          { name: "Каталог", path: "/catalog" },
+          ...(category
+            ? [{ name: category.name, path: `/catalog/${category.slug}` }]
+            : []),
+          {
+            name: product.name,
+            path: `/catalog/${category?.slug}/${product.slug}`,
+          },
+        ]}
+      />
+      <ProductTemplate product={product} />
+    </>
+  );
 }

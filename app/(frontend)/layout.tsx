@@ -6,6 +6,7 @@ import "./theme.css";
 import "./globals.css";
 import { Column, Flex, Meta } from "@once-ui-system/core";
 import classNames from "classnames";
+import { Viewport } from "next";
 import { IBM_Plex_Mono, Manrope } from "next/font/google";
 import { FloatingContacts } from "@/components/contact-btn/FloatingContacts";
 import { mapSettingsContacts } from "@/components/contact-btn/mapContact";
@@ -16,6 +17,7 @@ import { HeroBackground } from "@/components/hero/HeroBackground"; // ← доб
 import { ModalRoot } from "@/components/ModalRoot";
 import { Providers } from "@/components/Providers";
 import { SearchPalette } from "@/components/search/SearchPalette";
+import { OrganizationJsonLd } from "@/components/seo/OrganizationJsonLd";
 import { baseURL, home } from "@/resources/content";
 import { getCachedSettings } from "@/services/payload/settings";
 
@@ -33,14 +35,31 @@ const mono = IBM_Plex_Mono({
   variable: "--font-mono",
 });
 
+export const viewport: Viewport = {
+  themeColor: "#2E2D8F",
+  colorScheme: "light",
+  width: "device-width",
+  initialScale: 1,
+};
+
 export async function generateMetadata() {
-  return Meta.generate({
+  const base = await Meta.generate({
     title: home.title,
     description: home.description,
-    baseURL: baseURL,
+    baseURL,
     path: home.path,
-    image: home.image,
+    image: `/api/og?title=${encodeURIComponent(home.title)}`,
   });
+
+  return {
+    ...base,
+    metadataBase: new URL(baseURL),
+    alternates: { canonical: baseURL },
+    verification: {
+      google: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION,
+      yandex: process.env.NEXT_PUBLIC_YANDEX_VERIFICATION,
+    },
+  };
 }
 
 export default async function RootLayout({
@@ -89,7 +108,7 @@ export default async function RootLayout({
           <ModalRoot />
         </Column>
       </Flex>
-
+      <OrganizationJsonLd settings={settings} siteUrl={baseURL} />
       <SearchPalette />
       <FloatingContacts contacts={contacts} />
     </Providers>

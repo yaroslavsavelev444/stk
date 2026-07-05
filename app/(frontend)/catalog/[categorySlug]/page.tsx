@@ -1,52 +1,55 @@
-import {
-  Heading,
-  Text,
-  Column,
-  Row,
-  Schema,
-  Meta,
-} from "@once-ui-system/core";
-import { baseURL } from "@/resources/content";
-import { getCachedCategoryBySlug } from "@/services/payload/categories";
-import { getCachedProductGroups, getCachedProducts } from "@/services/payload/products";
-import { ProductsGrid } from "@/components/products/ProductsGrid";
-import { GroupFilters } from "@/components/products/GroupFilters";
+import { Column, Heading, Meta, Row, Schema, Text } from "@once-ui-system/core";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
-import { Category } from "@/payload-types";
+import { GroupFilters } from "@/components/products/GroupFilters";
+import { ProductsGrid } from "@/components/products/ProductsGrid";
 import { AutoBreadcrumbs } from "@/components/UI/Breadcrumbs/AutoBreadcrumbs";
+import { Category } from "@/payload-types";
+import { baseURL } from "@/resources/content";
+import { getCachedCategoryBySlug } from "@/services/payload/categories";
+import {
+  getCachedProductGroups,
+  getCachedProducts,
+} from "@/services/payload/products";
 
 interface Props {
   params: Promise<{
-
     categorySlug: string;
-
   }>;
   searchParams: Promise<{ group?: string }>;
 }
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params, searchParams }: Props) {
   const { categorySlug: slug } = await params;
+  const { group } = await searchParams;
   const category = await getCachedCategoryBySlug(slug)();
 
-  if (!category) {
+  if (!category)
     return Meta.generate({
       title: "Категория не найдена",
-      description: "Страница не найдена",
       baseURL,
+      description: "",
     });
-  }
 
-  return Meta.generate({
-    title: category.name,
-    description: `Товары категории "${category.name}"`,
-    baseURL: baseURL,
-    path: `/catalog/${slug}`,
-    image: (category.image as Category["image"])?.url || "/og/catalog.jpg",
-  });
+  return {
+    ...(await Meta.generate({
+      title: category.name,
+      description: `Товары категории "${category.name}"`,
+      baseURL,
+      path: `/catalog/${slug}`,
+      image: `/api/og?title=${encodeURIComponent(category.name)}`,
+    })),
+    alternates: { canonical: `${baseURL}/catalog/${slug}` },
+    robots: group
+      ? { index: false, follow: true }
+      : { index: true, follow: true },
+  };
 }
 
-export default async function CategoryProductsPage({ params, searchParams }: Props) {
+export default async function CategoryProductsPage({
+  params,
+  searchParams,
+}: Props) {
   const { categorySlug: slug } = await params;
   const { group } = await searchParams;
 
@@ -104,7 +107,13 @@ export default async function CategoryProductsPage({ params, searchParams }: Pro
       )}
 
       {/* Сетка товаров */}
-      <Suspense fallback={<div className="py-20 text-center text-neutral-weak">Загрузка товаров...</div>}>
+      <Suspense
+        fallback={
+          <div className="py-20 text-center text-neutral-weak">
+            Загрузка товаров...
+          </div>
+        }
+      >
         <ProductsGrid
           products={productsData.docs}
           total={productsData.totalDocs}

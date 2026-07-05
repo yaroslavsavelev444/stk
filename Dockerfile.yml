@@ -1,3 +1,4 @@
+# Dockerfile
 # syntax=docker/dockerfile:1.7
 
 FROM node:20-slim AS base
@@ -14,16 +15,18 @@ FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# Публичные, несекретные значения — вшиваются в клиентский бандл на этапе сборки
 ARG NEXT_PUBLIC_SITE_URL
 ARG NEXT_PUBLIC_SERVER_URL
+ARG NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION
+ARG NEXT_PUBLIC_YANDEX_VERIFICATION
 ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL \
     NEXT_PUBLIC_SERVER_URL=$NEXT_PUBLIC_SERVER_URL \
+    NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=$NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION \
+    NEXT_PUBLIC_YANDEX_VERIFICATION=$NEXT_PUBLIC_YANDEX_VERIFICATION \
     NEXT_TELEMETRY_DISABLED=1
 
-# Плейсхолдеры: (frontend) теперь force-dynamic, поэтому build НЕ обращается
-# к базе — но payload.config.ts вычисляется на этапе импорта модулей,
-# поэтому значения должны просто существовать как строки.
+# app/(frontend)/layout.tsx has `export const dynamic = "force-dynamic"`,
+# so build never touches Mongo — these only need to exist as strings.
 ENV MONGODB_URI="mongodb://build-time-placeholder/build" \
     PAYLOAD_SECRET="build-time-placeholder"
 
@@ -48,4 +51,6 @@ COPY --from=builder --chown=nextjs:nodejs /app/.next/static ./.next/static
 
 USER nextjs
 EXPOSE 3000
+HEALTHCHECK --interval=15s --timeout=5s --retries=5 \
+  CMD node -e "fetch('http://localhost:3000/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
 CMD ["node", "server.js"]

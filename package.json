@@ -10,7 +10,7 @@
     "lint": "eslint",
     "generate:types": "payload generate:types",
     "generate:graph": "payload generate:graphQLSchema",
-    "types: check": "tsc --noEmit",
+    "types:check": "tsc --noEmit",
     "db:index": "ts-node scripts/create-search-indexes.ts"
   },
   "dependencies": {
