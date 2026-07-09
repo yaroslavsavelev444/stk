@@ -38,17 +38,19 @@ export function QualityControlSection({
     <section className="w-full overflow-x-hidden">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-14 [&>*]:min-w-0">
-          <div>
+          <div className="flex flex-col">
             <Reveal translateY={16} fillWidth>
-              <span className="mb-3 inline-block text-sm font-semibold uppercase tracking-[0.08em] text-[var(--primary)]">
-                Контроль качества
-              </span>
-              <h2 className="text-[clamp(1.375rem,2.6vw,1.875rem)] font-bold text-[var(--text-primary)]">
-                {heading}
-              </h2>
-              <p className="mt-3 text-[0.9375rem] leading-relaxed text-[var(--text-secondary)]">
-                {subheading}
-              </p>
+              <div className="flex flex-col">
+                <span className="mb-3 inline-block text-sm font-semibold uppercase tracking-[0.08em] text-[var(--primary)]">
+                  Контроль качества
+                </span>
+                <h2 className="text-[clamp(1.375rem,2.6vw,1.875rem)] font-bold text-[var(--text-primary)]">
+                  {heading}
+                </h2>
+                <p className="mt-3 text-[0.9375rem] leading-relaxed text-[var(--text-secondary)]">
+                  {subheading}
+                </p>
+              </div>
             </Reveal>
 
             <div className="mt-7 flex flex-col gap-4">

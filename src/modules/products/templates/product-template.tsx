@@ -1,44 +1,44 @@
-import React from 'react'
-import { notFound } from 'next/navigation'
-import type { Product, Category } from '@/payload-types'
-import type { ItemType } from 'antd/es/breadcrumb/Breadcrumb'
-import { Breadcrumbs } from '@/components/UI/Breadcrumbs/Breadcrumbs'
+import type { ItemType } from "antd/es/breadcrumb/Breadcrumb";
+import { notFound } from "next/navigation";
+import React from "react";
+import { Breadcrumbs } from "@/components/UI/Breadcrumbs/Breadcrumbs";
+import type { Category, Product } from "@/payload-types";
 
-import ImageGallery from '../components/image-gallery'
-import ProductInfo from './product-info'
-import RelatedProducts from './related-products'
-import ProductActions from '../components/product-actions'
+import ImageGallery from "../components/image-gallery";
+import ProductActions from "../components/product-actions";
+import ProductInfo from "./product-info";
+import RelatedProducts from "./related-products";
 
 type ProductTemplateProps = {
-  product: Product
-}
+  product: Product;
+};
 
 const ProductTemplate: React.FC<ProductTemplateProps> = ({ product }) => {
   if (!product || !product.id) {
-    return notFound()
+    return notFound();
   }
 
   const category =
-    product.category && typeof product.category === 'object'
+    product.category && typeof product.category === "object"
       ? (product.category as Category)
-      : null
+      : null;
 
   const breadcrumbItems: ItemType[] = [
-    { title: 'Главная', href: '/' },
-    { title: 'Каталог', href: '/catalog' },
-  ]
+    { title: "Главная", href: "/" },
+    { title: "Каталог", href: "/catalog" },
+  ];
 
   if (category?.slug) {
     breadcrumbItems.push({
       title: category.name,
       href: `/catalog/${category.slug}`,
-    })
+    });
   }
 
   breadcrumbItems.push({
     title: product.name,
-    href: '#',
-  })
+    href: "#",
+  });
 
   return (
     <main className="product-page" data-product-id={product.id}>
@@ -58,13 +58,13 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({ product }) => {
         </div>
 
         <aside className="product-col product-col--actions">
-         <ProductActions product={product} />
+          <ProductActions product={product} />
         </aside>
       </section>
 
       {/* Блок рекомендованных — только если выбраны админом */}
       <RelatedProducts product={product} />
-      
+
       <style>{`
         .product-page {
           --col-gap: clamp(1.5rem, 3vw, 2.5rem);
@@ -122,7 +122,7 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({ product }) => {
         }
       `}</style>
     </main>
-  )
-}
+  );
+};
 
-export default ProductTemplate
+export default ProductTemplate;

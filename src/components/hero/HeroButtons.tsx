@@ -1,19 +1,24 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
+import Link from "next/link";
+import { useState } from "react";
 
 function ArrowDown() {
   return (
     <svg
-      width="18" height="18" viewBox="0 0 18 18"
-      fill="none" xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >
       <path
         d="M9 3.5V14.5M9 14.5L4 9.5M9 14.5L14 9.5"
-        stroke="currentColor" strokeWidth="1.8"
-        strokeLinecap="round" strokeLinejoin="round"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -22,14 +27,19 @@ function ArrowDown() {
 function ArrowRight() {
   return (
     <svg
-      width="18" height="18" viewBox="0 0 18 18"
-      fill="none" xmlns="http://www.w3.org/2000/svg"
+      width="18"
+      height="18"
+      viewBox="0 0 18 18"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
     >
       <path
         d="M3.5 9H14.5M14.5 9L9.5 4M14.5 9L9.5 14"
-        stroke="currentColor" strokeWidth="1.8"
-        strokeLinecap="round" strokeLinejoin="round"
+        stroke="currentColor"
+        strokeWidth="1.8"
+        strokeLinecap="round"
+        strokeLinejoin="round"
       />
     </svg>
   );
@@ -40,17 +50,16 @@ export function HeroButtons() {
   const [hoverCatalog, setHoverCatalog] = useState(false);
 
   const handleScrollDown = () => {
-    const target = document.getElementById('main-content');
+    const target = document.getElementById("main-content");
     if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
+      target.scrollIntoView({ behavior: "smooth" });
     } else {
-      window.scrollTo({ top: window.innerHeight, behavior: 'smooth' });
+      window.scrollTo({ top: window.innerHeight, behavior: "smooth" });
     }
   };
 
   return (
     <div className="flex flex-row gap-3 flex-wrap justify-center">
-
       {/* Кнопка «О нас» — оранжевая */}
       <button
         onClick={handleScrollDown}
@@ -65,7 +74,7 @@ export function HeroButtons() {
           overflow-hidden
         "
         style={{
-          backgroundColor: 'var(--accent)',
+          backgroundColor: "var(--accent)",
           minWidth: 160,
         }}
       >
@@ -76,7 +85,9 @@ export function HeroButtons() {
           className="relative z-10 transition-all duration-200 ease-out"
           style={{
             opacity: hoverAbout ? 1 : 0,
-            transform: hoverAbout ? 'translateY(0) scale(1)' : 'translateY(-6px) scale(0.7)',
+            transform: hoverAbout
+              ? "translateY(0) scale(1)"
+              : "translateY(-6px) scale(0.7)",
           }}
         >
           <ArrowDown />
@@ -86,7 +97,7 @@ export function HeroButtons() {
         <span
           className="absolute inset-0 transition-opacity duration-200"
           style={{
-            backgroundColor: 'rgba(0,0,0,0.12)',
+            backgroundColor: "rgba(0,0,0,0.12)",
             opacity: hoverAbout ? 1 : 0,
           }}
         />
@@ -107,18 +118,20 @@ export function HeroButtons() {
           no-underline
         "
         style={{
-          backgroundColor: 'var(--primary)',
+          backgroundColor: "var(--primary)",
           minWidth: 160,
         }}
       >
-        <span className="relative z-10 tracking-wide">Каталог</span>
+        <span className="relative z-10 tracking-wide text-white">Каталог</span>
 
         {/* Стрелка — появляется при hover */}
         <span
           className="relative z-10 transition-all duration-200 ease-out"
           style={{
             opacity: hoverCatalog ? 1 : 0,
-            transform: hoverCatalog ? 'translateX(0) scale(1)' : 'translateX(-6px) scale(0.7)',
+            transform: hoverCatalog
+              ? "translateX(0) scale(1)"
+              : "translateX(-6px) scale(0.7)",
           }}
         >
           <ArrowRight />
@@ -128,12 +141,11 @@ export function HeroButtons() {
         <span
           className="absolute inset-0 transition-opacity duration-200"
           style={{
-            backgroundColor: 'rgba(0,0,0,0.12)',
+            backgroundColor: "rgba(0,0,0,0.12)",
             opacity: hoverCatalog ? 1 : 0,
           }}
         />
       </Link>
-
     </div>
   );
 }

@@ -1,17 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Product, Media, Category } from "@/payload-types";
-import  "./ProductCard.css";
+import type { Category, Media, Product } from "@/payload-types";
+import "./ProductCard.css";
 
 // ─── Badge configuration ─────────────────────────────────────────────────────
 
 type BadgeValue = "new" | "hit" | "sale" | "gost";
 
 const BADGE_CONFIG: Record<BadgeValue, { label: string; className: string }> = {
-  new:  { label: "Новинка", className: "badge-new" },
-  hit:  { label: "Хит",     className: "badge-hit" },
-  sale: { label: "Акция",   className: "badge-sale" },
-  gost: { label: "ГОСТ",    className: "badge-gost" },
+  new: { label: "Новинка", className: "badge-new" },
+  hit: { label: "Хит", className: "badge-hit" },
+  sale: { label: "Акция", className: "badge-sale" },
+  gost: { label: "ГОСТ", className: "badge-gost" },
 };
 
 // ─── Sub-components ───────────────────────────────────────────────────────────
@@ -42,11 +42,7 @@ interface ProductPriceProps {
 }
 
 function ProductPrice({ price }: ProductPriceProps) {
-  return (
-    <div className="product-price">
-      {price.toLocaleString("ru-RU")} ₽
-    </div>
-  );
+  return <div className="product-price">{price.toLocaleString("ru-RU")} ₽</div>;
 }
 
 interface ProductImageProps {
@@ -57,7 +53,13 @@ interface ProductImageProps {
   badges: string[];
 }
 
-function ProductImage({ imageUrl, altText, sizes, loading, badges }: ProductImageProps) {
+function ProductImage({
+  imageUrl,
+  altText,
+  sizes,
+  loading,
+  badges,
+}: ProductImageProps) {
   return (
     <div className="product-image-wrap">
       {imageUrl ? (
@@ -110,13 +112,10 @@ export function ProductCard({
   const altText = media?.alt || product.name || "Товар";
 
   const category = product.category as Category | string;
-  const categorySlug =
-    typeof category === "string" ? "" : category?.slug || "";
+  const categorySlug = typeof category === "string" ? "" : category?.slug || "";
 
   const showPrice =
-    product.showPrice &&
-    typeof product.price === "number" &&
-    product.price > 0;
+    product.showPrice && typeof product.price === "number" && product.price > 0;
 
   const badges: string[] = Array.isArray(product.badges) ? product.badges : [];
 

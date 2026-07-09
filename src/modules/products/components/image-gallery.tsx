@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Image from 'next/image';
-import Lightbox from 'yet-another-react-lightbox';
-import 'yet-another-react-lightbox/styles.css';
+import Image from "next/image";
+import { useState } from "react";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 
-import type { Product } from '@/payload-types'; // Media удалён
-import { resolveImages } from '@/utils/resolveImages';
+import type { Product } from "@/payload-types"; // Media удалён
+import { resolveImages } from "@/utils/resolveImages";
 
 interface ImageGalleryProps {
   product: Product;
@@ -22,15 +22,15 @@ export default function ImageGallery({ product }: ImageGalleryProps) {
   }
 
   const slides = images.map((img) => ({
-    src: img.url || '',
-    alt: img.alt || 'Изображение товара',
+    src: img.url || "",
+    alt: img.alt || "Изображение товара",
   }));
 
   return (
     <div className="flex flex-col gap-4">
       {images.map((img, idx) => {
         const imageUrl = img.url
-          ? new URL(img.url, 'http://localhost').pathname
+          ? new URL(img.url, "http://localhost").pathname
           : null;
         if (!imageUrl) return null;
 
@@ -38,10 +38,10 @@ export default function ImageGallery({ product }: ImageGalleryProps) {
           <div key={idx}>
             <div
               style={{
-                position: 'relative',
-                width: '500px',
-                height: '500px',
-                cursor: 'pointer',
+                position: "relative",
+                width: "500px",
+                height: "500px",
+                cursor: "pointer",
               }}
               onClick={() => {
                 setLightboxIndex(idx);
@@ -74,21 +74,21 @@ export default function ImageGallery({ product }: ImageGalleryProps) {
               key="close-button" // добавляем ключ
               onClick={() => setLightboxOpen(false)}
               style={{
-                position: 'absolute',
+                position: "absolute",
                 top: 20,
                 right: 20,
-                color: '#fff',
+                color: "#fff",
                 fontSize: 32,
-                background: 'rgba(0,0,0,0.5)',
-                border: 'none',
-                borderRadius: '50%',
+                background: "rgba(0,0,0,0.5)",
+                border: "none",
+                borderRadius: "50%",
                 width: 44,
                 height: 44,
-                cursor: 'pointer',
+                cursor: "pointer",
                 zIndex: 10000,
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
               }}
             >
               ✕

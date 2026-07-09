@@ -1,4 +1,8 @@
-// src/components/media-gallery/MediaGallery.tsx
+"use client";
+
+import { useState } from "react";
+import Lightbox from "yet-another-react-lightbox";
+import "yet-another-react-lightbox/styles.css";
 import { Reveal } from "@/components/UI/Reveal/Reveal";
 import { IMediaGalleryItem } from "../types";
 import { MediaGalleryCarousel } from "./MediaGalleryCarousel";
@@ -18,19 +22,6 @@ export interface MediaGalleryProps {
   carouselSlideWidthClassName?: string;
 }
 
-/**
- * Единая точка входа для отображения любых медиа-подборок сайта.
- * Не знает о происхождении данных (Payload/CMS) — принимает уже
- * нормализованные IMediaGalleryItem[] и выбирает сценарий рендера
- * по `variant`, оставаясь при этом единственным местом, отвечающим
- * за заголовок/описание секции и общий отступ.
- *
- *  - 'grid'     — адаптивная сетка ("витрина": сертификаты и т.п.)
- *  - 'carousel' — переиспользует существующий UI/Carousel (отзывы и т.п.)
- *
- * Новый сценарий отображения добавляется здесь одной веткой — блокам
- * (CertificatesSection, ReviewsSection, ...) переписывать ничего не нужно.
- */
 export function MediaGallery({
   items,
   variant = "grid",
@@ -42,6 +33,26 @@ export function MediaGallery({
   gridColumnsClassName,
   carouselSlideWidthClassName,
 }: MediaGalleryProps) {
+  const [lightboxOpen, setLightboxOpen] = useState(false);
+  const [lightboxIndex, setLightboxIndex] = useState(0);
+
+  // только элементы с изображением участвуют в лайтбоксе
+  const validItems = items.filter((item) => item.imageUrl);
+  const slides = validItems.map((item) => ({
+    src: item.imageUrl!,
+    alt: item.alt || "",
+  }));
+
+  const handleItemClick = (originalIndex: number) => {
+    const clickedItem = items[originalIndex];
+    if (!clickedItem?.imageUrl) return;
+    const slideIndex = validItems.findIndex((v) => v.id === clickedItem.id);
+    if (slideIndex !== -1) {
+      setLightboxIndex(slideIndex);
+      setLightboxOpen(true);
+    }
+  };
+
   if (items.length === 0) return null;
 
   return (
@@ -69,6 +80,7 @@ export function MediaGallery({
           aspect={aspect}
           fit={fit}
           slideWidthClassName={carouselSlideWidthClassName}
+          onItemClick={handleItemClick}
         />
       ) : (
         <MediaGalleryGrid
@@ -76,8 +88,19 @@ export function MediaGallery({
           aspect={aspect}
           fit={fit}
           columnsClassName={gridColumnsClassName}
+          onItemClick={handleItemClick}
         />
       )}
+
+      <Lightbox
+        open={lightboxOpen}
+        close={() => setLightboxOpen(false)}
+        index={lightboxIndex}
+        slides={slides}
+        on={{
+          view: ({ index: currentIndex }) => setLightboxIndex(currentIndex),
+        }}
+      />
     </section>
   );
 }

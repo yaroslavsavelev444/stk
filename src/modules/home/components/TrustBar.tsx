@@ -13,14 +13,15 @@ interface TrustBarProps {
  */
 export function TrustBar({ stats }: TrustBarProps) {
   return (
-    <section
-      className="w-full"
-      style={{
-        background:
-          "linear-gradient(120deg, var(--primary-700, var(--primary-hover)) 0%, var(--primary) 55%, var(--primary-700, var(--primary-hover)) 100%)",
-      }}
-    >
-      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-10 md:py-14">
+    <section className="w-full">
+      <div
+        className="w-full max-w-6xl mx-auto px-4 sm:px-6 py-10 md:py-14"
+        style={{
+          background:
+            "linear-gradient(120deg, var(--primary-700, var(--primary-hover)) 0%, var(--primary) 55%, var(--primary-700, var(--primary-hover)) 100%)",
+          borderRadius: "var(--radius-xl)",
+        }}
+      >
         <div className="grid grid-cols-2 md:grid-cols-4 gap-y-8 gap-x-4 md:gap-x-0 md:divide-x md:divide-white/15">
           {stats.map((stat, index) => (
             <Reveal

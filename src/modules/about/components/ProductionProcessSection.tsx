@@ -34,15 +34,17 @@ export function ProductionProcessSection({
   steps,
 }: ProductionProcessSectionProps) {
   return (
-    <section className="w-full max-w-6xl mx-auto px-4 sm:px-6">
+    <section className="w-full max-w-6xl mx-auto px-4 sm:px-6 flex flex-col items-center">
       <Reveal translateY={16} fillWidth>
-        <div className="mb-10 flex flex-col gap-2 text-center md:mb-14">
-          <h2 className="text-[clamp(1.375rem,2.6vw,1.875rem)] font-bold text-[var(--text-primary)]">
-            {heading}
-          </h2>
-          <p className="mx-auto max-w-xl text-[var(--text-secondary)]">
-            {subheading}
-          </p>
+        <div style={{ width: "100%" }}>
+          <div className="mb-10 flex flex-col gap-2 text-center md:mb-14">
+            <h2 className="text-[clamp(1.375rem,2.6vw,1.875rem)] font-bold text-[var(--text-primary)] text-center">
+              {heading}
+            </h2>
+            <p className="mx-auto max-w-xl text-[var(--text-secondary)]">
+              {subheading}
+            </p>
+          </div>
         </div>
       </Reveal>
 
