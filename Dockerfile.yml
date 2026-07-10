@@ -10,6 +10,17 @@ FROM base AS deps
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
+# ---------- tools ----------
+# Лёгкий стейдж для одноразовых операционных задач, которые не должны жить
+# в runtime-образе (там нет node_modules/scripts — standalone-выхлоп Next).
+# Используется в проде только для идемпотентного создания индексов MongoDB
+# (pnpm db:index) через docker-compose profile "tools", ДО пересборки/
+# рестарта приложения. Полноценных Payload-миграций в проекте нет — БД
+# документная (Mongoose), схема не версионируется миграциями.
+FROM deps AS tools
+COPY . .
+CMD ["pnpm", "db:index"]
+
 # ---------- build ----------
 FROM base AS builder
 COPY --from=deps /app/node_modules ./node_modules

@@ -9,6 +9,7 @@ import { Media } from "./src/payload/collections/Media.ts";
 import { MediaGalleries } from "./src/payload/collections/MediaGalleries.ts";
 import { Products } from "./src/payload/collections/Products.ts";
 import { Users } from "./src/payload/collections/Users.ts";
+import { allowedOrigins } from "./src/payload/config/allowedOrigins.ts";
 import { Settings } from "./src/payload/globals/Settings.ts";
 
 export default buildConfig({
@@ -17,6 +18,11 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.MONGODB_URI!,
   }),
+  // Админка в production открывается на отдельном поддомене
+  // (admin.stkaktiv.ru), поэтому его нужно явно разрешить для CORS/CSRF —
+  // см. src/payload/config/allowedOrigins.ts.
+  cors: allowedOrigins,
+  csrf: allowedOrigins,
   i18n: {
     supportedLanguages: { ru },
     fallbackLanguage: "ru",

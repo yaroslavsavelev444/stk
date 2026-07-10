@@ -1,5 +1,9 @@
 name: stk-aktiv
 
+# Локальный/дев-стек: Mongo + приложение, без реверс-прокси и TLS.
+# Для production используется отдельный docker-compose.prod.yml
+# (см. deploy/README.md) вместе с Nginx и Certbot на хосте VPS.
+
 services:
   mongo:
     image: mongo:7
@@ -25,6 +29,8 @@ services:
     depends_on:
       mongo:
         condition: service_healthy
+    ports:
+      - "3000:3000"
     volumes:
       - media-uploads:/app/media
     networks: [internal]
@@ -34,22 +40,18 @@ services:
       timeout: 5s
       retries: 5
 
-  caddy:
-    image: caddy:2-alpine
-    restart: unless-stopped
-    ports:
-      - "80:80"
-      - "443:443"
-    environment:
-      SITE_DOMAIN: ${SITE_DOMAIN}
-    volumes:
-      - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - caddy-data:/data
-      - caddy-config:/config
+  # Одноразовый запуск: docker compose --profile tools run --rm indexer
+  indexer:
+    build:
+      context: .
+      dockerfile: Dockerfile.yml
+      target: tools
+    env_file: .env
     depends_on:
-      app:
+      mongo:
         condition: service_healthy
     networks: [internal]
+    profiles: ["tools"]
 
 networks:
   internal:
@@ -57,5 +59,3 @@ networks:
 volumes:
   mongo-data:
   media-uploads:
-  caddy-data:
-  caddy-config:
