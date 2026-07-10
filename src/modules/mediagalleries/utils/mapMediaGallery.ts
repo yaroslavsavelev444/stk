@@ -1,6 +1,5 @@
-// src/utils/mapMediaGallery.ts
-import type { Media, MediaGallery } from "@/payload-types";
-import { IMediaGalleryItem } from "../types";
+import type { Media } from "@/payload-types";
+import type { IMediaGallery, IMediaGalleryItem } from "../types";
 
 interface RawGalleryItem {
   id?: string | null;
@@ -32,7 +31,7 @@ function resolveImageUrl(image: string | Media): string | null {
  */
 export function mapMediaGallery(
   raw: RawMediaGallery | null | undefined,
-): MediaGallery | null {
+): IMediaGallery | null {
   if (!raw) return null;
 
   const items: IMediaGalleryItem[] = (raw.items ?? [])

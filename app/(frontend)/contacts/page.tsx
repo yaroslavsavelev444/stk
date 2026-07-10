@@ -32,13 +32,13 @@ export default async function ContactsPage() {
     );
   }
 
-  const {
-    companyName = "STK",
-    contacts = [],
-    socials = [],
-    workingHours,
-    map,
-  } = settings;
+  const companyName = settings.companyName || "STK";
+  // Payload возвращает `null` для незаполненного array-поля, а не только
+  // `undefined` — деструктуризация с дефолтом это не ловит, поэтому
+  // приводим явно через `??`.
+  const contacts = settings.contacts ?? [];
+  const socials = settings.socials ?? [];
+  const { workingHours, map } = settings;
 
   return (
     <>
@@ -67,7 +67,6 @@ export default async function ContactsPage() {
           {socials.length > 0 && <SocialLinks socials={socials} />}
 
           <MapEmbed map={map || ""} fullWidth />
-          {/* <ContactsPageUsage /> */}
         </Flex>
       </Column>
     </>

@@ -8,7 +8,7 @@ export function CallbackButton() {
   return (
     <button
       type="button"
-      onClick={open}
+      onClick={() => open()}
       className="rounded-[var(--radius-sm)] bg-[var(--accent)] px-4 py-2 text-[14px] font-semibold
         text-[var(--text-inverse)] transition-colors hover:bg-[var(--accent-hover)]"
     >

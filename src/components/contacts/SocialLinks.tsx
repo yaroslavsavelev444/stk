@@ -1,21 +1,20 @@
-import { Flex } from '@once-ui-system/core'
-import React from 'react'
-import type { Setting } from '@/payload-types'
+import { Flex } from "@once-ui-system/core";
+import React from "react";
+import type { Setting } from "@/payload-types";
 
-type Social = NonNullable<Setting['socials']>[number]
+type Social = NonNullable<Setting["socials"]>[number];
 
 export const SocialLinks = ({ socials }: { socials: Social[] }) => {
-  // Соцсети НЕ имеют order, поэтому выводим как есть (без сортировки)
-
-  const renderIcon = (icon?: string) => {
-    if (!icon) return null
-    // Если это URL картинки
-    if (icon.startsWith('http') || icon.startsWith('/')) {
-      return <img src={icon} alt="" className="w-5 h-5 object-contain" />
+  const renderIcon = (icon?: string | null) => {
+    if (!icon) return null;
+    if (icon.startsWith("http") || icon.startsWith("/")) {
+      // eslint-disable-next-line @next/next/no-img-element
+      return <img src={icon} alt="" className="w-5 h-5 object-contain" />;
     }
-    // Иначе просто вернём текст (можно обернуть в span), без FontAwesome
-    return <span className="text-[var(--text-secondary)]">{icon}</span>
-  }
+    return <span className="text-[var(--text-secondary)]">{icon}</span>;
+  };
+
+  if (!socials || socials.length === 0) return null;
 
   return (
     <Flex wrap={true} gap="m" className="mt-2">
@@ -32,5 +31,5 @@ export const SocialLinks = ({ socials }: { socials: Social[] }) => {
         </a>
       ))}
     </Flex>
-  )
-}
+  );
+};

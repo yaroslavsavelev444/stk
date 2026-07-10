@@ -14,14 +14,14 @@
     "allowImportingTsExtensions": true,
     "jsx": "react-jsx",
     "incremental": true,
-    "baseUrl": ".",                         
+    "baseUrl": ".",
     "plugins": [
       {
         "name": "next"
       }
     ],
     "paths": {
-      "@/*": ["./src/*"],           
+      "@/*": ["./src/*"],
       "@/payload-types": ["./payload-types.ts"],
       "@/payloadconfig": ["./payload.config.ts"]
     }
@@ -33,7 +33,8 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts",
     "**/*.mts",
-    "next.config.mjs"
-, "app/(payload)/admin/importMap.js"  ],
+    "next.config.mjs",
+    "app/(payload)/admin/importMap.js"
+  ],
   "exclude": ["node_modules"]
 }

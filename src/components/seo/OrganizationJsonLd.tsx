@@ -9,13 +9,9 @@ export function OrganizationJsonLd({
 }) {
   if (!settings) return null;
 
-  const {
-    companyName,
-    logo,
-    workingHours,
-    contacts = [],
-    socials = [],
-  } = settings;
+  const { companyName, logo, workingHours } = settings;
+  const contacts = settings.contacts ?? [];
+  const socials = settings.socials ?? [];
 
   const contactPoints = contacts
     .filter((c) => c.type === "phone" || c.type === "email")

@@ -5,7 +5,7 @@ interface MapEmbedProps {
   map?: string;
   title?: string;
   address?: string;
-  fullWidth?: boolean; // новый проп
+  fullWidth?: boolean;
 }
 
 export const MapEmbed = ({
@@ -30,7 +30,6 @@ export const MapEmbed = ({
   const isYandex = src.includes("yandex.ru/maps");
   const openLink = isYandex ? src : null;
 
-  // Стили для fullWidth: отрицательные отступы и ширина вьюпорта
   const fullWidthStyles = fullWidth
     ? {
         marginLeft: "calc(-50vw + 50%)",
@@ -48,7 +47,7 @@ export const MapEmbed = ({
     >
       {title && (
         <Text
-          variant="heading-m"
+          variant="heading-default-s"
           className="mb-2"
           style={fullWidth ? { paddingLeft: "1rem", paddingRight: "1rem" } : {}}
         >
@@ -73,7 +72,6 @@ export const MapEmbed = ({
         />
       </Flex>
 
-      {/* Блок с адресом и кнопкой тоже растягиваем, если fullWidth */}
       <Flex
         className="mt-3 w-full flex-wrap items-center justify-between gap-2"
         horizontal="between"
@@ -88,7 +86,6 @@ export const MapEmbed = ({
 
         {openLink && (
           <Button
-            as="a"
             href={openLink}
             target="_blank"
             rel="noopener noreferrer"

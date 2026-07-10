@@ -1,4 +1,4 @@
-import type { Product } from '@/payload-types';
+import type { Product } from "@/payload-types";
 
 type Props = { product: Product };
 
@@ -9,19 +9,25 @@ export default function TabDocuments({ product }: Props) {
   return (
     <ul className="tab-docs" role="list">
       {docs.map((doc, i) => {
-        const file = doc.file && typeof doc.file === 'object' ? doc.file : null;
-        const url = file?.url || '';
-        const name = file?.filename || 'Документ';
+        const file = doc.file && typeof doc.file === "object" ? doc.file : null;
+        const url = file?.url || "";
+        const name = file?.filename || "Документ";
 
         return (
           <li key={i} className="tab-docs__item">
             {url ? (
-              <a href={url} className="tab-docs__link" target="_blank" rel="noopener noreferrer" download>
+              <a
+                href={url}
+                className="tab-docs__link"
+                target="_blank"
+                rel="noopener noreferrer"
+                download
+              >
                 <span aria-hidden="true">📄</span>
-                <span>{doc.label || name}</span>
+                <span>{name}</span>
               </a>
             ) : (
-              <span className="tab-docs__name">{doc.label || name}</span>
+              <span className="tab-docs__name">{name}</span>
             )}
           </li>
         );

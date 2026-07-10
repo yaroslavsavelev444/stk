@@ -10,6 +10,8 @@ interface IMediaGalleryItemProps {
   loading?: "lazy" | "eager";
   /** 'contain' — для сканов/скриншотов (сертификаты, отзывы), 'cover' — для фото. */
   fit?: "cover" | "contain";
+  /** Вызывается при клике по элементу (например, для открытия лайтбокса). */
+  onItemClick?: () => void;
 }
 
 export function MediaGalleryItem({
@@ -18,6 +20,7 @@ export function MediaGalleryItem({
   sizes = "(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 260px",
   loading = "lazy",
   fit = "contain",
+  onItemClick,
 }: IMediaGalleryItemProps) {
   if (!item.imageUrl) {
     return <ImagePlaceholder alt={item.alt} aspect={aspect} />;
@@ -25,7 +28,22 @@ export function MediaGalleryItem({
 
   return (
     <div
-      className={`relative w-full overflow-hidden ${aspect}`}
+      role={onItemClick ? "button" : undefined}
+      tabIndex={onItemClick ? 0 : undefined}
+      onClick={onItemClick}
+      onKeyDown={
+        onItemClick
+          ? (e) => {
+              if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                onItemClick();
+              }
+            }
+          : undefined
+      }
+      className={`relative w-full overflow-hidden ${aspect} ${
+        onItemClick ? "cursor-pointer" : ""
+      }`}
       style={{
         borderRadius: "var(--radius-lg)",
         border: "1px solid var(--border)",
