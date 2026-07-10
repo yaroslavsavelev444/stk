@@ -14,6 +14,7 @@ import {
   trustStats,
   whyUsItems,
 } from "@/resources/content";
+import { getCachedSettings } from "@/services/payload/settings";
 
 export async function generateMetadata() {
   return Meta.generate({
@@ -25,7 +26,9 @@ export async function generateMetadata() {
   });
 }
 
-export default function Home() {
+export default async function Home() {
+  const settings = await getCachedSettings();
+
   return (
     <Column maxWidth="m" gap="0" paddingY="0" horizontal="center">
       <Schema
@@ -38,7 +41,7 @@ export default function Home() {
       />
 
       <Reveal translateY={24} fillWidth delay={0.1}>
-        <HeroSection />
+        <HeroSection heroBackground={settings?.heroBackground} />
       </Reveal>
 
       <div id="main-content" />

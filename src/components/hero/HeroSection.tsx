@@ -10,13 +10,28 @@ import {
 } from "@once-ui-system/core";
 import { home } from "@/resources/content";
 import { HeroButtons } from "./HeroButtons";
+import { HeroMediaBackground } from "./HeroMediaBackground";
+import { resolveHeroMedia, type HeroBackgroundSetting } from "./resolveHeroMedia";
 
-export function HeroSection() {
+interface HeroSectionProps {
+  heroBackground?: HeroBackgroundSetting;
+}
+
+export function HeroSection({ heroBackground }: HeroSectionProps) {
+  const { imageUrl, videoUrl, posterUrl, hasMedia } = resolveHeroMedia(heroBackground);
+  // Поверх медиа текст всегда светлый — так читаемость не зависит от темы сайта
+  const onMediaTextStyle = hasMedia ? { color: "#fff" } : undefined;
+  const onMediaBadgeStyle = hasMedia
+    ? { color: "#fff", backgroundColor: "rgba(255, 255, 255, 0.16)" }
+    : undefined;
+
   return (
     // Полноэкранная секция — flex-колонка, контент сдвинут чуть выше центра
-    <section className="w-full min-h-svh flex flex-col items-center justify-center pt-16 pb-8 px-6 md:px-8">
+    <section className="relative w-full min-h-svh flex flex-col items-center justify-center pt-16 pb-8 px-6 md:px-8 overflow-hidden">
+      <HeroMediaBackground imageUrl={imageUrl} videoUrl={videoUrl} posterUrl={posterUrl} />
+
       <div
-        className="w-full flex flex-col items-center text-center"
+        className="relative z-10 w-full flex flex-col items-center text-center"
         style={{ maxWidth: 960, marginTop: '-10vh' }} // ← сдвиг чуть выше центра
       >
         {/* Тег / Badge */}
@@ -37,6 +52,7 @@ export function HeroSection() {
               textVariant="label-default-s"
               arrow={false}
               href={home.featured.href}
+              style={onMediaBadgeStyle}
             >
               <Row paddingY="2">{home.featured.title}</Row>
             </Badge>
@@ -52,7 +68,12 @@ export function HeroSection() {
           trigger={true}
           delay={0.1}
         >
-          <Heading wrap="balance" variant="display-strong-l" align="center">
+          <Heading
+            wrap="balance"
+            variant="display-strong-l"
+            align="center"
+            style={onMediaTextStyle}
+          >
             {home.headline}
           </Heading>
         </RevealFx>
@@ -71,6 +92,7 @@ export function HeroSection() {
             onBackground="neutral-weak"
             variant="heading-default-xl"
             align="center"
+            style={onMediaTextStyle}
           >
             {home.subline}
           </Text>

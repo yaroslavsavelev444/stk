@@ -18,12 +18,16 @@
 
 import type { GlobalConfig } from 'payload'
 import { seoField } from '../fields/seo.ts'
+import { revalidateSettings } from '../hooks/revalidateSettings.ts'
 export const Settings: GlobalConfig = {
   slug: 'settings',
   label: 'Настройки сайта',
   access: {
     read: () => true,
     update: ({ req: { user } }) => user?.role === 'admin',
+  },
+  hooks: {
+    afterChange: [revalidateSettings],
   },
   fields: [
     { name: 'companyName', type: 'text', required: true },
@@ -64,6 +68,55 @@ export const Settings: GlobalConfig = {
     },
     { name: 'workingHours', type: 'text', label: 'Часы работы' },
     { name: 'map', type: 'textarea', label: 'Код Яндекс.Карты (iframe src или embed)' },
+    {
+      name: 'heroBackground',
+      type: 'group',
+      label: 'Фон первого экрана (Hero)',
+      fields: [
+        {
+          name: 'type',
+          type: 'select',
+          label: 'Тип фона',
+          defaultValue: 'none',
+          options: [
+            { label: 'Нет (стандартный фон)', value: 'none' },
+            { label: 'Изображение', value: 'image' },
+            { label: 'Видео', value: 'video' },
+          ],
+        },
+        {
+          name: 'image',
+          type: 'upload',
+          relationTo: 'media',
+          label: 'Фоновое изображение',
+          admin: {
+            condition: (_, siblingData) => siblingData?.type === 'image',
+            description: 'Горизонтальное изображение, не менее 1920×1080px.',
+          },
+        },
+        {
+          name: 'video',
+          type: 'upload',
+          relationTo: 'media',
+          label: 'Фоновое видео',
+          admin: {
+            condition: (_, siblingData) => siblingData?.type === 'video',
+            description:
+              'MP4/WebM без звука, короткий зацикленный ролик. Для быстрой загрузки желательно сжать файл (H.264, до ~8МБ).',
+          },
+        },
+        {
+          name: 'videoPoster',
+          type: 'upload',
+          relationTo: 'media',
+          label: 'Постер видео',
+          admin: {
+            condition: (_, siblingData) => siblingData?.type === 'video',
+            description: 'Показывается, пока видео ещё грузится, и на медленном интернете.',
+          },
+        },
+      ],
+    },
     seoField,
   ],
 }

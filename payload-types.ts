@@ -164,7 +164,7 @@ export interface Category {
 export interface Media {
   id: string;
   alt?: string | null;
-  type?: ('certificate' | 'instruction' | 'license' | 'passport' | 'product' | 'other') | null;
+  type?: ('certificate' | 'instruction' | 'license' | 'passport' | 'product' | 'hero' | 'other') | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -728,6 +728,12 @@ export interface Setting {
     | null;
   workingHours?: string | null;
   map?: string | null;
+  heroBackground?: {
+    type?: ('none' | 'image' | 'video') | null;
+    image?: (string | null) | Media;
+    video?: (string | null) | Media;
+    videoPoster?: (string | null) | Media;
+  };
   seo?: {
     title?: string | null;
     description?: string | null;
@@ -766,6 +772,14 @@ export interface SettingsSelect<T extends boolean = true> {
       };
   workingHours?: T;
   map?: T;
+  heroBackground?:
+    | T
+    | {
+        type?: T;
+        image?: T;
+        video?: T;
+        videoPoster?: T;
+      };
   seo?:
     | T
     | {

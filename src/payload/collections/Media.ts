@@ -12,7 +12,14 @@ export const Media: CollectionConfig = {
       { name: 'card', width: 768, height: 576 },
       { name: 'full', width: 1920, height: 1080 },
     ],
-    mimeTypes: ['image/jpeg', 'image/png', 'image/webp', 'application/pdf'],
+    mimeTypes: [
+      'image/jpeg',
+      'image/png',
+      'image/webp',
+      'application/pdf',
+      'video/mp4',
+      'video/webm',
+    ],
   },
   access: {
     read: () => true,
@@ -31,6 +38,7 @@ export const Media: CollectionConfig = {
         { label: 'Лицензия', value: 'license' },
         { label: 'Паспорт', value: 'passport' },
         { label: 'Изображение товара', value: 'product' },
+        { label: 'Hero-фон', value: 'hero' },
         { label: 'Другое', value: 'other' },
       ],
       defaultValue: 'product',
