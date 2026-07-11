@@ -26,8 +26,27 @@ export function HeroSection({ heroBackground }: HeroSectionProps) {
     : undefined;
 
   return (
-    // Полноэкранная секция — flex-колонка, контент сдвинут чуть выше центра
-    <section className="relative w-full min-h-svh flex flex-col items-center justify-center pt-16 pb-8 px-6 md:px-8 overflow-hidden">
+    // Полноэкранная секция — flex-колонка, контент сдвинут чуть выше центра.
+    // Секция лежит внутри `<main>` (padding="l") и `<Column maxWidth="m">`,
+    // поэтому обычный w-full/100% не даёт настоящий full-bleed на весь вьюпорт.
+    // width:100vw + margin: calc(50% - 50vw) — стандартный приём "full-bleed",
+    // который выбивает секцию за пределы центрированного контейнера независимо
+    // от его ширины. marginTop/paddingTop компенсируют HeaderSpacer и padding
+    // родителя, используя те же CSS-переменные, что и сам layout — поэтому
+    // расчёт остаётся верным на всех брейкпоинтах (--responsive-space-l меняется
+    // в layout.tsx точно так же).
+    <section
+      className="relative min-h-svh flex flex-col items-center justify-center pb-8 px-6 md:px-8 overflow-hidden"
+      style={{
+        width: "100vw",
+        marginLeft: "calc(50% - 50vw)",
+        marginRight: "calc(50% - 50vw)",
+        marginTop:
+          "calc(-1 * (var(--sticky-header-height) + var(--responsive-space-l)))",
+        paddingTop:
+          "calc(var(--sticky-header-height) + var(--responsive-space-l) + 1rem)",
+      }}
+    >
       <HeroMediaBackground imageUrl={imageUrl} videoUrl={videoUrl} posterUrl={posterUrl} />
 
       <div

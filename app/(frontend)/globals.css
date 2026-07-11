@@ -13,6 +13,9 @@
 
 html {
   scroll-behavior: smooth;
+  /* Full-bleed секции (Hero) используют 100vw — без этого появлялся
+     горизонтальный скролл на ширину скроллбара. */
+  overflow-x: hidden;
 }
 
 html,

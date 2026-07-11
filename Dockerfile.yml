@@ -1,7 +1,11 @@
 # Dockerfile
 # syntax=docker/dockerfile:1.7
 
-FROM node:20-slim AS base
+# Node 20 не подходит по двум причинам: (1) pnpm 11.x (см. "packageManager"
+# в package.json) требует Node >= 22.13 — использует нативный node:sqlite,
+# которого в Node 20 просто нет (ERR_UNKNOWN_BUILTIN_MODULE); (2) Node 20
+# вышел из LTS 30 апреля 2026. Node 24 — текущая Active LTS (до апреля 2028).
+FROM node:24-slim AS base
 RUN corepack enable && corepack prepare pnpm@11.9.0 --activate
 WORKDIR /app
 
@@ -44,7 +48,7 @@ ENV MONGODB_URI="mongodb://build-time-placeholder/build" \
 RUN pnpm build
 
 # ---------- runtime ----------
-FROM node:20-slim AS runner
+FROM node:24-slim AS runner
 WORKDIR /app
 ENV NODE_ENV=production \
     NEXT_TELEMETRY_DISABLED=1 \

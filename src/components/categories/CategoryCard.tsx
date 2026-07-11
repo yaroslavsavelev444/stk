@@ -7,6 +7,8 @@ interface CategoryCardProps {
   className?: string
   sizes?: string
   loading?: 'lazy' | 'eager'
+  /** 'large' — увеличенная карточка для главных (featured) категорий */
+  size?: 'default' | 'large'
 }
 
 /**
@@ -91,19 +93,25 @@ function CategoryFade() {
 function CategoryContent({
   name,
   description,
+  size = 'default',
 }: {
   name: string
   description?: string | null
+  size?: 'default' | 'large'
 }) {
   return (
-    <div className="relative z-[2] flex flex-col gap-2 p-5 md:p-6">
-      <h3 className="text-[1.15rem] md:text-[1.3rem] font-bold leading-snug tracking-[-0.01em] text-[var(--text-primary)]">
+    <div className={`relative z-[2] flex flex-col gap-2 ${size === 'large' ? 'p-6 md:p-8' : 'p-5 md:p-6'}`}>
+      <h3
+        className={`font-bold leading-snug tracking-[-0.01em] text-[var(--text-primary)] ${
+          size === 'large' ? 'text-[1.4rem] md:text-[1.7rem]' : 'text-[1.15rem] md:text-[1.3rem]'
+        }`}
+      >
         {name}
       </h3>
 
       {description && (
         <p
-          className="text-sm leading-relaxed text-[var(--text-secondary)]"
+          className={`leading-relaxed text-[var(--text-secondary)] ${size === 'large' ? 'text-sm md:text-base' : 'text-sm'}`}
           style={{
             display: '-webkit-box',
             WebkitBoxOrient: 'vertical',
@@ -129,6 +137,7 @@ export function CategoryCard({
   className = '',
   sizes = '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw',
   loading = 'lazy',
+  size = 'default',
 }: CategoryCardProps) {
   // НЕ МЕНЯТЬ: безопасная проверка типа image
   const media = typeof category.image === 'object' ? category.image : null
@@ -153,7 +162,10 @@ export function CategoryCard({
       `}
       style={{ borderRadius: 'var(--radius-xl)' }}
     >
-      <div className="relative aspect-[4/5] w-full overflow-hidden" style={{ borderRadius: 'var(--radius-xl)' }}>
+      <div
+        className={`relative w-full overflow-hidden ${size === 'large' ? 'aspect-[16/10]' : 'aspect-[4/5]'}`}
+        style={{ borderRadius: 'var(--radius-xl)' }}
+      >
         {/* Layer 1 — фото на всю площадь карточки, лёгкий zoom на hover */}
         <div className="absolute inset-0 transition-transform duration-700 ease-[cubic-bezier(0.25,0.46,0.45,0.94)] group-hover:scale-[1.04]">
           <CategoryBackdrop url={imageUrl} alt={altText} sizes={sizes} loading={loading} />
@@ -163,7 +175,7 @@ export function CategoryCard({
         <CategoryFade />
 
         {/* Layer 3 — заголовок и описание */}
-        <CategoryContent name={category.name} description={category.description} />
+        <CategoryContent name={category.name} description={category.description} size={size} />
       </div>
     </Link>
   )

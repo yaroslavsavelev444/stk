@@ -40,9 +40,9 @@ export default async function Home() {
         image={`/api/og/generate?title=${encodeURIComponent(home.title)}`}
       />
 
-      <Reveal translateY={24} fillWidth delay={0.1}>
-        <HeroSection heroBackground={settings?.heroBackground} />
-      </Reveal>
+      {/* Без Reveal: Hero — первый экран, он должен быть виден сразу и
+          полностью, а не после срабатывания scroll-in-view анимации. */}
+      <HeroSection heroBackground={settings?.heroBackground} />
 
       <div id="main-content" />
 

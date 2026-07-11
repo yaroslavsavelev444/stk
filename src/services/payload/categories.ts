@@ -9,7 +9,7 @@ async function fetchCategories(): Promise<Category[]> {
   const result = await payload.find({
     collection: 'categories',
     where,
-    sort: 'order',
+    sort: '-featured,order',
     depth: 1,
   });
   return result.docs as unknown as Category[];

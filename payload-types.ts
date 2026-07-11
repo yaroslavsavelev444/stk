@@ -146,6 +146,10 @@ export interface Category {
   description?: string | null;
   order?: number | null;
   isPublished?: boolean | null;
+  /**
+   * Показывается увеличенной карточкой в начале списка на главной странице
+   */
+  featured?: boolean | null;
   seo?: {
     title?: string | null;
     description?: string | null;
@@ -473,6 +477,7 @@ export interface CategoriesSelect<T extends boolean = true> {
   description?: T;
   order?: T;
   isPublished?: T;
+  featured?: T;
   seo?:
     | T
     | {
