@@ -45,7 +45,25 @@ ENV NEXT_PUBLIC_SITE_URL=$NEXT_PUBLIC_SITE_URL \
 ENV MONGODB_URI="mongodb://build-time-placeholder/build" \
     PAYLOAD_SECRET="build-time-placeholder"
 
-RUN pnpm build
+# Turbopack написан на Rust и использует Rayon для параллельного разбора/
+# сборки модулей — по умолчанию задействует все обнаруженные ядра
+# одновременно (осознанный компромисс скорости в обмен на CPU). На
+# небольшом VPS это на время сборки забирает 100% CPU у Nginx/SSH/Mongo.
+# RAYON_NUM_THREADS ограничивает параллелизм именно этого внутреннего
+# пула потоков — меньше значение -> сборка идёт более последовательно
+# ("этапами"), но дольше по времени. Переопределяется через
+# --build-arg BUILD_CPU_LIMIT=N (0 = без ограничения, авто по числу ядер).
+ARG BUILD_CPU_LIMIT=1
+ENV RAYON_NUM_THREADS=${BUILD_CPU_LIMIT}
+
+# --mount=type=cache сохраняет кеш Turbopack (см. next.config.mjs,
+# turbopackFileSystemCacheForBuild) МЕЖДУ отдельными запусками `docker
+# build`, даже когда сам образ пересобирается с нуля — BuildKit хранит
+# этот кеш отдельно от слоёв образа. Первый прогон после появления этой
+# строки кеш ещё не имеет и займёт столько же времени, что и раньше;
+# начиная со второго пересобираются только изменившиеся модули.
+RUN --mount=type=cache,target=/app/.next/cache,sharing=locked \
+    pnpm build
 
 # ---------- runtime ----------
 FROM node:24-slim AS runner

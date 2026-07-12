@@ -8,6 +8,20 @@ const nextConfig = {
   poweredByHeader: false, // не светим X-Powered-By: Next.js
   compress: true,
   turbopack: { root: process.cwd() },
+  experimental: {
+    // Кеш Turbopack на диске между сборками: пересчитываются только
+    // изменившиеся модули, а не всё приложение с нуля. На маленьком VPS
+    // (2 vCPU) это резко снижает CPU-нагрузку на КАЖДОМ деплое, кроме
+    // самого первого — см. Dockerfile.yml, кеш примонтирован туда через
+    // BuildKit `--mount=type=cache`, чтобы переживать пересборки образа.
+    turbopackFileSystemCacheForBuild: true,
+    // Отдельный от Turbopack пул воркеров — для фазы статической
+    // генерации страниц (после бандлинга). На 2 vCPU не даём Next
+    // поднимать несколько параллельных воркер-процессов одновременно.
+    cpus: 1,
+    workerThreads: false,
+    staticGenerationMaxConcurrency: 1,
+  },
   images: {
     formats: ["image/avif", "image/webp"],
     remotePatterns: [

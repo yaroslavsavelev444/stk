@@ -39,6 +39,10 @@ services:
         NEXT_PUBLIC_SERVER_URL: ${NEXT_PUBLIC_SERVER_URL}
         NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION: ${NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION:-}
         NEXT_PUBLIC_YANDEX_VERIFICATION: ${NEXT_PUBLIC_YANDEX_VERIFICATION:-}
+        # Сколько потоков Turbopack может занять во время сборки (см.
+        # Dockerfile.yml). 1 — безопасный дефолт для 2 vCPU; при апгрейде
+        # сервера поднимите BUILD_CPU_LIMIT в .env.production.
+        BUILD_CPU_LIMIT: ${BUILD_CPU_LIMIT:-1}
     restart: unless-stopped
     logging: *default-logging
     env_file: .env.production
