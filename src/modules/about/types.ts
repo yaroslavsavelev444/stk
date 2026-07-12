@@ -81,6 +81,11 @@ export interface AboutPageContent {
     subheading: string;
     steps: ProductionStep[];
   };
+  productionWater: {
+    heading: string;
+    subheading: string;
+    steps: ProductionStep[];
+  };
   quality: {
     heading: string;
     subheading: string;

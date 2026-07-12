@@ -29,7 +29,7 @@ interface ProductionProcessSectionProps {
  * язык по сравнению с AboutTimeline (история) и WhyUsSection (аргументы).
  */
 export function ProductionProcessSection({
-  heading = "Как рождается дорожный знак",
+  heading = "Как рождается водоналивной блок",
   subheading = "Пять этапов производства на одной площадке — от листа металла до готового изделия",
   steps,
 }: ProductionProcessSectionProps) {

@@ -1,8 +1,10 @@
 "use client";
 
-import { RevealFx, RevealFxProps } from "@once-ui-system/core";
+import { RevealFx } from "@once-ui-system/core";
 import React from "react";
 import { useInView } from "react-intersection-observer";
+
+type RevealFxProps = React.ComponentProps<typeof RevealFx>;
 
 type RevealProps = Omit<RevealFxProps, "trigger"> & {
   /** Порог срабатывания (0..1). По умолчанию 0.15 — анимация начинается,

@@ -59,6 +59,11 @@ export default function AboutPage() {
           subheading={aboutPage.production.subheading}
           steps={aboutPage.production.steps}
         />
+        <ProductionProcessSection
+          heading={aboutPage.productionWater.heading}
+          subheading={aboutPage.productionWater.subheading}
+          steps={aboutPage.productionWater.steps}
+        />
 
         <AboutStandards standards={aboutPage.standards} />
 
