@@ -4,9 +4,7 @@ import { getCachedCategories } from "@/services/payload/categories";
 import { getCachedConsents } from "@/services/payload/consents";
 import { getCachedProducts } from "@/services/payload/products";
 
-// Пересчитываем раз в час — не на каждый запрос краулера.
-export const revalidate = 3600;
-
+export const dynamic = "force-dynamic"; // было: export const revalidate = 3600;
 const STATIC_ROUTES: Array<{
   path: string;
   changeFrequency: MetadataRoute.Sitemap[number]["changeFrequency"];
