@@ -1,24 +1,28 @@
-'use client';
+"use client";
 
 import {
-  Heading,
-  Text,
-  RevealFx,
-  Column,
   Badge,
+  Column,
+  Heading,
+  RevealFx,
   Row,
+  Text,
 } from "@once-ui-system/core";
 import { home } from "@/resources/content";
 import { HeroButtons } from "./HeroButtons";
 import { HeroMediaBackground } from "./HeroMediaBackground";
-import { resolveHeroMedia, type HeroBackgroundSetting } from "./resolveHeroMedia";
+import {
+  type HeroBackgroundSetting,
+  resolveHeroMedia,
+} from "./resolveHeroMedia";
 
 interface HeroSectionProps {
   heroBackground?: HeroBackgroundSetting;
 }
 
 export function HeroSection({ heroBackground }: HeroSectionProps) {
-  const { imageUrl, videoUrl, posterUrl, hasMedia } = resolveHeroMedia(heroBackground);
+  const { imageUrl, videoUrl, posterUrl, hasMedia } =
+    resolveHeroMedia(heroBackground);
   // Поверх медиа текст всегда светлый — так читаемость не зависит от темы сайта
   const onMediaTextStyle = hasMedia ? { color: "#fff" } : undefined;
   const onMediaBadgeStyle = hasMedia
@@ -47,11 +51,15 @@ export function HeroSection({ heroBackground }: HeroSectionProps) {
           "calc(var(--sticky-header-height) + var(--responsive-space-l) + 1rem)",
       }}
     >
-      <HeroMediaBackground imageUrl={imageUrl} videoUrl={videoUrl} posterUrl={posterUrl} />
+      <HeroMediaBackground
+        imageUrl={imageUrl}
+        videoUrl={videoUrl}
+        posterUrl={posterUrl}
+      />
 
       <div
         className="relative z-10 w-full flex flex-col items-center text-center"
-        style={{ maxWidth: 960, marginTop: '-10vh' }} // ← сдвиг чуть выше центра
+        style={{ maxWidth: 960, marginTop: "-10vh" }} // ← сдвиг чуть выше центра
       >
         {/* Тег / Badge */}
         {home.featured.display && (
@@ -61,7 +69,7 @@ export function HeroSection({ heroBackground }: HeroSectionProps) {
             paddingBottom="24"
             trigger={true}
             delay={0}
-            translateY="12"   // сверху вниз
+            translateY="12" // сверху вниз
           >
             <Badge
               background="brand-alpha-weak"

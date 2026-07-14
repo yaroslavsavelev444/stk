@@ -8,6 +8,9 @@ export interface NewCallbackRequestEmailData {
   phone: string;
   email?: string | null;
   comment?: string | null;
+  subject?: string | null;
+  productTitle?: string | null;
+  productSku?: string | null;
   createdAt: Date;
   adminUrl: string;
 }
@@ -31,6 +34,13 @@ function render(data: NewCallbackRequestEmailData): RenderedEmail {
   const safePhone = escapeHtml(data.phone);
   const safeEmail = data.email ? escapeHtml(data.email) : null;
   const safeComment = data.comment ? escapeHtml(data.comment) : "—";
+  const safeSubject = data.subject ? escapeHtml(data.subject) : null;
+  const safeProductTitle = data.productTitle
+    ? escapeHtml(data.productTitle)
+    : null;
+  const safeProductSku = data.productSku
+    ? escapeHtml(data.productSku)
+    : null;
 
   const bodyHtml = `
     <h1 style="margin:0 0 16px;font-size:18px;color:#18181B;">Новая заявка с сайта</h1>
@@ -44,6 +54,9 @@ function render(data: NewCallbackRequestEmailData): RenderedEmail {
           ? `<a href="mailto:${encodeURIComponent(data.email as string)}" style="color:#2E2D8F;text-decoration:none;">${safeEmail}</a>`
           : "—",
       )}
+      ${safeSubject ? renderRow("Тема", safeSubject) : ""}
+      ${safeProductTitle ? renderRow("Товар", safeProductTitle) : ""}
+      ${safeProductSku ? renderRow("Артикул", safeProductSku) : ""}
       ${renderRow("Комментарий", safeComment)}
       ${renderRow("Дата", formattedDate)}
     </table>
@@ -59,6 +72,9 @@ function render(data: NewCallbackRequestEmailData): RenderedEmail {
     `Имя: ${data.name || "—"}`,
     `Телефон: ${data.phone}`,
     `Email: ${data.email || "—"}`,
+    ...(data.subject ? [`Тема: ${data.subject}`] : []),
+    ...(data.productTitle ? [`Товар: ${data.productTitle}`] : []),
+    ...(data.productSku ? [`Артикул: ${data.productSku}`] : []),
     `Комментарий: ${data.comment || "—"}`,
     `Дата: ${formattedDate}`,
     `Открыть в админке: ${data.adminUrl}`,

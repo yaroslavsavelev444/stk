@@ -1,10 +1,13 @@
 // app/(frontend)/consents/[slug]/page.tsx
 
 import { Column, Heading, Meta, Schema } from "@once-ui-system/core";
-import type { ItemType } from "antd/es/breadcrumb/Breadcrumb";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Breadcrumbs } from "@/components/UI/Breadcrumbs/Breadcrumbs";
+import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
+import {
+  Breadcrumbs,
+  type BreadcrumbItem,
+} from "@/components/UI/Breadcrumbs/Breadcrumbs";
 import { ConsentContent, ConsentDocumentDownload } from "@/modules/consents";
 import { baseURL } from "@/resources/content";
 import { getCachedConsentBySlug } from "@/services/payload/consents";
@@ -44,10 +47,10 @@ export default async function ConsentPage({ params }: ConsentPageProps) {
     return notFound();
   }
 
-  const breadcrumbItems: ItemType[] = [
+  const breadcrumbItems: BreadcrumbItem[] = [
     { title: "Главная", href: "/" },
     { title: "Соглашения", href: "/consents" },
-    { title: consent.title },
+    { title: consent.title, href: `/consents/${slug}` },
   ];
 
   return (
@@ -59,6 +62,7 @@ export default async function ConsentPage({ params }: ConsentPageProps) {
         title={consent.title}
         description={consent.excerpt || consent.title}
       />
+      <BreadcrumbJsonLd siteUrl={baseURL} items={breadcrumbItems} />
 
       <Column fillWidth gap="m">
         <Breadcrumbs items={breadcrumbItems} />

@@ -6,6 +6,9 @@ export interface CreateCallbackData {
   phone: string
   email?: string
   comment?: string
+  subject?: string
+  productTitle?: string
+  productSku?: string
 }
 
 /**
@@ -21,6 +24,9 @@ export async function createCallbackRequest(data: CreateCallbackData): Promise<C
       phone: data.phone,
       email: data.email,
       comment: data.comment,
+      subject: data.subject,
+      productTitle: data.productTitle,
+      productSku: data.productSku,
       // status не передаём – полагаемся на defaultValue: 'new'
     },
   })

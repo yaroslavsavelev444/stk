@@ -8,7 +8,16 @@ import {
 import { baseURL } from "@/resources/content";
 import { CategoriesGrid } from "@/components/categories";
 import { CallbackSection } from "@/components/callback-form/CallbackSection";
-import { AutoBreadcrumbs } from "@/components/UI/Breadcrumbs/AutoBreadcrumbs";
+import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
+import {
+  Breadcrumbs,
+  type BreadcrumbItem,
+} from "@/components/UI/Breadcrumbs/Breadcrumbs";
+
+const breadcrumbItems: BreadcrumbItem[] = [
+  { title: "Главная", href: "/" },
+  { title: "Каталог", href: "/catalog" },
+];
 
 export async function generateMetadata() {
   return Meta.generate({
@@ -31,7 +40,8 @@ export default function CatalogPage() {
         description="Полный каталог товаров и услуг"
         image={`/api/og/generate?title=${encodeURIComponent("Каталог")}`}
       />
-        <AutoBreadcrumbs />
+      <BreadcrumbJsonLd siteUrl={baseURL} items={breadcrumbItems} />
+      <Breadcrumbs items={breadcrumbItems} />
       {/* Заголовок страницы */}
       <Column fillWidth horizontal="center" gap="m" paddingTop="8">
         <Column maxWidth="s" horizontal="center" align="center">

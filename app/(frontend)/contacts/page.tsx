@@ -1,11 +1,14 @@
 import { Column, Flex, Heading, Text } from "@once-ui-system/core";
 import type { Metadata } from "next";
-import { BreadcrumbJsonLd } from "@/components/contacts/BreadcrumbJsonLd";
 import { ContactsList } from "@/components/contacts/ContactsList";
 import { MapEmbed } from "@/components/contacts/MapEmbed";
 import { SocialLinks } from "@/components/contacts/SocialLinks";
+import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { OrganizationJsonLd } from "@/components/seo/OrganizationJsonLd";
-import { AutoBreadcrumbs } from "@/components/UI/Breadcrumbs/AutoBreadcrumbs";
+import {
+  Breadcrumbs,
+  type BreadcrumbItem,
+} from "@/components/UI/Breadcrumbs/Breadcrumbs";
 import { getCachedSettings } from "@/services/payload/settings";
 import { generateContactsMetadata } from "@/utils/contacts-metadata";
 
@@ -15,6 +18,11 @@ if (!siteUrl) {
     "NEXT_PUBLIC_SITE_URL не задан, некоторые SEO-теги будут отсутствовать",
   );
 }
+
+const breadcrumbItems: BreadcrumbItem[] = [
+  { title: "Главная", href: "/" },
+  { title: "Контакты", href: "/contacts" },
+];
 
 export async function generateMetadata(): Promise<Metadata> {
   const settings = await getCachedSettings();
@@ -43,11 +51,11 @@ export default async function ContactsPage() {
   return (
     <>
       <OrganizationJsonLd settings={settings} siteUrl={siteUrl || ""} />
-      <BreadcrumbJsonLd siteUrl={siteUrl || ""} />
+      <BreadcrumbJsonLd siteUrl={siteUrl || ""} items={breadcrumbItems} />
 
       <Column fillWidth horizontal="center" padding="l" gap="l">
         <Flex maxWidth={65} fillWidth direction="column" gap="m">
-          <AutoBreadcrumbs />
+          <Breadcrumbs items={breadcrumbItems} />
 
           <Heading variant="display-strong-s" as="h1">
             Контакты {companyName}

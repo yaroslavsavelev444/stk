@@ -1,6 +1,10 @@
 import { Column, Meta, Schema } from "@once-ui-system/core";
 import { CallbackSection } from "@/components/callback-form/CallbackSection";
-import { AutoBreadcrumbs } from "@/components/UI/Breadcrumbs/AutoBreadcrumbs";
+import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
+import {
+  Breadcrumbs,
+  type BreadcrumbItem,
+} from "@/components/UI/Breadcrumbs/Breadcrumbs";
 import {
   AboutCallout,
   AboutCertificates,
@@ -14,6 +18,11 @@ import {
   QualityControlSection,
 } from "@/modules/about";
 import { aboutPage, baseURL } from "@/resources/content";
+
+const breadcrumbItems: BreadcrumbItem[] = [
+  { title: "Главная", href: "/" },
+  { title: "О нас", href: aboutPage.path },
+];
 
 export async function generateMetadata() {
   return Meta.generate({
@@ -36,9 +45,10 @@ export default function AboutPage() {
         description={aboutPage.seo.description}
         image={`/api/og/generate?title=${encodeURIComponent(aboutPage.seo.title)}`}
       />
+      <BreadcrumbJsonLd siteUrl={baseURL} items={breadcrumbItems} />
 
       <div className="w-full max-w-6xl mx-auto px-4 sm:px-6 mb-6">
-        <AutoBreadcrumbs />
+        <Breadcrumbs items={breadcrumbItems} />
       </div>
 
       <div className="flex flex-col gap-16 md:gap-24 w-full pb-16 md:pb-24">

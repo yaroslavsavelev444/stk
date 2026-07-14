@@ -36,6 +36,9 @@ const callbackSchema = z.object({
     .max(2000, "Слишком длинный комментарий")
     .optional()
     .or(z.literal("")),
+  subject: z.string().trim().max(200).optional().or(z.literal("")),
+  productTitle: z.string().trim().max(200).optional().or(z.literal("")),
+  productSku: z.string().trim().max(100).optional().or(z.literal("")),
 });
 
 function zodErrorsToFieldErrors(error: z.ZodError): CallbackFormErrors {
@@ -58,6 +61,9 @@ export async function submitCallbackRequest(
     phone: String(formData.get("phone") ?? ""),
     email: String(formData.get("email") ?? ""),
     comment: String(formData.get("comment") ?? ""),
+    subject: String(formData.get("subject") ?? ""),
+    productTitle: String(formData.get("productTitle") ?? ""),
+    productSku: String(formData.get("productSku") ?? ""),
   };
 
   // Honeypot-поле против простых ботов: если оно заполнено — тихо считаем, что заявка "отправлена"
@@ -77,6 +83,9 @@ export async function submitCallbackRequest(
       phone: parsed.data.phone,
       email: parsed.data.email || undefined,
       comment: parsed.data.comment || undefined,
+      subject: parsed.data.subject || undefined,
+      productTitle: parsed.data.productTitle || undefined,
+      productSku: parsed.data.productSku || undefined,
     });
     return { ok: true };
   } catch (error) {

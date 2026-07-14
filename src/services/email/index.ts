@@ -1,3 +1,5 @@
+export type { EmailConfig } from "./config";
+export { getEmailConfig } from "./config";
 export { EmailService, emailService } from "./EmailService";
 export {
   EmailConfigError,

@@ -2,6 +2,7 @@ import { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { ProductJsonLd } from "@/components/seo/ProductJsonLd";
+import type { BreadcrumbItem } from "@/components/UI/Breadcrumbs/Breadcrumbs";
 import ProductTemplate from "@/modules/products/templates/product-template";
 import { baseURL } from "@/resources/content";
 import { getCachedProductBySlug } from "@/services/payload";
@@ -90,24 +91,23 @@ export default async function ProductPage({ params }: ProductPageProps) {
   const category =
     typeof product.category === "object" ? product.category : null;
 
+  const breadcrumbItems: BreadcrumbItem[] = [
+    { title: "Главная", href: "/" },
+    { title: "Каталог", href: "/catalog" },
+    ...(category
+      ? [{ title: category.name, href: `/catalog/${category.slug}` }]
+      : []),
+    {
+      title: product.name,
+      href: `/catalog/${category?.slug}/${product.slug}`,
+    },
+  ];
+
   return (
     <>
       <ProductJsonLd product={product} siteUrl={baseURL} />
-      <BreadcrumbJsonLd
-        siteUrl={baseURL}
-        items={[
-          { name: "Главная", path: "/" },
-          { name: "Каталог", path: "/catalog" },
-          ...(category
-            ? [{ name: category.name, path: `/catalog/${category.slug}` }]
-            : []),
-          {
-            name: product.name,
-            path: `/catalog/${category?.slug}/${product.slug}`,
-          },
-        ]}
-      />
-      <ProductTemplate product={product} />
+      <BreadcrumbJsonLd siteUrl={baseURL} items={breadcrumbItems} />
+      <ProductTemplate product={product} breadcrumbItems={breadcrumbItems} />
     </>
   );
 }

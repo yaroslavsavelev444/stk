@@ -3,7 +3,11 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { GroupFilters } from "@/components/products/GroupFilters";
 import { ProductsGrid } from "@/components/products/ProductsGrid";
-import { AutoBreadcrumbs } from "@/components/UI/Breadcrumbs/AutoBreadcrumbs";
+import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
+import {
+  Breadcrumbs,
+  type BreadcrumbItem,
+} from "@/components/UI/Breadcrumbs/Breadcrumbs";
 import { Category } from "@/payload-types";
 import { baseURL } from "@/resources/content";
 import { getCachedCategoryBySlug } from "@/services/payload/categories";
@@ -66,6 +70,12 @@ export default async function CategoryProductsPage({
     sort: "order",
   })();
 
+  const breadcrumbItems: BreadcrumbItem[] = [
+    { title: "Главная", href: "/" },
+    { title: "Каталог", href: "/catalog" },
+    { title: category.name, href: `/catalog/${slug}` },
+  ];
+
   return (
     <Column maxWidth="m" gap="xl" paddingY="12" horizontal="center">
       <Schema
@@ -76,7 +86,8 @@ export default async function CategoryProductsPage({
         description={`Товары категории ${category.name}`}
         image={`/api/og/generate?title=${encodeURIComponent(category.name)}`}
       />
-      <AutoBreadcrumbs />
+      <BreadcrumbJsonLd siteUrl={baseURL} items={breadcrumbItems} />
+      <Breadcrumbs items={breadcrumbItems} />
       <Column fillWidth horizontal="center" gap="m">
         <Column maxWidth="s" horizontal="center" align="center">
           <Heading variant="display-strong-l" as="h1" wrap="balance">

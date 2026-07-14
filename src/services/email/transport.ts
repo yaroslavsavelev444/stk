@@ -1,5 +1,6 @@
 import nodemailer, { type Transporter } from "nodemailer";
 import { getEmailConfig } from "./config";
+import { EmailConfigError } from "./errors";
 
 let cachedTransporter: Transporter | null = null;
 
@@ -12,6 +13,12 @@ export function getEmailTransporter(): Transporter {
   if (cachedTransporter) return cachedTransporter;
 
   const config = getEmailConfig();
+
+  if (!config.enabled) {
+    throw new EmailConfigError(
+      "getEmailTransporter() вызван при отключённом email-модуле (EMAIL_ENABLED=false)",
+    );
+  }
 
   cachedTransporter = nodemailer.createTransport({
     host: config.SMTP_HOST,

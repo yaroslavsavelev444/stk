@@ -17,6 +17,7 @@
     "@ant-design/icons": "^6.2.5",
     "@once-ui-system/core": "^1.7.9",
     "@payloadcms/db-mongodb": "^3.85.1",
+    "@payloadcms/email-nodemailer": "3.85.1",
     "@payloadcms/next": "^3.85.1",
     "@payloadcms/richtext-lexical": "^3.85.1",
     "@payloadcms/translations": "^3.85.1",

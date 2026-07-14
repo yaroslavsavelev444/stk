@@ -10,6 +10,7 @@ import { MediaGalleries } from "./src/payload/collections/MediaGalleries.ts";
 import { Products } from "./src/payload/collections/Products.ts";
 import { Users } from "./src/payload/collections/Users.ts";
 import { allowedOrigins } from "./src/payload/config/allowedOrigins.ts";
+import { getPayloadEmailAdapter } from "./src/payload/config/email.ts";
 import { Settings } from "./src/payload/globals/Settings.ts";
 
 export default buildConfig({
@@ -18,6 +19,9 @@ export default buildConfig({
   db: mongooseAdapter({
     url: process.env.MONGODB_URI!,
   }),
+  // Встроенная почта Payload (сброс пароля и т.д.) — та же SMTP-конфигурация,
+  // что и у кастомного EmailService, см. src/payload/config/email.ts.
+  email: getPayloadEmailAdapter(),
   // Админка в production открывается на отдельном поддомене
   // (admin.stkaktiv.ru), поэтому его нужно явно разрешить для CORS/CSRF —
   // см. src/payload/config/allowedOrigins.ts.

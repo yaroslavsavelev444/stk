@@ -7,15 +7,18 @@ import { notifyAdminsAboutNewCallbackRequest } from "@/services/notifications/no
  * запускает уведомление администраторов. Срабатывает независимо от
  * источника создания документа.
  *
- * notifyAdminsAboutNewCallbackRequest никогда не бросает исключение наружу
- * (см. её реализацию) — поэтому здесь безопасно не оборачивать вызов
- * в try/catch: сбой отправки письма не должен ронять сохранение документа.
+ * Вызов дожидается завершения (await), а не "fire-and-forget": иначе
+ * промис уведомления мог бы не успеть завершиться до конца обработки
+ * запроса. notifyAdminsAboutNewCallbackRequest никогда не бросает
+ * исключение наружу (см. её реализацию) — поэтому здесь безопасно не
+ * оборачивать вызов в try/catch: сбой отправки письма не должен ронять
+ * сохранение документа.
  */
 export const notifyAdminsOnCallbackRequest: CollectionAfterChangeHook<
   CallbackRequest
 > = async ({ doc, operation }) => {
   if (operation === "create") {
-    void notifyAdminsAboutNewCallbackRequest(doc);
+    await notifyAdminsAboutNewCallbackRequest(doc);
   }
 
   return doc;

@@ -1,8 +1,17 @@
 // app/(frontend)/consents/page.tsx
 import { Column, Heading, Meta, Schema, Text } from "@once-ui-system/core";
-import { AutoBreadcrumbs } from "@/components/UI/Breadcrumbs/AutoBreadcrumbs";
+import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
+import {
+  Breadcrumbs,
+  type BreadcrumbItem,
+} from "@/components/UI/Breadcrumbs/Breadcrumbs";
 import { ConsentsList } from "@/modules/consents";
 import { baseURL } from "@/resources/content";
+
+const breadcrumbItems: BreadcrumbItem[] = [
+  { title: "Главная", href: "/" },
+  { title: "Соглашения", href: "/consents" },
+];
 
 export async function generateMetadata() {
   return Meta.generate({
@@ -26,8 +35,10 @@ export default function ConsentsPage() {
         description="Пользовательские соглашения и документы о согласии на обработку данных"
       />
 
+      <BreadcrumbJsonLd siteUrl={baseURL} items={breadcrumbItems} />
+
       <Column fillWidth gap="m">
-        <AutoBreadcrumbs />
+        <Breadcrumbs items={breadcrumbItems} />
 
         <Column gap="xs">
           <Heading variant="display-strong-s" as="h1">

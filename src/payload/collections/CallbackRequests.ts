@@ -24,6 +24,24 @@ export const CallbackRequests: CollectionConfig = {
     { name: "email", type: "email" },
     { name: "comment", type: "textarea" },
     {
+      name: "subject",
+      type: "text",
+      label: "Тема обращения",
+      admin: {
+        description: "Контекст, из которого была отправлена заявка (например, раздел сайта)",
+      },
+    },
+    {
+      name: "productTitle",
+      type: "text",
+      label: "Название товара",
+    },
+    {
+      name: "productSku",
+      type: "text",
+      label: "Артикул товара",
+    },
+    {
       name: "status",
       type: "select",
       options: [

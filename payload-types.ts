@@ -270,6 +270,9 @@ export interface CallbackRequest {
   phone: string;
   email?: string | null;
   comment?: string | null;
+  subject?: string | null;
+  productTitle?: string | null;
+  productSku?: string | null;
   status?: ('new' | 'processing' | 'completed') | null;
   updatedAt: string;
   createdAt: string;
@@ -595,6 +598,9 @@ export interface CallbackRequestsSelect<T extends boolean = true> {
   phone?: T;
   email?: T;
   comment?: T;
+  subject?: T;
+  productTitle?: T;
+  productSku?: T;
   status?: T;
   updatedAt?: T;
   createdAt?: T;
