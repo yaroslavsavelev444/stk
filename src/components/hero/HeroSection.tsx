@@ -59,7 +59,7 @@ export function HeroSection({ heroBackground }: HeroSectionProps) {
 
       <div
         className="relative z-10 w-full flex flex-col items-center text-center"
-        style={{ maxWidth: 960, marginTop: "-10vh" }} // ← сдвиг чуть выше центра
+        style={{ maxWidth: 960, marginTop: "-10vh" }} // ← сдвиг чуыывть выше центра
       >
         {/* Тег / Badge */}
         {home.featured.display && (
