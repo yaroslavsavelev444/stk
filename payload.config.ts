@@ -8,9 +8,12 @@ import { Consents } from "./src/payload/collections/Consents.ts";
 import { Media } from "./src/payload/collections/Media.ts";
 import { MediaGalleries } from "./src/payload/collections/MediaGalleries.ts";
 import { Products } from "./src/payload/collections/Products.ts";
+import { Subcategories } from "./src/payload/collections/Subcategories.ts";
 import { Users } from "./src/payload/collections/Users.ts";
 import { allowedOrigins } from "./src/payload/config/allowedOrigins.ts";
 import { getPayloadEmailAdapter } from "./src/payload/config/email.ts";
+import { AboutContent } from "./src/payload/globals/AboutContent.ts";
+import { HomeContent } from "./src/payload/globals/HomeContent.ts";
 import { Settings } from "./src/payload/globals/Settings.ts";
 
 export default buildConfig({
@@ -35,13 +38,14 @@ export default buildConfig({
   collections: [
     Categories,
     Products,
+    Subcategories,
     Media,
     CallbackRequests,
     Users,
     Consents,
     MediaGalleries,
   ],
-  globals: [Settings],
+  globals: [Settings, HomeContent, AboutContent],
   typescript: {
     outputFile: path.resolve(process.cwd(), "payload-types.ts"),
   },
@@ -53,6 +57,10 @@ export default buildConfig({
     user: "users",
     meta: {
       titleSuffix: " - Админка Каталога",
+      icons: [
+        { rel: "icon", url: "/icon.png", type: "image/png" },
+        { rel: "apple-touch-icon", url: "/apple-icon.png" },
+      ],
     },
   },
 });

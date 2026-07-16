@@ -2,19 +2,19 @@
 // Server component — получает данные, передаёт в клиентский CatalogMenu
 
 import { getCachedCategories } from '@/services/payload/categories'
-import { getCachedProductGroups } from '@/services/payload/products'
-import { CatalogMenu, type CategoryWithGroups } from './CatalogMenu'
+import { getCachedSubcategories } from '@/services/payload/subcategories'
+import { CatalogMenu, type CategoryWithSubcategories } from './CatalogMenu'
 
 export const CatalogButton = async () => {
   // 1. Все опубликованные категории
   const categories = await getCachedCategories()
 
-  // 2. Для каждой категории — уникальные группы продуктов
-  const items: CategoryWithGroups[] = await Promise.all(
+  // 2. Для каждой категории — её опубликованные подкатегории
+  const items: CategoryWithSubcategories[] = await Promise.all(
     categories.map(async (category) => {
-      const getGroups = getCachedProductGroups(String(category.id))
-      const groups = await getGroups()
-      return { category, groups }
+      const getSubcategories = getCachedSubcategories(String(category.id))
+      const subcategories = await getSubcategories()
+      return { category, subcategories }
     }),
   )
 

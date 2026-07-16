@@ -1,10 +1,10 @@
 import { Reveal } from "@/components/UI/Reveal/Reveal";
-import type { AboutPageContent } from "@/modules/about/types";
+import type { AboutStandardsContent } from "@/modules/about/types";
 
 export function AboutStandards({
   standards,
 }: {
-  standards: AboutPageContent["standards"];
+  standards: AboutStandardsContent;
 }) {
   return (
     <section className="w-full max-w-6xl mx-auto px-4 sm:px-6">

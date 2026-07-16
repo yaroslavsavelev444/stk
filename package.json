@@ -11,7 +11,9 @@
     "generate:types": "payload generate:types",
     "generate:graph": "payload generate:graphQLSchema",
     "types:check": "tsc --noEmit",
-    "db:index": "ts-node scripts/create-search-indexes.ts"
+    "db:index": "ts-node scripts/create-search-indexes.ts",
+    "seed:content": "ts-node scripts/seed-content.ts",
+    "migrate:subcategories": "ts-node scripts/migrate-subcategories.ts"
   },
   "dependencies": {
     "@ant-design/icons": "^6.2.5",

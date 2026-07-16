@@ -1,6 +1,8 @@
+import Image from "next/image";
 import { ImagePlaceholder } from "@/components/UI/ImagePlaceholder";
 import { Reveal } from "@/components/UI/Reveal/Reveal";
 import type { AboutMediaBlock } from "@/modules/about/types";
+import { resolveMediaPath } from "@/utils/resolveMediaPath";
 
 interface AboutMediaShowcaseProps {
   block: AboutMediaBlock;
@@ -47,13 +49,32 @@ export function AboutMediaShowcase({
         </Reveal>
 
         <div className={`grid ${gridColsClass} gap-4 w-full`}>
-          {block.images.map((img, i) => (
-            <Reveal key={i} translateY={18} fillWidth delay={0.12 + i * 0.06}>
-              <div className="w-full">
-                <ImagePlaceholder alt={img.alt} aspect="aspect-[3/4]" />
-              </div>
-            </Reveal>
-          ))}
+          {block.images.map((img, i) => {
+            const imagePath = resolveMediaPath(img.image);
+            const alt = (typeof img.image === "object" && img.image?.alt) || img.alt;
+            return (
+              <Reveal key={i} translateY={18} fillWidth delay={0.12 + i * 0.06}>
+                <div className="w-full">
+                  {imagePath ? (
+                    <div
+                      className="relative w-full overflow-hidden aspect-[3/4]"
+                      style={{ borderRadius: "var(--radius-lg)" }}
+                    >
+                      <Image
+                        src={imagePath}
+                        alt={alt}
+                        fill
+                        sizes="(max-width: 1024px) 50vw, 33vw"
+                        className="object-cover"
+                      />
+                    </div>
+                  ) : (
+                    <ImagePlaceholder alt={img.alt} aspect="aspect-[3/4]" />
+                  )}
+                </div>
+              </Reveal>
+            );
+          })}
         </div>
       </div>
     </section>

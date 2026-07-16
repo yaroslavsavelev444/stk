@@ -69,6 +69,7 @@ export interface Config {
   collections: {
     categories: Category;
     products: Product;
+    subcategories: Subcategory;
     media: Media;
     'callback-requests': CallbackRequest;
     users: User;
@@ -83,6 +84,7 @@ export interface Config {
   collectionsSelect: {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     products: ProductsSelect<false> | ProductsSelect<true>;
+    subcategories: SubcategoriesSelect<false> | SubcategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'callback-requests': CallbackRequestsSelect<false> | CallbackRequestsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
@@ -99,9 +101,13 @@ export interface Config {
   fallbackLocale: ('false' | 'none' | 'null') | false | null | ('ru' | 'en') | ('ru' | 'en')[];
   globals: {
     settings: Setting;
+    'home-content': HomeContent;
+    'about-content': AboutContent;
   };
   globalsSelect: {
     settings: SettingsSelect<false> | SettingsSelect<true>;
+    'home-content': HomeContentSelect<false> | HomeContentSelect<true>;
+    'about-content': AboutContentSelect<false> | AboutContentSelect<true>;
   };
   locale: 'ru' | 'en';
   widgets: {
@@ -218,10 +224,7 @@ export interface Product {
   images: (string | Media)[];
   description: string;
   category: string | Category;
-  /**
-   * Например: "трамвайные", "автомобильные". Будет приведено к нижнему регистру.
-   */
-  group?: string | null;
+  subcategory?: (string | null) | Subcategory;
   price?: number | null;
   showPrice?: boolean | null;
   attributes?:
@@ -257,6 +260,19 @@ export interface Product {
      */
     keywords?: string | null;
   };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subcategories".
+ */
+export interface Subcategory {
+  id: string;
+  name: string;
+  category: string | Category;
+  order?: number | null;
+  isPublished?: boolean | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -408,6 +424,10 @@ export interface PayloadLockedDocument {
         value: string | Product;
       } | null)
     | ({
+        relationTo: 'subcategories';
+        value: string | Subcategory;
+      } | null)
+    | ({
         relationTo: 'media';
         value: string | Media;
       } | null)
@@ -501,7 +521,7 @@ export interface ProductsSelect<T extends boolean = true> {
   images?: T;
   description?: T;
   category?: T;
-  group?: T;
+  subcategory?: T;
   price?: T;
   showPrice?: T;
   attributes?:
@@ -533,6 +553,18 @@ export interface ProductsSelect<T extends boolean = true> {
         description?: T;
         keywords?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "subcategories_select".
+ */
+export interface SubcategoriesSelect<T extends boolean = true> {
+  name?: T;
+  category?: T;
+  order?: T;
+  isPublished?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -797,6 +829,341 @@ export interface SettingsSelect<T extends boolean = true> {
         title?: T;
         description?: T;
         keywords?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-content".
+ *
+ * NOTE: `payload generate:types` currently fails in this environment with
+ * `ERR_MODULE_NOT_FOUND: Cannot find package '@/services'` (pre-existing,
+ * reproducible on master before this change — unrelated to home-content/
+ * about-content). This interface was written by hand to match
+ * src/payload/globals/HomeContent.ts field-for-field; re-running
+ * `generate:types` once that issue is fixed will regenerate it and should
+ * produce an equivalent shape.
+ */
+export interface HomeContent {
+  id: string;
+  aboutIntro?: {
+    eyebrow: string;
+    heading: string;
+    lead: string;
+    image?: (string | null) | Media;
+    imageAlt: string;
+  };
+  /**
+   * Блок из карточек перед секцией «Почему выбирают СТК-Актив». Количество карточек должно быть чётным — на десктопе они располагаются по 2 в ряд.
+   */
+  featureCards?:
+    | {
+        image: string | Media;
+        title: string;
+        description: string;
+        buttonText: string;
+        link?: {
+          type: 'internal' | 'external';
+          url: string;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-content_select".
+ */
+export interface HomeContentSelect<T extends boolean = true> {
+  aboutIntro?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        lead?: T;
+        image?: T;
+        imageAlt?: T;
+      };
+  featureCards?:
+    | T
+    | {
+        image?: T;
+        title?: T;
+        description?: T;
+        buttonText?: T;
+        link?:
+          | T
+          | {
+              type?: T;
+              url?: T;
+            };
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-content".
+ *
+ * NOTE: hand-written — see the comment on `HomeContent` above.
+ */
+export interface AboutContent {
+  id: string;
+  hero?: {
+    eyebrow: string;
+    heading: string;
+    lead: string;
+    image?: (string | null) | Media;
+    imageAlt: string;
+  };
+  mediaBlocks?:
+    | {
+        eyebrow?: string | null;
+        heading: string;
+        paragraphs?:
+          | {
+              text: string;
+              id?: string | null;
+            }[]
+          | null;
+        images?:
+          | {
+              image?: (string | null) | Media;
+              alt: string;
+              id?: string | null;
+            }[]
+          | null;
+        id?: string | null;
+      }[]
+    | null;
+  callout?: {
+    text: string;
+  };
+  production?: {
+    heading: string;
+    subheading: string;
+    steps?:
+      | {
+          title: string;
+          description: string;
+          icon: 'cut' | 'apply' | 'assemble' | 'inspect' | 'pack';
+          id?: string | null;
+        }[]
+      | null;
+  };
+  productionWater?: {
+    heading: string;
+    subheading: string;
+    steps?:
+      | {
+          title: string;
+          description: string;
+          icon: 'cut' | 'apply' | 'assemble' | 'inspect' | 'pack';
+          id?: string | null;
+        }[]
+      | null;
+  };
+  standards?: {
+    heading: string;
+    paragraphs?:
+      | {
+          text: string;
+          id?: string | null;
+        }[]
+      | null;
+    materials?:
+      | {
+          title: string;
+          description: string;
+          id?: string | null;
+        }[]
+      | null;
+    filmBrands?:
+      | {
+          name: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  quality?: {
+    heading: string;
+    subheading: string;
+    checks?:
+      | {
+          title: string;
+          description: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  geography?: {
+    heading: string;
+    subheading: string;
+    regionsCount: string;
+    image?: (string | null) | Media;
+    routes?:
+      | {
+          name: string;
+          description: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  timeline?: {
+    heading: string;
+    subheading: string;
+    events?:
+      | {
+          year: string;
+          title: string;
+          description: string;
+          highlight?: string | null;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "about-content_select".
+ */
+export interface AboutContentSelect<T extends boolean = true> {
+  hero?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        lead?: T;
+        image?: T;
+        imageAlt?: T;
+      };
+  mediaBlocks?:
+    | T
+    | {
+        eyebrow?: T;
+        heading?: T;
+        paragraphs?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        images?:
+          | T
+          | {
+              image?: T;
+              alt?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  callout?:
+    | T
+    | {
+        text?: T;
+      };
+  production?:
+    | T
+    | {
+        heading?: T;
+        subheading?: T;
+        steps?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              icon?: T;
+              id?: T;
+            };
+      };
+  productionWater?:
+    | T
+    | {
+        heading?: T;
+        subheading?: T;
+        steps?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              icon?: T;
+              id?: T;
+            };
+      };
+  standards?:
+    | T
+    | {
+        heading?: T;
+        paragraphs?:
+          | T
+          | {
+              text?: T;
+              id?: T;
+            };
+        materials?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              id?: T;
+            };
+        filmBrands?:
+          | T
+          | {
+              name?: T;
+              id?: T;
+            };
+      };
+  quality?:
+    | T
+    | {
+        heading?: T;
+        subheading?: T;
+        checks?:
+          | T
+          | {
+              title?: T;
+              description?: T;
+              id?: T;
+            };
+      };
+  geography?:
+    | T
+    | {
+        heading?: T;
+        subheading?: T;
+        regionsCount?: T;
+        image?: T;
+        routes?:
+          | T
+          | {
+              name?: T;
+              description?: T;
+              id?: T;
+            };
+      };
+  timeline?:
+    | T
+    | {
+        heading?: T;
+        subheading?: T;
+        events?:
+          | T
+          | {
+              year?: T;
+              title?: T;
+              description?: T;
+              highlight?: T;
+              id?: T;
+            };
       };
   updatedAt?: T;
   createdAt?: T;

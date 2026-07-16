@@ -17,7 +17,14 @@ import {
   ProductionProcessSection,
   QualityControlSection,
 } from "@/modules/about";
+import {
+  mapAboutGeography,
+  mapAboutMediaBlocks,
+  mapAboutStandards,
+  mapIntroToHero,
+} from "@/modules/about/utils/mapAboutContent";
 import { aboutPage, baseURL } from "@/resources/content";
+import { getAboutContent } from "@/services/payload/content";
 
 const breadcrumbItems: BreadcrumbItem[] = [
   { title: "Главная", href: "/" },
@@ -34,7 +41,13 @@ export async function generateMetadata() {
   });
 }
 
-export default function AboutPage() {
+export default async function AboutPage() {
+  const content = await getAboutContent();
+  const hero = mapIntroToHero(content.hero);
+  const mediaBlocks = mapAboutMediaBlocks(content.mediaBlocks);
+  const standards = mapAboutStandards(content.standards);
+  const geography = mapAboutGeography(content.geography);
+
   return (
     <Column maxWidth="m" gap="0" paddingY="12" horizontal="center">
       <Schema
@@ -52,9 +65,9 @@ export default function AboutPage() {
       </div>
 
       <div className="flex flex-col gap-16 md:gap-24 w-full pb-16 md:pb-24">
-        <AboutHero hero={aboutPage.hero} />
+        <AboutHero hero={hero} />
 
-        {aboutPage.mediaBlocks.map((block, index) => (
+        {mediaBlocks.map((block, index) => (
           <AboutMediaShowcase
             key={index}
             block={block}
@@ -62,39 +75,40 @@ export default function AboutPage() {
           />
         ))}
 
-        <AboutCallout text={aboutPage.callout.text} />
+        <AboutCallout text={content.callout.text} />
 
         <ProductionProcessSection
-          heading={aboutPage.production.heading}
-          subheading={aboutPage.production.subheading}
-          steps={aboutPage.production.steps}
+          heading={content.production.heading}
+          subheading={content.production.subheading}
+          steps={content.production.steps ?? []}
         />
         <ProductionProcessSection
-          heading={aboutPage.productionWater.heading}
-          subheading={aboutPage.productionWater.subheading}
-          steps={aboutPage.productionWater.steps}
+          heading={content.productionWater.heading}
+          subheading={content.productionWater.subheading}
+          steps={content.productionWater.steps ?? []}
         />
 
-        <AboutStandards standards={aboutPage.standards} />
+        <AboutStandards standards={standards} />
 
         <QualityControlSection
-          heading={aboutPage.quality.heading}
-          subheading={aboutPage.quality.subheading}
-          checks={aboutPage.quality.checks}
-          brands={aboutPage.standards.filmBrands}
+          heading={content.quality.heading}
+          subheading={content.quality.subheading}
+          checks={content.quality.checks ?? []}
+          brands={standards.filmBrands}
         />
 
         <GeographySection
-          heading={aboutPage.geography.heading}
-          subheading={aboutPage.geography.subheading}
-          regionsCount={aboutPage.geography.regionsCount}
-          routes={aboutPage.geography.routes}
+          heading={geography.heading}
+          subheading={geography.subheading}
+          regionsCount={geography.regionsCount}
+          routes={geography.routes}
+          image={geography.image}
         />
 
         <AboutTimeline
-          heading={aboutPage.timeline.heading}
-          subheading={aboutPage.timeline.subheading}
-          events={aboutPage.timeline.events}
+          heading={content.timeline.heading}
+          subheading={content.timeline.subheading}
+          events={content.timeline.events ?? []}
         />
 
         <AboutDirections

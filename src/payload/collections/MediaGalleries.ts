@@ -1,6 +1,10 @@
 // src/payload/collections/MediaGalleries.ts
 import type { CollectionConfig } from "payload";
 import { isAdminOrManager } from "../access/isAdminOrManager.ts";
+import {
+  revalidateMediaGalleriesAfterChange,
+  revalidateMediaGalleriesAfterDelete,
+} from "../hooks/revalidateMediaGalleries.ts";
 
 /**
  * Универсальная коллекция медиа-подборок для блоков сайта.
@@ -27,6 +31,10 @@ export const MediaGalleries: CollectionConfig = {
     create: isAdminOrManager,
     update: isAdminOrManager,
     delete: isAdminOrManager,
+  },
+  hooks: {
+    afterChange: [revalidateMediaGalleriesAfterChange],
+    afterDelete: [revalidateMediaGalleriesAfterDelete],
   },
   fields: [
     {

@@ -1,8 +1,13 @@
 import type { CollectionConfig } from 'payload'
 import { isAdminOrManager } from '../access/isAdminOrManager.ts'
+import { revalidateMediaAfterChange, revalidateMediaAfterDelete } from '../hooks/revalidateMedia.ts'
 
 export const Media: CollectionConfig = {
   slug: 'media',
+  hooks: {
+    afterChange: [revalidateMediaAfterChange],
+    afterDelete: [revalidateMediaAfterDelete],
+  },
   upload: {
     staticDir: 'media',
     // staticURL: '/media',

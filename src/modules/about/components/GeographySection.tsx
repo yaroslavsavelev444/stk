@@ -1,12 +1,16 @@
 import Image from "next/image";
 import { Reveal } from "@/components/UI/Reveal/Reveal";
-import type { AboutRouteItem } from "@/modules/about/types";
+import type { AboutGeographyContent, AboutRouteItem } from "@/modules/about/types";
+import { resolveMediaPath } from "@/utils/resolveMediaPath";
+
+const DEFAULT_MAP_IMAGE = "/images/about/delivery-map.jpg";
 
 interface GeographySectionProps {
   heading: string;
   subheading: string;
   regionsCount: string;
   routes: AboutRouteItem[];
+  image?: AboutGeographyContent["image"];
 }
 
 export function GeographySection({
@@ -14,7 +18,13 @@ export function GeographySection({
   subheading,
   regionsCount,
   routes,
+  image,
 }: GeographySectionProps) {
+  const mapImageUrl = resolveMediaPath(image) || DEFAULT_MAP_IMAGE;
+  const mapImageAlt =
+    (typeof image === "object" && image?.alt) ||
+    "Карта регионов поставки дорожных знаков СТК-Актив по России";
+
   return (
     <section className="w-full max-w-6xl mx-auto px-4 sm:px-6">
       <div className="grid grid-cols-1 items-center gap-8 lg:grid-cols-[1fr_1.1fr] lg:gap-12">
@@ -71,8 +81,8 @@ export function GeographySection({
             }}
           >
             <Image
-              src="/images/about/delivery-map.jpg"
-              alt="Карта регионов поставки дорожных знаков СТК-Актив по России"
+              src={mapImageUrl}
+              alt={mapImageAlt}
               width={1024}
               height={640}
               className="h-auto w-full"

@@ -3,20 +3,15 @@ import { useEffect, useRef, useState, useCallback } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 import { ChevronRight, LayoutGrid, X } from 'lucide-react'
-import type { Category } from '@/payload-types'
+import type { Category, Subcategory } from '@/payload-types'
 
-export interface CategoryWithGroups {
+export interface CategoryWithSubcategories {
   category: Category
-  groups: string[]
+  subcategories: Subcategory[]
 }
 
 interface CatalogMenuProps {
-  items: CategoryWithGroups[]
-}
-
-function capitalize(s: string) {
-  if (!s) return s
-  return s.charAt(0).toUpperCase() + s.slice(1)
+  items: CategoryWithSubcategories[]
 }
 
 export function CatalogMenu({ items }: CatalogMenuProps) {
@@ -168,7 +163,7 @@ export function CatalogMenu({ items }: CatalogMenuProps) {
                 <div className="flex-1 overflow-y-auto overscroll-contain p-6 lg:p-10 touch-pan-y">
                   <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-8 gap-y-10">
                     {items.map((item) => {
-                      const hasGroups = item.groups.length > 0
+                      const hasSubcategories = item.subcategories.length > 0
                       return (
                         <div key={item.category.id} className="flex flex-col">
                           <div className="mb-4">
@@ -186,16 +181,16 @@ export function CatalogMenu({ items }: CatalogMenuProps) {
                             )}
                           </div>
 
-                          {hasGroups ? (
+                          {hasSubcategories ? (
                             <ul className="space-y-1 text-sm">
-                              {item.groups.map((group) => (
-                                <li key={group}>
+                              {item.subcategories.map((subcategory) => (
+                                <li key={subcategory.id}>
                                   <Link
-                                    href={`/catalog/${item.category.slug}?group=${encodeURIComponent(group)}`}
+                                    href={`/catalog/${item.category.slug}?sub=${encodeURIComponent(subcategory.id)}`}
                                     onClick={close}
                                     className="block py-1.5 px-2 -mx-2 rounded-xl text-[var(--text-secondary)] hover:bg-[var(--surface)] hover:text-[var(--text-primary)] transition-all"
                                   >
-                                    {capitalize(group)}
+                                    {subcategory.name}
                                   </Link>
                                 </li>
                               ))}

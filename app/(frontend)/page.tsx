@@ -4,17 +4,12 @@ import { CategoriesGrid } from "@/components/categories";
 import { HeroSection } from "@/components/hero/HeroSection";
 import { Reveal } from "@/components/UI/Reveal/Reveal";
 import { AboutHero } from "@/modules/about";
-import { TrustBar, WhyUsSection } from "@/modules/home";
+import { mapHomeAboutIntro } from "@/modules/about/utils/mapAboutContent";
+import { FeatureCards, TrustBar, WhyUsSection } from "@/modules/home";
 import { CertificatesSection } from "@/modules/home/components/CertificatesSection";
 import { ReviewsSection } from "@/modules/home/components/ReviewsSection";
-import {
-  baseURL,
-  home,
-  homeAboutIntro,
-  trustStats,
-  whyUsItems,
-} from "@/resources/content";
-import { getCachedSettings } from "@/services/payload/settings";
+import { baseURL, home, trustStats, whyUsItems } from "@/resources/content";
+import { getCachedSettings, getHomeAboutIntro } from "@/services/payload";
 
 export async function generateMetadata() {
   return Meta.generate({
@@ -28,6 +23,7 @@ export async function generateMetadata() {
 
 export default async function Home() {
   const settings = await getCachedSettings();
+  const aboutIntro = mapHomeAboutIntro(await getHomeAboutIntro());
 
   return (
     <Column maxWidth="m" gap="0" paddingY="0" horizontal="center">
@@ -48,11 +44,15 @@ export default async function Home() {
 
       <div className="flex flex-col gap-16 md:gap-24 w-full pb-16 md:pb-24">
         <Reveal translateY={16} fillWidth>
-          <AboutHero hero={homeAboutIntro} />
+          <AboutHero hero={aboutIntro} />
         </Reveal>
 
         {/* Тёмная полоса доверия — контраст между интро и аргументами */}
         <TrustBar stats={trustStats} />
+
+        <Reveal translateY={16} fillWidth>
+          <FeatureCards />
+        </Reveal>
 
         <WhyUsSection items={whyUsItems} />
 

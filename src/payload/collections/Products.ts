@@ -1,22 +1,26 @@
 import type { CollectionConfig } from 'payload'
 import { isAdminOrManager } from '../access/isAdminOrManager.ts'
 import { generateSlug } from '../../utils/generateSlug.ts'
-import { normalizeGroup } from '../hooks/normalizeGroup.ts'
 import { attributesField } from '../fields/attributes.ts'
 import { documentsField } from '../fields/documents.ts'
 import { seoField } from '../fields/seo.ts'
+import { revalidateProductsAfterChange, revalidateProductsAfterDelete } from '../hooks/revalidateProducts.ts'
 
 export const Products: CollectionConfig = {
   slug: 'products',
   admin: {
     useAsTitle: 'name',
-    defaultColumns: ['name', 'category', 'group', 'price', 'isPublished'],
+    defaultColumns: ['name', 'category', 'subcategory', 'price', 'isPublished'],
   },
   access: {
     read: () => true,
     create: isAdminOrManager,
     update: isAdminOrManager,
     delete: isAdminOrManager,
+  },
+  hooks: {
+    afterChange: [revalidateProductsAfterChange],
+    afterDelete: [revalidateProductsAfterDelete],
   },
   fields: [
     { name: 'name', type: 'text', required: true },
@@ -38,11 +42,19 @@ export const Products: CollectionConfig = {
     { name: 'description', type: 'textarea', required: true },
     { name: 'category', type: 'relationship', relationTo: 'categories', required: true },
     {
-      name: 'group',
-      type: 'text',
-      label: 'Группа (для заголовков в списке)',
-      hooks: { beforeChange: [normalizeGroup] },
-      admin: { description: 'Например: "трамвайные", "автомобильные". Будет приведено к нижнему регистру.' },
+      name: 'subcategory',
+      type: 'relationship',
+      relationTo: 'subcategories',
+      label: 'Подкатегория',
+      admin: {
+        description: 'Список ограничен подкатегориями выбранной категории. Сначала выберите категорию.',
+        condition: (data) => Boolean(data?.category),
+      },
+      filterOptions: ({ siblingData }) => {
+        const category = (siblingData as { category?: string } | undefined)?.category
+        if (!category) return false
+        return { category: { equals: category }, isPublished: { equals: true } }
+      },
     },
     { name: 'price', type: 'number', admin: { step: 0.01 } },
     { name: 'showPrice', type: 'checkbox', defaultValue: true },

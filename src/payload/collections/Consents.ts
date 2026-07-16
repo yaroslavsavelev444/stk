@@ -3,6 +3,7 @@ import type { CollectionConfig } from "payload";
 import { generateSlug } from "../../utils/generateSlug.ts";
 import { isAdminOrManager } from "../access/isAdminOrManager.ts";
 import { seoField } from "../fields/seo.ts";
+import { revalidateConsentsAfterChange, revalidateConsentsAfterDelete } from "../hooks/revalidateConsents.ts";
 
 export const Consents: CollectionConfig = {
   slug: "consents",
@@ -15,6 +16,10 @@ export const Consents: CollectionConfig = {
     create: isAdminOrManager,
     update: isAdminOrManager,
     delete: isAdminOrManager,
+  },
+  hooks: {
+    afterChange: [revalidateConsentsAfterChange],
+    afterDelete: [revalidateConsentsAfterDelete],
   },
   fields: [
     { name: "title", type: "text", required: true, label: "Название" },

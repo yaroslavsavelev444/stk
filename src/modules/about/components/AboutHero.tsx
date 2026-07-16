@@ -1,8 +1,12 @@
+import Image from "next/image";
 import { ImagePlaceholder } from "@/components/UI/ImagePlaceholder";
 import { Reveal } from "@/components/UI/Reveal/Reveal";
-import type { AboutPageContent } from "@/modules/about/types";
+import type { AboutHeroContent } from "@/modules/about/types";
+import { resolveMediaPath } from "@/utils/resolveMediaPath";
 
-export function AboutHero({ hero }: { hero: AboutPageContent["hero"] }) {
+export function AboutHero({ hero }: { hero: AboutHeroContent }) {
+  const imagePath = resolveMediaPath(hero.heroImage);
+
   return (
     <section className="w-full max-w-6xl mx-auto px-4 sm:px-6">
       <Reveal translateY={16} fillWidth>
@@ -25,7 +29,26 @@ export function AboutHero({ hero }: { hero: AboutPageContent["hero"] }) {
 
       <Reveal translateY={20} fillWidth delay={0.24}>
         <div className="mt-8 md:mt-10">
-          <ImagePlaceholder alt={hero.heroImageAlt} aspect="aspect-[16/7]" />
+          {imagePath ? (
+            <div
+              className="relative w-full overflow-hidden aspect-[16/7]"
+              style={{ borderRadius: "var(--radius-lg)" }}
+            >
+              <Image
+                src={imagePath}
+                alt={
+                  (typeof hero.heroImage === "object" && hero.heroImage?.alt) ||
+                  hero.heroImageAlt
+                }
+                fill
+                sizes="(max-width: 1024px) 100vw, 1024px"
+                className="object-cover"
+                priority
+              />
+            </div>
+          ) : (
+            <ImagePlaceholder alt={hero.heroImageAlt} aspect="aspect-[16/7]" />
+          )}
         </div>
       </Reveal>
     </section>

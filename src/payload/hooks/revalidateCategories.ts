@@ -1,12 +1,15 @@
-import { revalidateTag } from "next/cache";
 import type { CollectionAfterChangeHook, CollectionAfterDeleteHook } from "payload";
+import { revalidateTags } from "./revalidateTags.ts";
 
-export const revalidateCategoriesAfterChange: CollectionAfterChangeHook = ({ doc }) => {
-  revalidateTag("categories", { expire: 0 });
+// Категории встраиваются в товары через relationship (название и slug
+// показываются в карточках товара и хлебных крошках), поэтому изменение
+// категории должно сбрасывать и кэш товаров, а не только "categories".
+export const revalidateCategoriesAfterChange: CollectionAfterChangeHook = async ({ doc }) => {
+  await revalidateTags(["categories", "products"]);
   return doc;
 };
 
-export const revalidateCategoriesAfterDelete: CollectionAfterDeleteHook = ({ doc }) => {
-  revalidateTag("categories", { expire: 0 });
+export const revalidateCategoriesAfterDelete: CollectionAfterDeleteHook = async ({ doc }) => {
+  await revalidateTags(["categories", "products"]);
   return doc;
 };
