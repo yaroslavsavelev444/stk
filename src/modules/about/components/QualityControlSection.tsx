@@ -35,7 +35,12 @@ export function QualityControlSection({
   const prefersReducedMotion = usePrefersReducedMotion();
 
   return (
-    <section className="w-full overflow-x-hidden">
+    // overflow-x-clip вместо overflow-x-hidden: пара "overflow-x: hidden" +
+    // "overflow-y: visible" (по умолчанию) по спецификации CSS вычисляется
+    // браузером как "overflow-y: auto" — секция получала собственный
+    // вертикальный скроллбар. У overflow-clip такого легаси-поведения нет,
+    // и прокрутка остаётся только у страницы.
+    <section className="w-full overflow-x-clip">
       <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
         <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-14 [&>*]:min-w-0">
           <div className="flex flex-col">

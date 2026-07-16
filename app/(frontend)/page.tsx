@@ -50,9 +50,7 @@ export default async function Home() {
         {/* Тёмная полоса доверия — контраст между интро и аргументами */}
         <TrustBar stats={trustStats} />
 
-        <Reveal translateY={16} fillWidth>
-          <FeatureCards />
-        </Reveal>
+        <FeatureCards />
 
         <WhyUsSection items={whyUsItems} />
 
@@ -60,17 +58,13 @@ export default async function Home() {
           <CategoriesGrid />
         </Reveal>
 
-        <Reveal translateY={16} fillWidth delay={0.1}>
-          <CertificatesSection />
-        </Reveal>
+        <CertificatesSection />
 
-        <Reveal translateY={16} fillWidth delay={0.1}>
-          <ReviewsSection />
-        </Reveal>
+        <ReviewsSection />
 
         <Reveal translateY={16} fillWidth delay={0.15}>
           <div className="w-full max-w-6xl mx-auto px-4 sm:px-6">
-            <div className="mb-8 flex flex-col gap-2 text-center">
+            <div className="mb-8 flex w-full flex-col gap-2 text-center">
               <h2 className="text-[clamp(1.375rem,2.6vw,1.875rem)] font-bold text-(--text-primary)">
                 Обсудим ваш проект?
               </h2>

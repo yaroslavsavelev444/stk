@@ -28,7 +28,7 @@ export function WhyUsSection({
   return (
     <section className="w-full max-w-6xl mx-auto px-4 sm:px-6">
       <Reveal translateY={16} fillWidth>
-        <div className="mb-8 flex flex-col gap-2 text-center md:mb-10">
+        <div className="mb-8 flex w-full flex-col gap-2 text-center md:mb-10">
           <h2 className="text-[clamp(1.375rem,2.6vw,1.875rem)] font-bold text-[var(--text-primary)]">
             {heading}
           </h2>

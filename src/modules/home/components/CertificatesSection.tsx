@@ -1,4 +1,5 @@
 // src/modules/home/components/CertificatesSection.tsx
+import { Reveal } from "@/components/UI/Reveal/Reveal";
 import { MediaGallery } from "@/modules/mediagalleries";
 import { getCachedMediaGalleryByKey } from "@/services/payload/media-galleries";
 
@@ -14,15 +15,20 @@ export async function CertificatesSection() {
   if (!gallery || gallery.items.length === 0) return null;
 
   return (
-    <div className="w-full max-w-6xl mx-auto px-4 sm:px-6">
-      <MediaGallery
-        items={gallery.items}
-        variant="grid"
-        title={gallery.title || "Сертификаты и документы"}
-        description={gallery.description}
-        aspect="aspect-[3/4]"
-        fit="contain"
-      />
-    </div>
+    // Reveal — внутри условия на пустые данные, иначе пустая обёртка
+    // всё равно становится flex-элементом родительского списка секций
+    // и добавляет лишний gap до и после себя.
+    <Reveal translateY={16} fillWidth delay={0.1}>
+      <div className="w-full max-w-6xl mx-auto px-4 sm:px-6">
+        <MediaGallery
+          items={gallery.items}
+          variant="grid"
+          title={gallery.title || "Сертификаты и документы"}
+          description={gallery.description}
+          aspect="aspect-[3/4]"
+          fit="contain"
+        />
+      </div>
+    </Reveal>
   );
 }
