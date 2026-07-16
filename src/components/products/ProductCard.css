@@ -1,63 +1,112 @@
 /* ═══════════════════════════════════════════════════════════════════
-   ProductCard — bento-style card for industrial product catalog
-   Relies on CSS variables from theme.css
+   ProductCard — «продукт на освещённом подиуме»
+   Премиальная e-commerce карточка без залитого фона. Товар (PNG без фона)
+   читается как отдельный объект: парит над сценой и отбрасывает тень
+   собственным силуэтом (drop-shadow по alpha — устойчиво к любому PNG).
+   Всё на CSS, без JS — карточка легковесна для длинных каталогов.
+   Опирается на CSS-переменные из theme.css.
    ═══════════════════════════════════════════════════════════════════ */
 
-/* ── Card container ──────────────────────────────────────────────── */
+/* ── Карточка (ссылка) — прозрачная, без заливки ─────────────────── */
 
 .product-card {
   display: flex;
   flex-direction: column;
   height: 100%;
 
-  background-color: var(--background);
-  border: 1px solid var(--border);
+  /* Ключевое: без залитого фона. Карточку очерчивает лишь товар и
+     деликатный ховер-контур, а не прямоугольный блок с фоном. */
+  background: transparent;
   border-radius: var(--radius-lg);
-  overflow: hidden;
-
-  /* Subtle lift — separation without drama */
-  box-shadow: 0 1px 3px var(--shadow-color);
-
-  /* Smooth hover transition */
-  transition:
-    box-shadow 0.2s ease,
-    border-color 0.2s ease,
-    transform 0.2s ease;
 
   text-decoration: none;
   color: inherit;
-}
+  -webkit-tap-highlight-color: transparent;
 
-.product-card:hover {
-  box-shadow: 0 4px 16px var(--shadow-color);
-  border-color: var(--primary-200);
-  transform: translateY(-2px);
+  transition:
+    transform 0.4s cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 0.4s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .product-card:focus-visible {
   outline: 2px solid var(--primary);
-  outline-offset: 2px;
+  outline-offset: 4px;
+  border-radius: var(--radius-lg);
 }
 
-/* ── Image block ─────────────────────────────────────────────────── */
+/* ── Сцена (зона изображения) ────────────────────────────────────── */
 
-.product-image-wrap {
+.product-stage {
   position: relative;
   aspect-ratio: 4 / 3;
+  border-radius: var(--radius-lg);
+  /* Не прячем overflow: приподнятый товар и его тень не должны обрезаться.
+     Фон/свет сцены клипуется отдельным слоем ниже. */
+  isolation: isolate;
+}
+
+/* Поверхность сцены: мягкий световой «пул» под товаром, затухающий к краям.
+   Не заливка и не прямоугольный бокс — товар читается как парящий объект,
+   а не «знак в сером блоке». Основную глубину даёт тень по силуэту PNG. */
+.product-stage__surface {
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
   overflow: hidden;
-  /* No extra border-radius — card overflow:hidden handles top corners */
-  background-color: var(--surface-secondary);
-  flex-shrink: 0;
+
+  background:
+    radial-gradient(
+      72% 62% at 50% 42%,
+      color-mix(in srgb, var(--primary) 5%, transparent) 0%,
+      transparent 72%
+    ),
+    radial-gradient(
+      88% 78% at 50% 46%,
+      color-mix(in srgb, var(--surface-secondary) 62%, transparent) 0%,
+      transparent 80%
+    );
+
+  transition: opacity 0.4s ease;
+}
+
+/* Дополнительный слой света, который «зажигается» на ховере (анимируем opacity,
+   а не сам градиент — дёшево для GPU). */
+.product-stage__surface::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    90% 70% at 50% 42%,
+    color-mix(in srgb, var(--primary) 10%, transparent) 0%,
+    transparent 65%
+  );
+  opacity: 0;
+  transition: opacity 0.45s ease;
+}
+
+/* ── Изображение товара ──────────────────────────────────────────── */
+
+.product-image-wrap {
+  position: absolute;
+  inset: 0;
+  padding: 11%;
+  z-index: 1;
+  /* Тень товара при подъёме уходит за пределы паддинга — не обрезаем. */
+  overflow: visible;
 }
 
 .product-image {
-  object-fit: cover;
-  transition: transform 0.45s ease;
-}
-
-/* Preserve existing hover zoom */
-.product-card:hover .product-image {
-  transform: scale(1.05);
+  /* contain: не растягиваем, не обрезаем, сохраняем пропорции. */
+  object-fit: contain;
+  /* Тень по силуэту PNG (по alpha), а не по прямоугольнику — работает для
+     любых форм и больших прозрачных областей. */
+  filter: drop-shadow(0 8px 10px rgba(24, 24, 27, 0.1));
+  transform: translateZ(0);
+  transition:
+    transform 0.45s cubic-bezier(0.22, 1, 0.36, 1),
+    filter 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: transform;
 }
 
 .product-image-placeholder {
@@ -66,7 +115,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: var(--surface-secondary);
+  border-radius: inherit;
 }
 
 .product-image-placeholder span {
@@ -74,16 +123,44 @@
   color: var(--text-muted);
 }
 
-/* ── Badges — overlaid on image ──────────────────────────────────── */
+/* ── Ховер: товар приподнимается, тень растёт, свет теплеет ───────── */
+
+@media (hover: hover) {
+  .product-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .product-card:hover .product-image {
+    transform: translateY(-8px) scale(1.04);
+    filter: drop-shadow(0 22px 26px rgba(24, 24, 27, 0.18));
+  }
+
+  .product-card:hover .product-stage__surface::after {
+    opacity: 1;
+  }
+
+  .product-card:hover .product-cta {
+    color: var(--text-inverse);
+    background: var(--primary);
+    border-color: var(--primary);
+  }
+
+  .product-card:hover .product-cta svg {
+    transform: translateX(2px);
+  }
+}
+
+/* ── Бейджи — поверх сцены ───────────────────────────────────────── */
 
 .product-badges {
   position: absolute;
-  top: 10px;
-  left: 10px;
+  top: 12px;
+  left: 12px;
+  z-index: 2;
   display: flex;
   flex-wrap: wrap;
   gap: 5px;
-  /* Pointer events transparent so image hover still fires */
+  max-width: calc(100% - 24px);
   pointer-events: none;
 }
 
@@ -91,112 +168,185 @@
   display: inline-block;
   padding: 3px 9px;
   border-radius: 999px;
-  font-size: 0.6875rem;  /* 11px */
+  font-size: 0.6875rem; /* 11px */
   font-weight: 600;
   line-height: 1.4;
   letter-spacing: 0.01em;
   white-space: nowrap;
+  backdrop-filter: blur(6px);
 }
 
-/* Новинка — brand blue tint */
 .badge-new {
-  background-color: var(--primary-100);
+  background-color: color-mix(in srgb, var(--primary-100) 85%, transparent);
   color: var(--primary-700);
 }
 
-/* Хит — warm amber */
 .badge-hit {
-  background-color: var(--warning-light);
-  color: #92400E; /* amber-800, dark enough on warning-light */
+  background-color: color-mix(in srgb, var(--warning-light) 88%, transparent);
+  color: #92400e;
 }
 
-/* Акция — accent red */
 .badge-sale {
-  background-color: var(--accent-soft);
+  background-color: color-mix(in srgb, var(--accent-50) 90%, transparent);
   color: var(--accent-700);
 }
 
-/* ГОСТ — neutral/dark */
 .badge-gost {
-  background-color: var(--surface-secondary);
+  background-color: color-mix(in srgb, var(--surface-secondary) 88%, transparent);
   color: var(--text-secondary);
-  border: 1px solid var(--border);
+  box-shadow: inset 0 0 0 1px var(--border);
 }
 
-/* ── Content area ────────────────────────────────────────────────── */
+/* ── Контент (текстовая зона на фоне страницы, без заливки) ───────── */
 
-.product-content {
+.product-body {
   display: flex;
   flex-direction: column;
-  flex: 1;              /* fills remaining card height */
-  padding: 14px 16px 16px;
-  gap: 10px;
+  flex: 1;
+  padding: 14px 4px 4px;
+  gap: 12px;
 }
 
-/* ── Product name ────────────────────────────────────────────────── */
+/* Фиксированная текстовая зона: имя (до 2 строк) + описание (до 2 строк).
+   min-height нормализует высоту карточек, даже если описания нет. */
+.product-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-height: calc(2 * 1.4em + 6px + 2 * 1.45em);
+}
 
 .product-name {
   margin: 0;
-  font-size: 0.9375rem;  /* 15px */
+  font-size: 0.9375rem; /* 15px */
   font-weight: 600;
-  line-height: 1.45;
+  line-height: 1.4;
+  letter-spacing: -0.012em;
   color: var(--text-primary);
-  letter-spacing: -0.01em;
 
-  /* Clamp to 3 lines — prevents layout shifts */
   display: -webkit-box;
   -webkit-box-orient: vertical;
-  -webkit-line-clamp: 3;
+  -webkit-line-clamp: 2;
   overflow: hidden;
-
-  /* Let this area grow so footer is always pinned bottom */
-  flex: 1;
 }
 
-/* ── Footer (price) ──────────────────────────────────────────────── */
+.product-description {
+  margin: 0;
+  font-size: 0.8125rem; /* 13px */
+  font-weight: 400;
+  line-height: 1.45;
+  color: var(--text-muted);
+
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+/* ── Футер: цена + CTA, всегда прижат к низу ──────────────────────── */
 
 .product-footer {
-  flex-shrink: 0;
-  padding-top: 4px;
-  border-top: 1px solid var(--border-light);
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  min-height: 34px;
 }
-
-/* ── Price ───────────────────────────────────────────────────────── */
 
 .product-price {
-  font-size: 1.0625rem;  /* 17px */
+  font-size: 1.0625rem; /* 17px */
   font-weight: 700;
-  line-height: 1;
-  color: var(--primary);
-  letter-spacing: -0.01em;
+  line-height: 1.1;
+  color: var(--text-primary);
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
 }
 
-/* Invisible placeholder when price is absent — keeps footer height */
+/* Префикс «от» для товаров с вариантами — визуально тише самой цены. */
+.product-price-from {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  letter-spacing: 0;
+}
+
 .product-price-empty {
-  height: 1.0625rem;
+  color: var(--text-muted);
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+/* Круглый CTA-«перейти». Виден и на тач (покоящееся состояние), на десктопе
+   заливается брендом на ховере. */
+.product-cta {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  color: var(--primary);
+  background: color-mix(in srgb, var(--primary) 8%, transparent);
+  border: 1px solid color-mix(in srgb, var(--primary) 14%, transparent);
+  transition:
+    background 0.35s ease,
+    color 0.35s ease,
+    border-color 0.35s ease;
+}
+
+.product-cta svg {
+  width: 16px;
+  height: 16px;
+  transition: transform 0.35s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 /* ═══════════════════════════════════════════════════════════════════
-   Responsive tweaks
+   Адаптив
    ═══════════════════════════════════════════════════════════════════ */
 
-/* Mobile ≤ 480px — loosen padding a little */
 @media (max-width: 480px) {
-  .product-content {
-    padding: 12px 14px 14px;
+  .product-stage {
+    aspect-ratio: 5 / 4;
+  }
+
+  .product-image-wrap {
+    padding: 9%;
+  }
+
+  .product-body {
+    padding: 12px 2px 2px;
+    gap: 10px;
   }
 
   .product-name {
     font-size: 0.875rem;
-    -webkit-line-clamp: 2;
+  }
+
+  .product-description {
+    -webkit-line-clamp: 1;
+  }
+
+  .product-text {
+    min-height: calc(2 * 1.4em + 4px + 1 * 1.45em);
   }
 
   .product-price {
     font-size: 1rem;
   }
+}
 
-  .product-badge {
-    font-size: 0.625rem;  /* 10px */
-    padding: 2px 7px;
+/* Уважаем reduced-motion. */
+@media (prefers-reduced-motion: reduce) {
+  .product-card,
+  .product-card *,
+  .product-image {
+    transition: none !important;
+  }
+
+  .product-card:hover,
+  .product-card:hover .product-image {
+    transform: none;
   }
 }

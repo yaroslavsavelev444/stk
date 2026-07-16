@@ -4,7 +4,9 @@ import { generateSlug } from '../../utils/generateSlug.ts'
 import { attributesField } from '../fields/attributes.ts'
 import { documentsField } from '../fields/documents.ts'
 import { seoField } from '../fields/seo.ts'
+import { variantFields } from '../fields/variants.ts'
 import { revalidateProductsAfterChange, revalidateProductsAfterDelete } from '../hooks/revalidateProducts.ts'
+import { syncVariants } from '../hooks/syncVariants.ts'
 
 export const Products: CollectionConfig = {
   slug: 'products',
@@ -19,6 +21,7 @@ export const Products: CollectionConfig = {
     delete: isAdminOrManager,
   },
   hooks: {
+    beforeValidate: [syncVariants],
     afterChange: [revalidateProductsAfterChange],
     afterDelete: [revalidateProductsAfterDelete],
   },
@@ -56,8 +59,19 @@ export const Products: CollectionConfig = {
         return { category: { equals: category }, isPublished: { equals: true } }
       },
     },
-    { name: 'price', type: 'number', admin: { step: 0.01 } },
+    {
+      name: 'price',
+      type: 'number',
+      label: 'Цена (базовая)',
+      admin: {
+        step: 0.01,
+        description:
+          'Базовая цена для каталога и карточек. Если включены варианты — подставляется автоматически как минимальная цена комбинации («от X ₽»).',
+      },
+    },
     { name: 'showPrice', type: 'checkbox', defaultValue: true },
+
+    ...variantFields,
 
     attributesField,
     documentsField,

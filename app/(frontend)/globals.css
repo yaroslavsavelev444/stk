@@ -12,10 +12,46 @@
 }
 
 html {
+  /* Fallback для случая, когда JS/Lenis недоступен (SSR, ошибка гидрации). */
   scroll-behavior: smooth;
   /* Full-bleed секции (Hero) используют 100vw — без этого появлялся
      горизонтальный скролл на ширину скроллбара. */
   overflow-x: hidden;
+}
+
+/* ===========================================================================
+   Lenis — обязательные стили (эквивалент lenis/dist/lenis.css, инлайн, чтобы
+   не зависеть от export-map пакета). Класс `lenis` вешается на <html>, пока
+   инстанс активен.
+   =========================================================================== */
+
+/* Без height:auto расчёт высоты Lenis ломается на длинных страницах —
+   каталог «перестаёт прокручиваться». Критично. */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+/* Когда Lenis активен, он сам управляет скроллом. Нативный smooth-scroll
+   конфликтует с его программным scrollTo (якоря, «наверх») → залипания. */
+html.lenis {
+  scroll-behavior: auto;
+}
+
+/* Корректная блокировка страницы под модалками (Lenis.stop()). */
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+/* Вложенные скролл-области (модалки, sticky-панели) не «протекают» на страницу. */
+.lenis [data-lenis-prevent],
+.lenis [data-lenis-prevent-wheel],
+.lenis [data-lenis-prevent-touch] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
 }
 
 html,

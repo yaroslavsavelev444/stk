@@ -227,6 +227,28 @@ export interface Product {
   subcategory?: (string | null) | Subcategory;
   price?: number | null;
   showPrice?: boolean | null;
+  useVariants?: boolean | null;
+  variantGroups?:
+    | {
+        label: string;
+        displayType: 'list' | 'dropdown';
+        code?: string | null;
+        values: {
+          label: string;
+          code?: string | null;
+          id?: string | null;
+        }[];
+        id?: string | null;
+      }[]
+    | null;
+  variantCombinations?:
+    | {
+        label?: string | null;
+        price?: number | null;
+        key: string;
+        id?: string | null;
+      }[]
+    | null;
   attributes?:
     | {
         title: string;

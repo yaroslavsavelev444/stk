@@ -5,6 +5,7 @@ import React from 'react';
 import type { Product } from '@/payload-types';
 import AttributeGroup from '../components/AttributeGroup';
 import ProductDocuments from '../components/ProductDocuments';
+import ProductVariants from '../components/variants/ProductVariants';
 
 type ProductInfoProps = {
   product: Product;
@@ -22,6 +23,11 @@ const ProductInfo: React.FC<ProductInfoProps> = ({ product }) => {
       <h1 className="text-[clamp(1.5rem,3vw,2rem)] font-bold leading-tight text-text-primary break-words hyphens-auto">
         {product.name}
       </h1>
+
+      {/* Варианты товара с зависимой ценой (если включены админом).
+          Выше описания: цена и выбор — ключевые элементы, не должны уезжать
+          под длинный текст. */}
+      {product.useVariants && <ProductVariants product={product} />}
 
       {/* Описание */}
       {product.description && (

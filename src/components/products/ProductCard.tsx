@@ -37,14 +37,6 @@ function ProductBadges({ badges }: ProductBadgesProps) {
   );
 }
 
-interface ProductPriceProps {
-  price: number;
-}
-
-function ProductPrice({ price }: ProductPriceProps) {
-  return <div className="product-price">{price.toLocaleString("ru-RU")} ₽</div>;
-}
-
 interface ProductImageProps {
   imageUrl: string | null;
   altText: string;
@@ -61,25 +53,41 @@ function ProductImage({
   badges,
 }: ProductImageProps) {
   return (
-    <div className="product-image-wrap">
-      {imageUrl ? (
-        <Image
-          src={imageUrl}
-          alt={altText}
-          fill
-          className="product-image"
-          sizes={sizes}
-          loading={loading}
-          placeholder="blur"
-          blurDataURL="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSI0MCIgaGVpZ2h0PSI0MCIgdmlld0JveD0iMCAwIDQwIDQwIj48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSIjZTBlMGUwIi8+PC9zdmc+"
-        />
-      ) : (
-        <div className="product-image-placeholder">
-          <span>Нет фото</span>
-        </div>
-      )}
+    <div className="product-stage">
+      <div className="product-stage__surface" aria-hidden="true" />
+      <div className="product-image-wrap">
+        {imageUrl ? (
+          <Image
+            src={imageUrl}
+            alt={altText}
+            fill
+            className="product-image"
+            sizes={sizes}
+            loading={loading}
+          />
+        ) : (
+          <div className="product-image-placeholder">
+            <span>Нет фото</span>
+          </div>
+        )}
+      </div>
       <ProductBadges badges={badges} />
     </div>
+  );
+}
+
+/** Диагональная стрелка «перейти» — намекает на клик по карточке. */
+function GoIcon() {
+  return (
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+      <path
+        d="M7 17L17 7M17 7H9M17 7V15"
+        stroke="currentColor"
+        strokeWidth="2"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
   );
 }
 
@@ -117,6 +125,8 @@ export function ProductCard({
   const showPrice =
     product.showPrice && typeof product.price === "number" && product.price > 0;
 
+  const description = product.description?.trim();
+
   const badges: string[] = Array.isArray(product.badges) ? product.badges : [];
 
   return (
@@ -133,17 +143,29 @@ export function ProductCard({
         badges={badges}
       />
 
-      <div className="product-content">
-        {/* Title — grows to fill available space, clamped to 3 lines */}
-        <h3 className="product-name">{product.name}</h3>
+      <div className="product-body">
+        <div className="product-text">
+          <h3 className="product-name">{product.name}</h3>
+          {description ? (
+            <p className="product-description">{description}</p>
+          ) : null}
+        </div>
 
-        {/* Price pinned to bottom of content area */}
         <div className="product-footer">
           {showPrice ? (
-            <ProductPrice price={product.price!} />
+            <span className="product-price">
+              {product.useVariants ? (
+                <span className="product-price-from">от </span>
+              ) : null}
+              {product.price!.toLocaleString("ru-RU")} ₽
+            </span>
           ) : (
-            <div className="product-price-empty" aria-hidden="true" />
+            <span className="product-price-empty">Подробнее</span>
           )}
+
+          <span className="product-cta" aria-hidden="true">
+            <GoIcon />
+          </span>
         </div>
       </div>
     </Link>
