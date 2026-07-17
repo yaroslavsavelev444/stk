@@ -70,12 +70,23 @@ export default async function RootLayout({
 
   return (
     <Providers>
+      {/*
+        У <html> НЕ должно быть фиксированной высоты (height: 100%, 100vh и т.п.).
+        Lenis узнаёт о росте контента единственным способом — ResizeObserver на
+        document.documentElement, а тот реагирует на размер БОКСА, а не на
+        scrollHeight. С height: 100% бокс <html> навсегда равен высоте viewport,
+        RO не срабатывает, dimensions.scrollHeight остаётся от первого рендера,
+        и limit протухает: колесо упирается в старую границу, хотя страница
+        выросла. Клавиатура и скроллбар при этом работают, потому что скроллят
+        нативно, минуя clamp Lenis. Полноэкранность даёт min-height: 100vh на
+        <body> — фиксированная высота <html> для этого не нужна.
+        См. также html.lenis { height: auto } в globals.css.
+      */}
       <Flex
         as="html"
         lang="ru"
         fillWidth
         className={classNames(manrope.variable, mono.variable)}
-        style={{ height: "100%" }}
       >
         <Column
           as="body"

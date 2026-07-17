@@ -61,13 +61,20 @@ function FilterChip({
         "hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.96]",
         "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-[var(--primary)]",
         isSelected
-          ? "border-transparent text-white shadow-[0_4px_14px_-2px_var(--shadow-color)]"
+          ? "border-transparent shadow-[0_4px_14px_-2px_var(--shadow-color)]"
           : "border-[var(--border)] bg-[var(--surface)] text-[var(--text-secondary)] hover:border-[var(--primary-200)] hover:text-[var(--text-primary)] hover:bg-white",
       )}
+      // background и color заданы инлайном не для красоты: цвет ссылок задаёт
+      // правило `a:not(.button)` из стилей once-ui, объявленное вне CSS-слоёв, а
+      // утилиты Tailwind лежат в @layer utilities. Правила вне слоёв побеждают
+      // любой слой независимо от специфичности, поэтому класс text-white здесь
+      // молча не работал и текст оставался тёмным. Инлайн-стиль перебивает оба.
       style={{
         paddingLeft: "1rem",
         paddingRight: "1rem",
-        ...(isSelected ? { background: "var(--primary)" } : null),
+        ...(isSelected
+          ? { background: "var(--primary)", color: "var(--text-inverse)" }
+          : null),
       }}
     >
       {isSelected && <CheckIcon />}
