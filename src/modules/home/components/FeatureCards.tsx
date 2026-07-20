@@ -134,10 +134,15 @@ export async function FeatureCards() {
     // обёртка всё равно становится flex-элементом родительского списка
     // секций и добавляет лишний gap до и после себя.
     <Reveal translateY={16} fillWidth>
-      <section className="w-full max-w-6xl mx-auto px-4 sm:px-6">
+      <section className="w-[calc(100%+64px)] -ml-8 px-4 sm:px-6">
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-6">
           {cards.map((card, index) => (
-            <Reveal key={card.id ?? index} translateY={18} fillWidth delay={index * 0.08}>
+            <Reveal
+              key={card.id ?? index}
+              translateY={18}
+              fillWidth
+              delay={index * 0.08}
+            >
               <FeatureCard card={card} />
             </Reveal>
           ))}

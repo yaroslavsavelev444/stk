@@ -8,7 +8,7 @@ export function AboutHero({ hero }: { hero: AboutHeroContent }) {
   const imagePath = resolveMediaPath(hero.heroImage);
 
   return (
-    <section className="w-full max-w-6xl mx-auto px-4 sm:px-6">
+    <section className="w-full max-w-6xl mx-auto px-4 sm:px-6 pt-16">
       <Reveal translateY={16} fillWidth>
         <span className="mb-4 inline-block text-sm font-semibold uppercase tracking-[0.08em] text-[var(--primary)]">
           {hero.eyebrow}
