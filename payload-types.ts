@@ -13,53 +13,53 @@
  * via the `definition` "supportedTimezones".
  */
 export type SupportedTimezones =
-  | 'Pacific/Midway'
-  | 'Pacific/Niue'
-  | 'Pacific/Honolulu'
-  | 'Pacific/Rarotonga'
-  | 'America/Anchorage'
-  | 'Pacific/Gambier'
-  | 'America/Los_Angeles'
-  | 'America/Tijuana'
-  | 'America/Denver'
-  | 'America/Phoenix'
-  | 'America/Chicago'
-  | 'America/Guatemala'
-  | 'America/New_York'
-  | 'America/Bogota'
-  | 'America/Caracas'
-  | 'America/Santiago'
-  | 'America/Buenos_Aires'
-  | 'America/Sao_Paulo'
-  | 'Atlantic/South_Georgia'
-  | 'Atlantic/Azores'
-  | 'Atlantic/Cape_Verde'
-  | 'Europe/London'
-  | 'Europe/Berlin'
-  | 'Africa/Lagos'
-  | 'Europe/Athens'
-  | 'Africa/Cairo'
-  | 'Europe/Moscow'
-  | 'Asia/Riyadh'
-  | 'Asia/Dubai'
-  | 'Asia/Baku'
-  | 'Asia/Karachi'
-  | 'Asia/Tashkent'
-  | 'Asia/Calcutta'
-  | 'Asia/Dhaka'
-  | 'Asia/Almaty'
-  | 'Asia/Jakarta'
-  | 'Asia/Bangkok'
-  | 'Asia/Shanghai'
-  | 'Asia/Singapore'
-  | 'Asia/Tokyo'
-  | 'Asia/Seoul'
-  | 'Australia/Brisbane'
-  | 'Australia/Sydney'
-  | 'Pacific/Guam'
-  | 'Pacific/Noumea'
-  | 'Pacific/Auckland'
-  | 'Pacific/Fiji';
+  | "Pacific/Midway"
+  | "Pacific/Niue"
+  | "Pacific/Honolulu"
+  | "Pacific/Rarotonga"
+  | "America/Anchorage"
+  | "Pacific/Gambier"
+  | "America/Los_Angeles"
+  | "America/Tijuana"
+  | "America/Denver"
+  | "America/Phoenix"
+  | "America/Chicago"
+  | "America/Guatemala"
+  | "America/New_York"
+  | "America/Bogota"
+  | "America/Caracas"
+  | "America/Santiago"
+  | "America/Buenos_Aires"
+  | "America/Sao_Paulo"
+  | "Atlantic/South_Georgia"
+  | "Atlantic/Azores"
+  | "Atlantic/Cape_Verde"
+  | "Europe/London"
+  | "Europe/Berlin"
+  | "Africa/Lagos"
+  | "Europe/Athens"
+  | "Africa/Cairo"
+  | "Europe/Moscow"
+  | "Asia/Riyadh"
+  | "Asia/Dubai"
+  | "Asia/Baku"
+  | "Asia/Karachi"
+  | "Asia/Tashkent"
+  | "Asia/Calcutta"
+  | "Asia/Dhaka"
+  | "Asia/Almaty"
+  | "Asia/Jakarta"
+  | "Asia/Bangkok"
+  | "Asia/Shanghai"
+  | "Asia/Singapore"
+  | "Asia/Tokyo"
+  | "Asia/Seoul"
+  | "Australia/Brisbane"
+  | "Australia/Sydney"
+  | "Pacific/Guam"
+  | "Pacific/Noumea"
+  | "Pacific/Auckland"
+  | "Pacific/Fiji";
 
 export interface Config {
   auth: {
@@ -71,14 +71,14 @@ export interface Config {
     products: Product;
     subcategories: Subcategory;
     media: Media;
-    'callback-requests': CallbackRequest;
+    "callback-requests": CallbackRequest;
     users: User;
     consents: Consent;
-    'media-galleries': MediaGallery;
-    'payload-kv': PayloadKv;
-    'payload-locked-documents': PayloadLockedDocument;
-    'payload-preferences': PayloadPreference;
-    'payload-migrations': PayloadMigration;
+    "media-galleries": MediaGallery;
+    "payload-kv": PayloadKv;
+    "payload-locked-documents": PayloadLockedDocument;
+    "payload-preferences": PayloadPreference;
+    "payload-migrations": PayloadMigration;
   };
   collectionsJoins: {};
   collectionsSelect: {
@@ -86,30 +86,43 @@ export interface Config {
     products: ProductsSelect<false> | ProductsSelect<true>;
     subcategories: SubcategoriesSelect<false> | SubcategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    'callback-requests': CallbackRequestsSelect<false> | CallbackRequestsSelect<true>;
+    "callback-requests":
+      | CallbackRequestsSelect<false>
+      | CallbackRequestsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     consents: ConsentsSelect<false> | ConsentsSelect<true>;
-    'media-galleries': MediaGalleriesSelect<false> | MediaGalleriesSelect<true>;
-    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
-    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
-    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
-    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
+    "media-galleries": MediaGalleriesSelect<false> | MediaGalleriesSelect<true>;
+    "payload-kv": PayloadKvSelect<false> | PayloadKvSelect<true>;
+    "payload-locked-documents":
+      | PayloadLockedDocumentsSelect<false>
+      | PayloadLockedDocumentsSelect<true>;
+    "payload-preferences":
+      | PayloadPreferencesSelect<false>
+      | PayloadPreferencesSelect<true>;
+    "payload-migrations":
+      | PayloadMigrationsSelect<false>
+      | PayloadMigrationsSelect<true>;
   };
   db: {
     defaultIDType: string;
   };
-  fallbackLocale: ('false' | 'none' | 'null') | false | null | ('ru' | 'en') | ('ru' | 'en')[];
+  fallbackLocale:
+    | ("false" | "none" | "null")
+    | false
+    | null
+    | ("ru" | "en")
+    | ("ru" | "en")[];
   globals: {
     settings: Setting;
-    'home-content': HomeContent;
-    'about-content': AboutContent;
+    "home-content": HomeContent;
+    "about-content": AboutContent;
   };
   globalsSelect: {
     settings: SettingsSelect<false> | SettingsSelect<true>;
-    'home-content': HomeContentSelect<false> | HomeContentSelect<true>;
-    'about-content': AboutContentSelect<false> | AboutContentSelect<true>;
+    "home-content": HomeContentSelect<false> | HomeContentSelect<true>;
+    "about-content": AboutContentSelect<false> | AboutContentSelect<true>;
   };
-  locale: 'ru' | 'en';
+  locale: "ru" | "en";
   widgets: {
     collections: CollectionsWidget;
   };
@@ -174,7 +187,17 @@ export interface Category {
 export interface Media {
   id: string;
   alt?: string | null;
-  type?: ('certificate' | 'instruction' | 'license' | 'passport' | 'product' | 'hero' | 'other') | null;
+  type?:
+    | (
+        | "certificate"
+        | "instruction"
+        | "license"
+        | "passport"
+        | "product"
+        | "hero"
+        | "other"
+      )
+    | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -231,7 +254,7 @@ export interface Product {
   variantGroups?:
     | {
         label: string;
-        displayType: 'list' | 'dropdown';
+        displayType: "list" | "dropdown";
         code?: string | null;
         values: {
           label: string;
@@ -267,7 +290,7 @@ export interface Product {
         id?: string | null;
       }[]
     | null;
-  badges?: ('new' | 'hit' | 'sale' | 'gost')[] | null;
+  badges?: ("new" | "hit" | "sale" | "gost")[] | null;
   /**
    * Выберите товары, которые будут показаны в блоке "Рекомендуемые" на странице этого товара. Порядок важен.
    */
@@ -311,7 +334,7 @@ export interface CallbackRequest {
   subject?: string | null;
   productTitle?: string | null;
   productSku?: string | null;
-  status?: ('new' | 'processing' | 'completed') | null;
+  status?: ("new" | "processing" | "completed") | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -321,7 +344,7 @@ export interface CallbackRequest {
  */
 export interface User {
   id: string;
-  role: 'admin' | 'manager';
+  role: "admin" | "manager";
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -339,7 +362,7 @@ export interface User {
       }[]
     | null;
   password?: string | null;
-  collection: 'users';
+  collection: "users";
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -438,40 +461,40 @@ export interface PayloadLockedDocument {
   id: string;
   document?:
     | ({
-        relationTo: 'categories';
+        relationTo: "categories";
         value: string | Category;
       } | null)
     | ({
-        relationTo: 'products';
+        relationTo: "products";
         value: string | Product;
       } | null)
     | ({
-        relationTo: 'subcategories';
+        relationTo: "subcategories";
         value: string | Subcategory;
       } | null)
     | ({
-        relationTo: 'media';
+        relationTo: "media";
         value: string | Media;
       } | null)
     | ({
-        relationTo: 'callback-requests';
+        relationTo: "callback-requests";
         value: string | CallbackRequest;
       } | null)
     | ({
-        relationTo: 'users';
+        relationTo: "users";
         value: string | User;
       } | null)
     | ({
-        relationTo: 'consents';
+        relationTo: "consents";
         value: string | Consent;
       } | null)
     | ({
-        relationTo: 'media-galleries';
+        relationTo: "media-galleries";
         value: string | MediaGallery;
       } | null);
   globalSlug?: string | null;
   user: {
-    relationTo: 'users';
+    relationTo: "users";
     value: string | User;
   };
   updatedAt: string;
@@ -484,7 +507,7 @@ export interface PayloadLockedDocument {
 export interface PayloadPreference {
   id: string;
   user: {
-    relationTo: 'users';
+    relationTo: "users";
     value: string | User;
   };
   key?: string | null;
@@ -772,12 +795,25 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface Setting {
   id: string;
   companyName: string;
+  companyEmail?: string | null;
   logo: string | Media;
+  managers?:
+    | {
+        name: string;
+        email: string;
+        phone: string;
+        order?: number | null;
+        id?: string | null;
+      }[]
+    | null;
+
   contacts?:
     | {
         title: string;
         value: string;
-        type?: ('text' | 'phone' | 'email' | 'link' | 'whatsapp' | 'telegram') | null;
+        type?:
+          | ("text" | "phone" | "email" | "link" | "whatsapp" | "telegram")
+          | null;
         icon?: string | null;
         order?: number | null;
         id?: string | null;
@@ -794,7 +830,7 @@ export interface Setting {
   workingHours?: string | null;
   map?: string | null;
   heroBackground?: {
-    type?: ('none' | 'image' | 'video') | null;
+    type?: ("none" | "image" | "video") | null;
     image?: (string | null) | Media;
     video?: (string | null) | Media;
     videoPoster?: (string | null) | Media;
@@ -887,7 +923,7 @@ export interface HomeContent {
         description: string;
         buttonText: string;
         link?: {
-          type: 'internal' | 'external';
+          type: "internal" | "external";
           url: string;
         };
         id?: string | null;
@@ -974,7 +1010,7 @@ export interface AboutContent {
       | {
           title: string;
           description: string;
-          icon: 'cut' | 'apply' | 'assemble' | 'inspect' | 'pack';
+          icon: "cut" | "apply" | "assemble" | "inspect" | "pack";
           id?: string | null;
         }[]
       | null;
@@ -986,7 +1022,7 @@ export interface AboutContent {
       | {
           title: string;
           description: string;
-          icon: 'cut' | 'apply' | 'assemble' | 'inspect' | 'pack';
+          icon: "cut" | "apply" | "assemble" | "inspect" | "pack";
           id?: string | null;
         }[]
       | null;
@@ -1199,7 +1235,7 @@ export interface CollectionsWidget {
   data?: {
     [k: string]: unknown;
   };
-  width: 'full';
+  width: "full";
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1209,7 +1245,6 @@ export interface Auth {
   [k: string]: unknown;
 }
 
-
-declare module 'payload' {
+declare module "payload" {
   export interface GeneratedTypes extends Config {}
 }

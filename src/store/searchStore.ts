@@ -5,18 +5,18 @@
 // 3. `totalResults` считает только products.length
 // 4. Тип продукта вынесен в отдельный интерфейс для ясности
 
-import { makeAutoObservable } from 'mobx';
-import type { RootStore } from './RootStore';
-import type { Category, Product } from '@/payload-types';
+import { makeAutoObservable } from "mobx";
+import type { Category, Product } from "@/payload-types";
+import type { RootStore } from "./RootStore";
 
 // Продукт с обязательно подгруженной категорией (depth: 1 в API)
 export type ProductWithCategory = Product & {
-  category?: Pick<Category, 'id' | 'name' | 'slug'> | string;
+  category?: Pick<Category, "id" | "name" | "slug"> | string;
 };
 
 export class SearchStore {
   isOpen = false;
-  query = '';
+  query = "";
   loading = false;
   products: ProductWithCategory[] = [];
   activeIndex = -1;
@@ -59,7 +59,7 @@ export class SearchStore {
   }
 
   reset(): void {
-    this.query = '';
+    this.query = "";
     this.loading = false;
     this.products = [];
     this.activeIndex = -1;

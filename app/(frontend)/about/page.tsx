@@ -2,8 +2,8 @@ import { Column, Meta, Schema } from "@once-ui-system/core";
 import { CallbackSection } from "@/components/callback-form/CallbackSection";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import {
-  Breadcrumbs,
   type BreadcrumbItem,
+  Breadcrumbs,
 } from "@/components/UI/Breadcrumbs/Breadcrumbs";
 import {
   AboutCallout,

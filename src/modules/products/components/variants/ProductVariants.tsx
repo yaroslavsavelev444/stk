@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useCallback, useEffect, useMemo, useState } from "react";
-import type { Product } from "@/payload-types";
 import {
   buildCombinationKey,
   minCombinationPrice,
   type NormalizedGroup,
   type VariantSelection,
 } from "@/payload/variants/logic";
+import type { Product } from "@/payload-types";
 import { VariantOptionGroup } from "./VariantOptionGroup";
 
 interface ProductVariantsProps {
@@ -17,7 +17,9 @@ interface ProductVariantsProps {
 // ─── Адаптер payload → нормализованные группы (коды уже проставлены хуком) ──
 
 function toNormalizedGroups(product: Product): NormalizedGroup[] {
-  const groups = Array.isArray(product.variantGroups) ? product.variantGroups : [];
+  const groups = Array.isArray(product.variantGroups)
+    ? product.variantGroups
+    : [];
   return groups
     .map((g) => ({
       label: g.label ?? "",
@@ -64,7 +66,10 @@ function selectionFromParams(
 export default function ProductVariants({ product }: ProductVariantsProps) {
   const groups = useMemo(() => toNormalizedGroups(product), [product]);
   const combinations = useMemo(
-    () => (Array.isArray(product.variantCombinations) ? product.variantCombinations : []),
+    () =>
+      Array.isArray(product.variantCombinations)
+        ? product.variantCombinations
+        : [],
     [product],
   );
 
@@ -121,7 +126,10 @@ export default function ProductVariants({ product }: ProductVariantsProps) {
   // Текущая цена по выбранной комбинации.
   const currentKey = buildCombinationKey(groups, selection);
   const currentPrice = currentKey ? (priceByKey.get(currentKey) ?? null) : null;
-  const minPrice = useMemo(() => minCombinationPrice(combinations), [combinations]);
+  const minPrice = useMemo(
+    () => minCombinationPrice(combinations),
+    [combinations],
+  );
 
   if (groups.length === 0) return null;
 
@@ -140,7 +148,9 @@ export default function ProductVariants({ product }: ProductVariantsProps) {
               от {formatPrice(minPrice)}
             </span>
           ) : (
-            <span className="product-variants__price-muted">Цена по запросу</span>
+            <span className="product-variants__price-muted">
+              Цена по запросу
+            </span>
           )}
         </div>
       )}
@@ -150,7 +160,10 @@ export default function ProductVariants({ product }: ProductVariantsProps) {
           const options = group.values.map((value) => {
             // Опция доступна, если существует оцененная комбинация при текущем
             // выборе остальных групп и этом значении.
-            const candidate: VariantSelection = { ...selection, [group.code]: value.code };
+            const candidate: VariantSelection = {
+              ...selection,
+              [group.code]: value.code,
+            };
             const key = buildCombinationKey(groups, candidate);
             const available = key ? priceByKey.has(key) : false;
             return {

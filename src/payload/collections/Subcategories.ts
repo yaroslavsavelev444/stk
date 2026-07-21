@@ -39,9 +39,26 @@ export const Subcategories: CollectionConfig = {
       relationTo: "categories",
       required: true,
       label: "Категория",
-      admin: { description: "Товары этой подкатегории будут доступны только внутри выбранной категории." },
+      admin: {
+        description:
+          "Товары этой подкатегории будут доступны только внутри выбранной категории.",
+      },
     },
-    { name: "order", type: "number", defaultValue: 0, label: "Порядок" },
-    { name: "isPublished", type: "checkbox", defaultValue: true, label: "Опубликовано" },
+    {
+      name: "order",
+      type: "number",
+      required: false,
+      label: "Порядок отображения",
+      admin: {
+        description:
+          "Необязательно. Чем меньше число — тем выше подкатегория. Если не указано, используется обычный порядок.",
+      },
+    },
+    {
+      name: "isPublished",
+      type: "checkbox",
+      defaultValue: true,
+      label: "Опубликовано",
+    },
   ],
 };

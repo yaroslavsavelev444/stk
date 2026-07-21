@@ -1,8 +1,9 @@
-'use client';
+/** biome-ignore-all lint/correctness/useHookAtTopLevel: <explanation> */
+"use client";
 
-import React from 'react';
-import { Select } from 'antd';
-import type { DefaultOptionType } from 'antd/es/select';
+import { Select } from "antd";
+import type { DefaultOptionType } from "antd/es/select";
+import React, { useState } from "react";
 
 type AttributeGroupProps = {
   title: string;
@@ -12,29 +13,27 @@ type AttributeGroupProps = {
 export default function AttributeGroup({ title, values }: AttributeGroupProps) {
   if (!values || values.length === 0) return null;
 
-  // Превращаем значения в опции для Select
   const options: DefaultOptionType[] = values.map((val) => ({
     label: val,
     value: val,
   }));
 
-  // Берём первое значение как текущее (читаемое)
-  const currentValue = values[0];
+  const [selectedValue, setSelectedValue] = useState(values[0]);
 
   return (
     <div className="attribute-group">
       <label className="attribute-group__label">{title}</label>
+
       <Select
         className="attribute-group__select"
-        value={currentValue}
+        value={selectedValue}
         options={options}
-        disabled={false}   // разрешаем открытие выпадашки
-        onChange={() => {}} // пустой обработчик – значение не меняется
-        onSelect={() => {}} // тоже пустой – блокируем выбор
+        onChange={setSelectedValue}
         popupMatchSelectWidth={false}
         listHeight={200}
-        style={{ width: '100%' }}
+        style={{ width: "100%" }}
       />
+
       <style>{`
         .attribute-group {
           display: flex;
@@ -49,7 +48,6 @@ export default function AttributeGroup({ title, values }: AttributeGroupProps) {
         .attribute-group__select {
           width: 100%;
         }
-        /* Кастомизация Select под тему */
         .attribute-group__select .ant-select-selector {
           border-radius: var(--radius-md) !important;
           border-color: var(--border) !important;

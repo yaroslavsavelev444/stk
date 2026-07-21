@@ -1,37 +1,67 @@
-import { Flex, Text } from '@once-ui-system/core'
-import React from 'react'
-import type { Setting } from '@/payload-types'
+import { Flex, Text } from "@once-ui-system/core";
+import type { Setting } from "@/payload-types";
 
-type Contact = NonNullable<Setting['contacts']>[number]
+type Contact = NonNullable<Setting["contacts"]>[number];
+type Manager = NonNullable<Setting["managers"]>[number];
 
-export const ContactsList = ({ contacts }: { contacts: Contact[] }) => {
-  // Сортировка по полю order (оно есть только у contacts)
-  const sorted = [...contacts].sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+export const ContactsList = ({
+  contacts = [],
+  companyEmail,
+  managers = [],
+}: {
+  contacts?: Contact[];
+  companyEmail?: string | null;
+  managers?: Manager[];
+}) => {
+  const sortedManagers = [...managers].sort(
+    (a, b) => (a.order ?? 0) - (b.order ?? 0),
+  );
 
   return (
-    <Flex wrap={true} gap="l" className="mt-4">
-      {sorted.map((contact, index) => (
-        <Flex key={index} direction="column" gap="xs" className="min-w-[200px]">
+    <Flex wrap gap="l" className="mt-4">
+      {/* Общая почта организации */}
+      {companyEmail && (
+        <Flex direction="column" gap="xs" className="min-w-[200px]">
           <Text variant="body-default-s" color="secondary">
-            {contact.title}
+            Общая почта
           </Text>
-          {contact.type === 'email' ? (
-            <a href={`mailto:${contact.value}`} className="text-[var(--primary)] hover:underline">
-              {contact.value}
-            </a>
-          ) : contact.type === 'phone' ? (
-            <a href={`tel:${contact.value}`} className="text-[var(--primary)] hover:underline">
-              {contact.value}
-            </a>
-          ) : contact.type === 'link' ? (
-            <a href={contact.value} target="_blank" rel="noopener noreferrer" className="text-[var(--primary)] hover:underline">
-              {contact.value}
-            </a>
-          ) : (
-            <Text>{contact.value}</Text>
-          )}
+
+          <a
+            href={`mailto:${companyEmail}`}
+            className="text-[var(--primary)] hover:underline"
+          >
+            {companyEmail}
+          </a>
+        </Flex>
+      )}
+
+      {/* Менеджеры */}
+      {sortedManagers.map((manager, index) => (
+        <Flex
+          key={`${manager.email}-${index}`}
+          direction="column"
+          gap="xs"
+          className="min-w-[200px]"
+        >
+          <Text variant="body-default-s" color="secondary">
+            {manager.name}
+          </Text>
+
+          <a
+            href={`mailto:${manager.email}`}
+            className="text-[var(--primary)] hover:underline"
+          >
+            {manager.email}
+          </a>
+
+          <a
+            href={`tel:${manager.phone}`}
+            className="text-[var(--primary)] hover:underline"
+          >
+            {manager.phone}
+          </a>
         </Flex>
       ))}
     </Flex>
-  )
-}
+  );
+};

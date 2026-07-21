@@ -6,8 +6,8 @@ import { SocialLinks } from "@/components/contacts/SocialLinks";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import { OrganizationJsonLd } from "@/components/seo/OrganizationJsonLd";
 import {
-  Breadcrumbs,
   type BreadcrumbItem,
+  Breadcrumbs,
 } from "@/components/UI/Breadcrumbs/Breadcrumbs";
 import { getCachedSettings } from "@/services/payload/settings";
 import { generateContactsMetadata } from "@/utils/contacts-metadata";
@@ -44,8 +44,14 @@ export default async function ContactsPage() {
   // Payload возвращает `null` для незаполненного array-поля, а не только
   // `undefined` — деструктуризация с дефолтом это не ловит, поэтому
   // приводим явно через `??`.
-  const contacts = settings.contacts ?? [];
   const socials = settings.socials ?? [];
+  const contacts = settings.contacts ?? [];
+  const managers = settings.managers ?? [];
+
+  const hasContacts =
+    contacts.length > 0 ||
+    managers.length > 0 ||
+    Boolean(settings.companyEmail);
   const { workingHours, map } = settings;
 
   return (
@@ -61,7 +67,13 @@ export default async function ContactsPage() {
             Контакты {companyName}
           </Heading>
 
-          {contacts.length > 0 && <ContactsList contacts={contacts} />}
+          {hasContacts && (
+            <ContactsList
+              contacts={settings.contacts ?? []}
+              companyEmail={settings.companyEmail}
+              managers={settings.managers ?? []}
+            />
+          )}
 
           {workingHours && (
             <Flex direction="column" gap="xs">

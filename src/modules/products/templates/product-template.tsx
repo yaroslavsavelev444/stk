@@ -1,8 +1,8 @@
 import { notFound } from "next/navigation";
 import React from "react";
 import {
-  Breadcrumbs,
   type BreadcrumbItem,
+  Breadcrumbs,
 } from "@/components/UI/Breadcrumbs/Breadcrumbs";
 import type { Product } from "@/payload-types";
 

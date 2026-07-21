@@ -43,14 +43,13 @@ export default async function Home() {
       <div id="main-content" />
 
       <div className="flex flex-col gap-16 md:gap-24 w-full pb-16 md:pb-24">
+        <FeatureCards />
         <Reveal translateY={16} fillWidth>
           <AboutHero hero={aboutIntro} />
         </Reveal>
 
         {/* Тёмная полоса доверия — контраст между интро и аргументами */}
         <TrustBar stats={trustStats} />
-
-        <FeatureCards />
 
         <WhyUsSection items={whyUsItems} />
 

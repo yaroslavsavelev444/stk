@@ -7,8 +7,8 @@ import { ProductsGrid } from "@/components/products/ProductsGrid";
 import { SubcategoryFilters } from "@/components/products/SubcategoryFilters";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import {
-  Breadcrumbs,
   type BreadcrumbItem,
+  Breadcrumbs,
 } from "@/components/UI/Breadcrumbs/Breadcrumbs";
 import { baseURL } from "@/resources/content";
 import { getCachedCategoryBySlug } from "@/services/payload/categories";
@@ -24,7 +24,10 @@ interface Props {
 
 function parseSelectedIds(sub?: string): string[] {
   if (!sub) return [];
-  return sub.split(",").map((id) => id.trim()).filter(Boolean);
+  return sub
+    .split(",")
+    .map((id) => id.trim())
+    .filter(Boolean);
 }
 
 export async function generateMetadata({ params, searchParams }: Props) {
@@ -88,7 +91,8 @@ export default async function CategoryProductsPage({
       id: subcategory.id,
       name: subcategory.name,
       count: productsData.docs.filter((p) => {
-        const id = typeof p.subcategory === "string" ? p.subcategory : p.subcategory?.id;
+        const id =
+          typeof p.subcategory === "string" ? p.subcategory : p.subcategory?.id;
         return id === subcategory.id;
       }).length,
     }))
@@ -135,7 +139,10 @@ export default async function CategoryProductsPage({
 
       {/* Фильтр по подкатегориям */}
       {hasSubcategoryLayout && (
-        <div className="w-full max-w-5xl mx-auto" style={{ paddingInline: "1rem" }}>
+        <div
+          className="w-full max-w-5xl mx-auto"
+          style={{ paddingInline: "1rem" }}
+        >
           <SubcategoryFilters
             items={filterItems}
             selectedIds={selectedIds}
@@ -163,7 +170,10 @@ export default async function CategoryProductsPage({
         ) : hasSubcategoryLayout ? (
           <ProductsBySubcategory groups={groups} ungrouped={ungrouped} />
         ) : (
-          <ProductsGrid products={visibleProducts} total={visibleProducts.length} />
+          <ProductsGrid
+            products={visibleProducts}
+            total={visibleProducts.length}
+          />
         )}
       </Suspense>
     </Column>

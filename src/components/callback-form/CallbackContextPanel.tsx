@@ -40,7 +40,7 @@ export function CallbackContextPanel({ isSuccess }: CallbackContextPanelProps) {
           <dt className="text-[13px] text-[var(--primary-200)]">
             Режим работы
           </dt>
-          <dd className="mt-1 text-[18px] font-semibold">9:00–20:00</dd>
+          <dd className="mt-1 text-[18px] font-semibold">8:00–17:00</dd>
         </div>
       </dl>
     </div>

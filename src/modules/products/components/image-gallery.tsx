@@ -26,6 +26,8 @@ export default function ImageGallery({ product }: ImageGalleryProps) {
     alt: img.alt || "Изображение товара",
   }));
 
+  console.log("slides", slides);
+
   return (
     <div className="flex flex-col gap-4">
       {images.map((img, idx) => {
@@ -52,7 +54,7 @@ export default function ImageGallery({ product }: ImageGalleryProps) {
                 src={imageUrl}
                 alt={img.alt || `Изображение ${idx + 1}`}
                 fill
-                className="object-cover"
+                className="object-contain"
                 priority={idx === 0}
               />
             </div>
