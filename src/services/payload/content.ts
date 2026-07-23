@@ -52,7 +52,8 @@ export type HomeFeatureCard = NonNullable<HomeContent["featureCards"]>[number];
 export async function getHomeAboutIntro(): Promise<HomeAboutIntroContent> {
   const content = await getCachedHomeContent();
   const intro = content?.aboutIntro ?? homeContentDefaults.aboutIntro;
-  const image = typeof intro.image === "object" && intro.image ? intro.image : null;
+  const image =
+    typeof intro.image === "object" && intro.image ? intro.image : null;
 
   return {
     eyebrow: intro.eyebrow,
@@ -67,7 +68,9 @@ export async function getHomeAboutIntro(): Promise<HomeAboutIntroContent> {
 export async function getHomeFeatureCards(): Promise<HomeFeatureCard[]> {
   const content = await getCachedHomeContent();
   const cards = content?.featureCards;
-  return Array.isArray(cards) && cards.length > 0 ? cards : (homeContentDefaults.featureCards ?? []);
+  return Array.isArray(cards) && cards.length > 0
+    ? cards
+    : (homeContentDefaults.featureCards ?? []);
 }
 
 export interface AboutPageSections {
@@ -80,6 +83,7 @@ export interface AboutPageSections {
   quality: NonNullable<AboutContent["quality"]>;
   geography: NonNullable<AboutContent["geography"]>;
   timeline: NonNullable<AboutContent["timeline"]>;
+  directions: NonNullable<AboutContent["directions"]>;
 }
 
 /**
@@ -99,10 +103,12 @@ export async function getAboutContent(): Promise<AboutPageSections> {
         : aboutContentDefaults.mediaBlocks,
     callout: content?.callout ?? aboutContentDefaults.callout,
     production: content?.production ?? aboutContentDefaults.production,
-    productionWater: content?.productionWater ?? aboutContentDefaults.productionWater,
+    productionWater:
+      content?.productionWater ?? aboutContentDefaults.productionWater,
     standards: content?.standards ?? aboutContentDefaults.standards,
     quality: content?.quality ?? aboutContentDefaults.quality,
     geography: content?.geography ?? aboutContentDefaults.geography,
     timeline: content?.timeline ?? aboutContentDefaults.timeline,
+    directions: content?.directions ?? aboutContentDefaults.directions,
   };
 }

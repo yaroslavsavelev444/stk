@@ -18,6 +18,7 @@ import {
   QualityControlSection,
 } from "@/modules/about";
 import {
+  mapAboutDirections,
   mapAboutGeography,
   mapAboutMediaBlocks,
   mapAboutStandards,
@@ -47,7 +48,9 @@ export default async function AboutPage() {
   const mediaBlocks = mapAboutMediaBlocks(content.mediaBlocks);
   const standards = mapAboutStandards(content.standards);
   const geography = mapAboutGeography(content.geography);
+  const directions = mapAboutDirections(content.directions);
 
+  console.log("geography", directions);
   return (
     <Column maxWidth="m" gap="0" paddingY="12" horizontal="center">
       <Schema
@@ -112,8 +115,8 @@ export default async function AboutPage() {
         />
 
         <AboutDirections
-          heading={aboutPage.directions.heading}
-          items={aboutPage.directions.items}
+          heading={directions.heading}
+          items={directions.items}
         />
 
         <AboutCertificates

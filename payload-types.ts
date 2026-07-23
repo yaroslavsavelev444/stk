@@ -973,6 +973,7 @@ export interface HomeContentSelect<T extends boolean = true> {
  */
 export interface AboutContent {
   id: string;
+
   hero?: {
     eyebrow: string;
     heading: string;
@@ -980,6 +981,7 @@ export interface AboutContent {
     image?: (string | null) | Media;
     imageAlt: string;
   };
+
   mediaBlocks?:
     | {
         eyebrow?: string | null;
@@ -1000,9 +1002,11 @@ export interface AboutContent {
         id?: string | null;
       }[]
     | null;
+
   callout?: {
     text: string;
   };
+
   production?: {
     heading: string;
     subheading: string;
@@ -1015,6 +1019,7 @@ export interface AboutContent {
         }[]
       | null;
   };
+
   productionWater?: {
     heading: string;
     subheading: string;
@@ -1027,6 +1032,7 @@ export interface AboutContent {
         }[]
       | null;
   };
+
   standards?: {
     heading: string;
     paragraphs?:
@@ -1035,6 +1041,7 @@ export interface AboutContent {
           id?: string | null;
         }[]
       | null;
+
     materials?:
       | {
           title: string;
@@ -1042,6 +1049,7 @@ export interface AboutContent {
           id?: string | null;
         }[]
       | null;
+
     filmBrands?:
       | {
           name: string;
@@ -1049,9 +1057,11 @@ export interface AboutContent {
         }[]
       | null;
   };
+
   quality?: {
     heading: string;
     subheading: string;
+
     checks?:
       | {
           title: string;
@@ -1060,11 +1070,14 @@ export interface AboutContent {
         }[]
       | null;
   };
+
   geography?: {
     heading: string;
     subheading: string;
     regionsCount: string;
+
     image?: (string | null) | Media;
+
     routes?:
       | {
           name: string;
@@ -1073,9 +1086,11 @@ export interface AboutContent {
         }[]
       | null;
   };
+
   timeline?: {
     heading: string;
     subheading: string;
+
     events?:
       | {
           year: string;
@@ -1086,10 +1101,25 @@ export interface AboutContent {
         }[]
       | null;
   };
+
+  directions?: {
+    heading: string;
+
+    items?:
+      | {
+          title: string;
+          description: string;
+          href: string;
+          image?: (string | null) | Media;
+          alt: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+
   updatedAt?: string | null;
   createdAt?: string | null;
-}
-/**
+} /**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "about-content_select".
  */

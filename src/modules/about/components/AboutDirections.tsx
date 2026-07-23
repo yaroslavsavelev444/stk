@@ -1,7 +1,9 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ImagePlaceholder } from "@/components/UI/ImagePlaceholder";
 import { Reveal } from "@/components/UI/Reveal/Reveal";
 import type { AboutDirectionItem } from "@/modules/about/types";
+import { resolveMediaPath } from "@/utils/resolveMediaPath";
 
 export function AboutDirections({
   heading,
@@ -35,12 +37,22 @@ export function AboutDirections({
                   border: "1px solid var(--border)",
                 }}
               >
-                <ImagePlaceholder
-                  alt={item.title}
-                  aspect="aspect-[4/5]"
-                  rounded="0"
-                  className="transition-transform duration-500 group-hover:scale-[1.04]"
-                />
+                {item.image ? (
+                  <Image
+                    src={resolveMediaPath(item.image) as string}
+                    alt={item.alt ?? item.title}
+                    width={item.image.width ?? 800}
+                    height={item.image.height ?? 1000}
+                    className="aspect-[4/5] object-cover transition-transform duration-500 group-hover:scale-[1.04]"
+                  />
+                ) : (
+                  <ImagePlaceholder
+                    alt={item.title}
+                    aspect="aspect-[4/5]"
+                    rounded="0"
+                    className="transition-transform duration-500 group-hover:scale-[1.04]"
+                  />
+                )}
                 <span className="sr-only">{item.description}</span>
                 <div
                   className="absolute inset-x-0 bottom-0 flex items-center justify-between gap-2 p-3.5"

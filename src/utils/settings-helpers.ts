@@ -27,10 +27,16 @@ export function getPrimaryPhone(settings: Setting | null): string | null {
  */
 export function getPrimaryEmail(settings: Setting | null): string | null {
   if (!settings) return null;
+
+  if (settings.companyEmail) {
+    return settings.companyEmail;
+  }
+
+  // fallback для старых данных
   const contact = settings.contacts?.find((c) => c.type === "email");
+
   return contact?.value || null;
 }
-
 /**
  * Получить название компании
  */
