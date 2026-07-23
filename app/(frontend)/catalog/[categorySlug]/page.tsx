@@ -73,7 +73,7 @@ export default async function CategoryProductsPage({
   const subcategories = await getCachedSubcategories(category.id)();
   const productsData = await getCachedProducts({
     category: category.id,
-    limit: 100,
+    limit: 1000,
     sort: "order",
   })();
 

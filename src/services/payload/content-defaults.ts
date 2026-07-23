@@ -13,6 +13,7 @@ import type { AboutContent, HomeContent } from "@/payload-types";
 // инструменты не транспилируют без дополнительной настройки.
 import {
   aboutCalloutSource,
+  aboutDirectionsSource,
   aboutGeographySource,
   aboutHeroSource,
   aboutMediaBlocksSource,
@@ -52,6 +53,7 @@ export const aboutContentDefaults: {
   quality: NonNull<AboutContent["quality"]>;
   geography: NonNull<AboutContent["geography"]>;
   timeline: NonNull<AboutContent["timeline"]>;
+  directions: NonNull<AboutContent["directions"]>;
 } = {
   hero: {
     eyebrow: aboutHeroSource.eyebrow,
@@ -76,10 +78,21 @@ export const aboutContentDefaults: {
     subheading: aboutProductionWaterSource.subheading,
     steps: aboutProductionWaterSource.steps.map((step) => ({ ...step })),
   },
+  directions: {
+    heading: aboutDirectionsSource.heading,
+    items: aboutDirectionsSource.items.map((item) => ({
+      title: item.title,
+      description: item.description,
+      href: item.href,
+      alt: item.alt ?? item.title,
+    })),
+  },
   standards: {
     heading: aboutStandardsSource.heading,
     paragraphs: aboutStandardsSource.paragraphs.map((text) => ({ text })),
-    materials: aboutStandardsSource.materials.map((material) => ({ ...material })),
+    materials: aboutStandardsSource.materials.map((material) => ({
+      ...material,
+    })),
     filmBrands: aboutStandardsSource.filmBrands.map((name) => ({ name })),
   },
   quality: {

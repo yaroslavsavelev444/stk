@@ -10,6 +10,7 @@
 // инструменты не транспилируют без дополнительной настройки — обычный
 // .ts со строками и массивами импортируется без проблем.
 import type {
+  AboutDirectionsContent,
   AboutGeographyContent,
   AboutHeroContent,
   AboutMediaBlock,
@@ -180,6 +181,39 @@ export const qualityChecksSource: QualityCheckItem[] = [
       "Комплектность, крепёж и упаковка проверяются до передачи в логистику.",
   },
 ];
+
+export const aboutDirectionsSource: AboutDirectionsContent = {
+  heading: "Что мы производим?",
+
+  items: [
+    {
+      title: "Дорожные знаки",
+      description:
+        "по ГОСТ Р 52290-2004 и ГОСТ 32945-2014, с применением сертифицированных светоотражающих плёнок (ORAFOL, MN/Tech, AVS, ALGALITE).",
+      href: "/contacts",
+      image: null,
+      alt: "Производство дорожных знаков",
+    },
+
+    {
+      title: "Водоналивные вкладывающиеся блоки",
+      description:
+        "для временного ограждения, регулирования трафика и повышения безопасности. Изготовление из прочного ПВХ, с возможностью заливки водой на объекте.",
+      href: "/catalog",
+      image: null,
+      alt: "Водоналивные дорожные блоки",
+    },
+
+    {
+      title: "Дополнительные СБДД",
+      description:
+        "сигнальные столбики, конусы, барьеры, зеркала, аккумуляторные светофоры, геосетки, дорожные буферы, ленты, фонари, покрытия и другие элементы безопасности.",
+      href: "/contacts",
+      image: null,
+      alt: "Дополнительные средства безопасности дорожного движения",
+    },
+  ],
+};
 
 export const aboutQualitySource: {
   heading: string;

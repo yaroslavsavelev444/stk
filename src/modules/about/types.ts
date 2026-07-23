@@ -55,11 +55,18 @@ export interface AboutGeographyContent {
   image?: Media | null;
 }
 
-export interface AboutDirectionItem {
+export type AboutDirectionItem = {
   title: string;
   description: string;
   href: string;
-}
+  image?: Media | null;
+  alt?: string;
+};
+
+export type AboutDirectionsContent = {
+  heading: string;
+  items: AboutDirectionItem[];
+};
 
 export interface AboutCertificateItem {
   title: string;

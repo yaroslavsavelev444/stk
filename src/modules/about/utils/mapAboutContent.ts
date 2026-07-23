@@ -1,6 +1,10 @@
 import type { Media } from "@/payload-types";
-import type { HomeAboutIntroContent, AboutPageSections } from "@/services/payload/content";
 import type {
+  AboutPageSections,
+  HomeAboutIntroContent,
+} from "@/services/payload/content";
+import type {
+  AboutDirectionsContent,
   AboutGeographyContent,
   AboutHeroContent,
   AboutMediaBlock,
@@ -29,11 +33,15 @@ export function mapIntroToHero(intro: {
   };
 }
 
-export function mapHomeAboutIntro(intro: HomeAboutIntroContent): AboutHeroContent {
+export function mapHomeAboutIntro(
+  intro: HomeAboutIntroContent,
+): AboutHeroContent {
   return mapIntroToHero(intro);
 }
 
-export function mapAboutMediaBlocks(blocks: AboutPageSections["mediaBlocks"]): AboutMediaBlock[] {
+export function mapAboutMediaBlocks(
+  blocks: AboutPageSections["mediaBlocks"],
+): AboutMediaBlock[] {
   return blocks.map((block) => ({
     eyebrow: block.eyebrow ?? undefined,
     heading: block.heading,
@@ -43,6 +51,22 @@ export function mapAboutMediaBlocks(blocks: AboutPageSections["mediaBlocks"]): A
       alt: item.alt,
     })),
   }));
+}
+
+export function mapAboutDirections(
+  directions: AboutPageSections["directions"],
+): AboutDirectionsContent {
+  return {
+    heading: directions.heading,
+
+    items: (directions.items ?? []).map((item) => ({
+      title: item.title,
+      description: item.description,
+      href: item.href,
+      image: resolveMedia(item.image),
+      alt: item.alt,
+    })),
+  };
 }
 
 export function mapAboutStandards(

@@ -24,7 +24,8 @@ export const AboutContent: GlobalConfig = {
   label: 'Страница "О нас"',
   access: {
     read: () => true,
-    update: ({ req: { user } }) => user?.role === "admin" || user?.role === "manager",
+    update: ({ req: { user } }) =>
+      user?.role === "admin" || user?.role === "manager",
   },
   hooks: {
     afterChange: [revalidateAboutContent],
@@ -35,7 +36,12 @@ export const AboutContent: GlobalConfig = {
       type: "group",
       label: 'Вступление ("О компании")',
       fields: [
-        { name: "eyebrow", type: "text", required: true, label: "Надпись над заголовком" },
+        {
+          name: "eyebrow",
+          type: "text",
+          required: true,
+          label: "Надпись над заголовком",
+        },
         { name: "heading", type: "text", required: true, label: "Заголовок" },
         { name: "lead", type: "textarea", required: true, label: "Текст" },
         {
@@ -43,14 +49,19 @@ export const AboutContent: GlobalConfig = {
           type: "upload",
           relationTo: "media",
           label: "Изображение",
-          admin: { description: "Необязательно. Если не задано — показывается заглушка." },
+          admin: {
+            description:
+              "Необязательно. Если не задано — показывается заглушка.",
+          },
         },
         {
           name: "imageAlt",
           type: "text",
           required: true,
           label: "Alt-текст изображения",
-          admin: { description: "Используется для заглушки и как запасной alt-текст." },
+          admin: {
+            description: "Используется для заглушки и как запасной alt-текст.",
+          },
         },
       ],
     },
@@ -61,7 +72,8 @@ export const AboutContent: GlobalConfig = {
       labels: { singular: "Блок", plural: "Блоки" },
       minRows: 1,
       admin: {
-        description: "Чередующиеся блоки текста и изображений сразу после вступления.",
+        description:
+          "Чередующиеся блоки текста и изображений сразу после вступления.",
         initCollapsed: true,
       },
       fields: [
@@ -73,7 +85,9 @@ export const AboutContent: GlobalConfig = {
           label: "Абзацы",
           labels: { singular: "Абзац", plural: "Абзацы" },
           minRows: 1,
-          fields: [{ name: "text", type: "textarea", required: true, label: "Текст" }],
+          fields: [
+            { name: "text", type: "textarea", required: true, label: "Текст" },
+          ],
         },
         {
           name: "images",
@@ -87,7 +101,10 @@ export const AboutContent: GlobalConfig = {
               type: "upload",
               relationTo: "media",
               label: "Файл",
-              admin: { description: "Необязательно. Если не задано — показывается заглушка." },
+              admin: {
+                description:
+                  "Необязательно. Если не задано — показывается заглушка.",
+              },
             },
             { name: "alt", type: "text", required: true, label: "Alt-текст" },
           ],
@@ -98,7 +115,9 @@ export const AboutContent: GlobalConfig = {
       name: "callout",
       type: "group",
       label: "Цитата-врезка",
-      fields: [{ name: "text", type: "textarea", required: true, label: "Текст" }],
+      fields: [
+        { name: "text", type: "textarea", required: true, label: "Текст" },
+      ],
     },
     {
       name: "production",
@@ -106,7 +125,12 @@ export const AboutContent: GlobalConfig = {
       label: 'Производство ("Как рождается дорожный знак")',
       fields: [
         { name: "heading", type: "text", required: true, label: "Заголовок" },
-        { name: "subheading", type: "textarea", required: true, label: "Подзаголовок" },
+        {
+          name: "subheading",
+          type: "textarea",
+          required: true,
+          label: "Подзаголовок",
+        },
         {
           name: "steps",
           type: "array",
@@ -115,7 +139,12 @@ export const AboutContent: GlobalConfig = {
           minRows: 1,
           fields: [
             { name: "title", type: "text", required: true, label: "Название" },
-            { name: "description", type: "textarea", required: true, label: "Описание" },
+            {
+              name: "description",
+              type: "textarea",
+              required: true,
+              label: "Описание",
+            },
             {
               name: "icon",
               type: "select",
@@ -133,7 +162,12 @@ export const AboutContent: GlobalConfig = {
       label: 'Производство ("Как рождается водоналивной блок")',
       fields: [
         { name: "heading", type: "text", required: true, label: "Заголовок" },
-        { name: "subheading", type: "textarea", required: true, label: "Подзаголовок" },
+        {
+          name: "subheading",
+          type: "textarea",
+          required: true,
+          label: "Подзаголовок",
+        },
         {
           name: "steps",
           type: "array",
@@ -142,7 +176,12 @@ export const AboutContent: GlobalConfig = {
           minRows: 1,
           fields: [
             { name: "title", type: "text", required: true, label: "Название" },
-            { name: "description", type: "textarea", required: true, label: "Описание" },
+            {
+              name: "description",
+              type: "textarea",
+              required: true,
+              label: "Описание",
+            },
             {
               name: "icon",
               type: "select",
@@ -166,7 +205,9 @@ export const AboutContent: GlobalConfig = {
           label: "Абзацы",
           labels: { singular: "Абзац", plural: "Абзацы" },
           minRows: 1,
-          fields: [{ name: "text", type: "textarea", required: true, label: "Текст" }],
+          fields: [
+            { name: "text", type: "textarea", required: true, label: "Текст" },
+          ],
         },
         {
           name: "materials",
@@ -176,7 +217,12 @@ export const AboutContent: GlobalConfig = {
           minRows: 1,
           fields: [
             { name: "title", type: "text", required: true, label: "Название" },
-            { name: "description", type: "textarea", required: true, label: "Описание" },
+            {
+              name: "description",
+              type: "textarea",
+              required: true,
+              label: "Описание",
+            },
           ],
         },
         {
@@ -185,7 +231,9 @@ export const AboutContent: GlobalConfig = {
           label: "Бренды плёнок",
           labels: { singular: "Бренд", plural: "Бренды" },
           minRows: 1,
-          fields: [{ name: "name", type: "text", required: true, label: "Название" }],
+          fields: [
+            { name: "name", type: "text", required: true, label: "Название" },
+          ],
         },
       ],
     },
@@ -195,7 +243,12 @@ export const AboutContent: GlobalConfig = {
       label: "Контроль качества",
       fields: [
         { name: "heading", type: "text", required: true, label: "Заголовок" },
-        { name: "subheading", type: "textarea", required: true, label: "Подзаголовок" },
+        {
+          name: "subheading",
+          type: "textarea",
+          required: true,
+          label: "Подзаголовок",
+        },
         {
           name: "checks",
           type: "array",
@@ -204,7 +257,12 @@ export const AboutContent: GlobalConfig = {
           minRows: 1,
           fields: [
             { name: "title", type: "text", required: true, label: "Название" },
-            { name: "description", type: "textarea", required: true, label: "Описание" },
+            {
+              name: "description",
+              type: "textarea",
+              required: true,
+              label: "Описание",
+            },
           ],
         },
       ],
@@ -215,14 +273,27 @@ export const AboutContent: GlobalConfig = {
       label: "География поставок",
       fields: [
         { name: "heading", type: "text", required: true, label: "Заголовок" },
-        { name: "subheading", type: "textarea", required: true, label: "Подзаголовок" },
-        { name: "regionsCount", type: "text", required: true, label: "Количество регионов" },
+        {
+          name: "subheading",
+          type: "textarea",
+          required: true,
+          label: "Подзаголовок",
+        },
+        {
+          name: "regionsCount",
+          type: "text",
+          required: true,
+          label: "Количество регионов",
+        },
         {
           name: "image",
           type: "upload",
           relationTo: "media",
           label: "Карта регионов",
-          admin: { description: "Необязательно. Если не задано — используется изображение по умолчанию." },
+          admin: {
+            description:
+              "Необязательно. Если не задано — используется изображение по умолчанию.",
+          },
         },
         {
           name: "routes",
@@ -232,7 +303,74 @@ export const AboutContent: GlobalConfig = {
           minRows: 1,
           fields: [
             { name: "name", type: "text", required: true, label: "Название" },
-            { name: "description", type: "textarea", required: true, label: "Описание" },
+            {
+              name: "description",
+              type: "textarea",
+              required: true,
+              label: "Описание",
+            },
+          ],
+        },
+      ],
+    },
+    {
+      name: "directions",
+      type: "group",
+      label: "Направления деятельности",
+      fields: [
+        {
+          name: "heading",
+          type: "text",
+          required: true,
+          label: "Заголовок",
+        },
+        {
+          name: "items",
+          type: "array",
+          label: "Направления",
+          labels: {
+            singular: "Направление",
+            plural: "Направления",
+          },
+          minRows: 1,
+          admin: {
+            description:
+              "Карточки направлений отображаются в указанном порядке.",
+          },
+          fields: [
+            {
+              name: "title",
+              type: "text",
+              required: true,
+              label: "Название",
+            },
+            {
+              name: "description",
+              type: "textarea",
+              required: true,
+              label: "Описание",
+            },
+            {
+              name: "href",
+              type: "text",
+              required: true,
+              label: "Ссылка",
+              admin: {
+                description: "Например: /catalog/dorozhnye-znaki",
+              },
+            },
+            {
+              name: "image",
+              type: "upload",
+              relationTo: "media",
+              label: "Изображение",
+            },
+            {
+              name: "alt",
+              type: "text",
+              required: true,
+              label: "Alt изображения",
+            },
           ],
         },
       ],
@@ -240,22 +378,38 @@ export const AboutContent: GlobalConfig = {
     {
       name: "timeline",
       type: "group",
-      label: 'История компании',
+      label: "История компании",
       fields: [
         { name: "heading", type: "text", required: true, label: "Заголовок" },
-        { name: "subheading", type: "textarea", required: true, label: "Подзаголовок" },
+        {
+          name: "subheading",
+          type: "textarea",
+          required: true,
+          label: "Подзаголовок",
+        },
         {
           name: "events",
           type: "array",
           label: "События",
           labels: { singular: "Событие", plural: "События" },
           minRows: 1,
-          admin: { description: "Отображаются в том порядке, в котором указаны здесь." },
+          admin: {
+            description: "Отображаются в том порядке, в котором указаны здесь.",
+          },
           fields: [
             { name: "year", type: "text", required: true, label: "Год" },
             { name: "title", type: "text", required: true, label: "Заголовок" },
-            { name: "description", type: "textarea", required: true, label: "Описание" },
-            { name: "highlight", type: "text", label: "Отметка (необязательно)" },
+            {
+              name: "description",
+              type: "textarea",
+              required: true,
+              label: "Описание",
+            },
+            {
+              name: "highlight",
+              type: "text",
+              label: "Отметка (необязательно)",
+            },
           ],
         },
       ],
