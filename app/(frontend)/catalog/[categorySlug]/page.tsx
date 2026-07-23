@@ -70,7 +70,7 @@ export default async function CategoryProductsPage({
 
   if (!category) notFound();
 
-  const subcategories = await getCachedSubcategories(category.id)(); //'''
+  const subcategories = await getCachedSubcategories(category.id)(); //''
   const productsData = await getCachedProducts({
     category: category.id,
     limit: 1000,
