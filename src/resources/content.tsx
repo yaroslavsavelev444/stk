@@ -61,18 +61,7 @@ const home: Home = {
   description:
     "Производитель дорожных знаков для федеральных и региональных трасс. Собственное производство, контроль качества на каждом этапе, поставки по всей России.",
   headline: <>СТК АКТИВ</>,
-  featured: {
-    display: true,
-    title: (
-      <Row gap="12" vertical="center">
-        <Line background="brand-alpha-strong" vert height="20" />
-        <Text marginRight="4" onBackground="brand-medium">
-          ГОСТ Р 52290-2004
-        </Text>
-      </Row>
-    ),
-    href: "/catalog",
-  },
+
   subline: (
     <>
       Производство дорожных знаков, водоналивных блоков и средств обеспечения
@@ -82,7 +71,7 @@ const home: Home = {
 };
 
 export const trustStats: TrustStat[] = [
-  { value: "9 лет", label: "успешной работы на рынке" },
+  { value: "8 лет", label: "успешной работы на рынке" },
   { value: "200+", label: "проектов реализуется ежегодно" },
   { value: "100 000+", label: "изготовленных дорожных знаков" },
   { value: "24", label: "региона поставки продукции" },
@@ -364,7 +353,7 @@ const aboutPage: AboutPageContent = {
   },
 
   stats: [
-    { value: "9 лет", label: "успешной работы на рынке" },
+    { value: "8 лет", label: "успешной работы на рынке" },
     { value: "200+", label: "проектов реализуется ежегодно" },
     { value: "100 000+", label: "изготовленных дорожных знаков" },
     { value: "24", label: "региона поставки продукции" },

@@ -6,13 +6,17 @@
 // component tree — keeping FloatingContacts itself free of any Payload
 // or caching concerns.
 
-import { getCachedSettings } from '@/services/payload/settings'
-import { mapSettingsContacts } from './mapContact'
-import { FloatingContacts } from './FloatingContacts'
+import { getCachedSettings } from "@/services/payload/settings";
+import { FloatingContacts } from "./FloatingContacts";
+import { mapSettingsContacts } from "./mapContact";
 
-export default async function FrontendLayout({ children }: { children: React.ReactNode }) {
-  const settings = await getCachedSettings()
-  const contacts = mapSettingsContacts(settings)
+export default async function FrontendLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const settings = await getCachedSettings();
+  const contacts = mapSettingsContacts(settings);
 
   return (
     <html lang="ru">
@@ -21,5 +25,5 @@ export default async function FrontendLayout({ children }: { children: React.Rea
         <FloatingContacts contacts={contacts} />
       </body>
     </html>
-  )
+  );
 }

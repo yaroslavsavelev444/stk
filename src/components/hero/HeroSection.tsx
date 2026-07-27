@@ -25,9 +25,9 @@ export function HeroSection({ heroBackground }: HeroSectionProps) {
     resolveHeroMedia(heroBackground);
   // Поверх медиа текст всегда светлый — так читаемость не зависит от темы сайта
   const onMediaTextStyle = hasMedia ? { color: "#fff" } : undefined;
-  const onMediaBadgeStyle = hasMedia
-    ? { color: "#fff", backgroundColor: "rgba(255, 255, 255, 0.16)" }
-    : undefined;
+  // const onMediaBadgeStyle = hasMedia
+  //   ? { color: "#fff", backgroundColor: "rgba(255, 255, 255, 0.16)" }
+  //   : undefined;
 
   return (
     // Полноэкранная секция — flex-колонка, контент сдвинут чуть выше центра.
@@ -61,31 +61,6 @@ export function HeroSection({ heroBackground }: HeroSectionProps) {
         className="relative z-10 w-full flex flex-col items-center text-center"
         style={{ maxWidth: 960, marginTop: "-10vh" }} // ← сдвиг чуыывть выше центра
       >
-        {/* Тег / Badge */}
-        {home.featured.display && (
-          <RevealFx
-            fillWidth
-            horizontal="center"
-            paddingBottom="24"
-            trigger={true}
-            delay={0}
-            translateY="12" // сверху вниз
-          >
-            <Badge
-              background="brand-alpha-weak"
-              paddingX="12"
-              paddingY="4"
-              onBackground="neutral-strong"
-              textVariant="label-default-s"
-              arrow={false}
-              href={home.featured.href}
-              style={onMediaBadgeStyle}
-            >
-              <Row paddingY="2">{home.featured.title}</Row>
-            </Badge>
-          </RevealFx>
-        )}
-
         {/* Заголовок */}
         <RevealFx
           translateY="16"
@@ -101,7 +76,8 @@ export function HeroSection({ heroBackground }: HeroSectionProps) {
             align="center"
             style={onMediaTextStyle}
           >
-            {home.headline}
+            <span style={{ color: "var(--accent)" }}>СТК</span>{" "}
+            <span style={{ color: "var(--primary)" }}>АКТИВ</span>
           </Heading>
         </RevealFx>
 

@@ -39,7 +39,7 @@ export interface Home {
   title: string;
   description: string;
   headline: ReactNode;
-  featured: HomeFeatured;
+  // featured: HomeFeatured;
   subline: ReactNode;
 }
 

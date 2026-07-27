@@ -1,13 +1,16 @@
-'use client'
+"use client";
 
-import { useCallback } from 'react'
-import { useFloatingContacts } from './useFloatingContacts'
-import { FloatingContactsButton, MAIN_BUTTON_SIZE_PX } from './FloatingContactsButton'
-import { FloatingContactsMenu } from './FloatingContactsMenu'
-import type { Contact } from './types'
+import { useCallback } from "react";
+import {
+  FloatingContactsButton,
+  MAIN_BUTTON_SIZE_PX,
+} from "./FloatingContactsButton";
+import { FloatingContactsMenu } from "./FloatingContactsMenu";
+import type { Contact } from "./types";
+import { useFloatingContacts } from "./useFloatingContacts";
 
 /** Fixed offset (px) of the component from the viewport's right/bottom edges. */
-const VIEWPORT_MARGIN_PX = 24
+const VIEWPORT_MARGIN_PX = 24;
 
 export interface FloatingContactsProps {
   /**
@@ -19,7 +22,7 @@ export interface FloatingContactsProps {
    * dependency on Payload or data-fetching/caching concerns. See
    * examples/floating-contacts-usage.tsx for the wiring.
    */
-  contacts: Contact[]
+  contacts: Contact[];
 }
 
 /**
@@ -29,13 +32,14 @@ export interface FloatingContactsProps {
  * render, all browser APIs are confined to effects inside useFloatingContacts.
  */
 export function FloatingContacts({ contacts }: FloatingContactsProps) {
-  const { isOpen, toggle, close, entries, containerRef, hasContacts } = useFloatingContacts({ contacts })
+  const { isOpen, toggle, close, entries, containerRef, hasContacts } =
+    useFloatingContacts({ contacts });
 
   const handleItemNavigate = useCallback(() => {
-    close()
-  }, [close])
+    close();
+  }, [close]);
 
-  if (!hasContacts) return null
+  if (!hasContacts) return null;
 
   return (
     <div
@@ -49,9 +53,13 @@ export function FloatingContacts({ contacts }: FloatingContactsProps) {
       }}
     >
       <div className="relative h-full w-full">
-        <FloatingContactsMenu entries={entries} isOpen={isOpen} onItemNavigate={handleItemNavigate} />
+        <FloatingContactsMenu
+          entries={entries}
+          isOpen={isOpen}
+          onItemNavigate={handleItemNavigate}
+        />
         <FloatingContactsButton isOpen={isOpen} onToggle={toggle} />
       </div>
     </div>
-  )
+  );
 }

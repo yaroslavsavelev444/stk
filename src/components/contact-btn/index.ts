@@ -1,22 +1,34 @@
-export { FloatingContacts } from './FloatingContacts'
-export type { FloatingContactsProps } from './FloatingContacts'
-
-export { mapSettingsContacts } from './mapContact'
-export { MAX_VISIBLE_CONTACTS, buildMenuEntries, useFloatingContacts } from './useFloatingContacts'
-export { resolveContactAction, CONTACTS_PAGE_PATH } from './resolveContactAction'
+export type { FloatingContactsProps } from "./FloatingContacts";
+export { FloatingContacts } from "./FloatingContacts";
 export {
-  computeSector,
-  computeRadius,
-  computeItemPolarPosition,
+  // BASE_RADIUS_PX,
   computeItemOffset,
+  computeItemPolarPosition,
+  computeRadius,
+  computeSector,
+  // MAX_RADIUS_GROWTH_PX,
+  // MAX_SECTOR_DEG,
+  // MIN_SECTOR_DEG,
   polarToCartesian,
+  // RADIUS_GROWTH_PER_ITEM_PX,
   SECTOR_CENTER_ANGLE_DEG,
-  MIN_SECTOR_DEG,
-  MAX_SECTOR_DEG,
-  SECTOR_GROWTH_PER_ITEM_DEG,
-  BASE_RADIUS_PX,
-  RADIUS_GROWTH_PER_ITEM_PX,
-  MAX_RADIUS_GROWTH_PX,
-} from './geometry'
-
-export type { Contact, ContactType, MenuEntry, OverflowContact, PolarPosition, CartesianOffset } from './types'
+  // SECTOR_GROWTH_PER_ITEM_DEG,
+} from "./geometry";
+export { mapSettingsContacts } from "./mapContact";
+export {
+  CONTACTS_PAGE_PATH,
+  resolveContactAction,
+} from "./resolveContactAction";
+export type {
+  CartesianOffset,
+  Contact,
+  ContactType,
+  MenuEntry,
+  OverflowContact,
+  PolarPosition,
+} from "./types";
+export {
+  buildMenuEntries,
+  MAX_VISIBLE_CONTACTS,
+  useFloatingContacts,
+} from "./useFloatingContacts";

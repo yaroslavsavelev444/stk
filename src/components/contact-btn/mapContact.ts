@@ -1,5 +1,5 @@
-import type { Setting } from '@/payload-types'
-import type { Contact, ContactType } from './types'
+import type { Setting } from "@/payload-types";
+import type { Contact, ContactType } from "./types";
 
 /**
  * Raw shape coming out of Payload for a single `contacts[]` array item.
@@ -7,10 +7,10 @@ import type { Contact, ContactType } from './types'
  * of `Setting['contacts']`; re-declared narrowly here so this module has
  * no dependency on exact generated-type shape beyond what it reads.
  */
-type RawSettingsContact = NonNullable<Setting['contacts']>[number]
+type RawSettingsContact = NonNullable<Setting["contacts"]>[number];
 
-const WHATSAPP_HOST_PATTERN = /(^|\.)wa\.me$|(^|\.)whatsapp\.com$/i
-const TELEGRAM_HOST_PATTERN = /(^|\.)t\.me$|(^|\.)telegram\.(me|org)$/i
+const WHATSAPP_HOST_PATTERN = /(^|\.)wa\.me$|(^|\.)whatsapp\.com$/i;
+const TELEGRAM_HOST_PATTERN = /(^|\.)t\.me$|(^|\.)telegram\.(me|org)$/i;
 
 /**
  * Payload's `type` select currently only offers 'text' | 'phone' | 'email' | 'link'
@@ -40,36 +40,45 @@ const TELEGRAM_HOST_PATTERN = /(^|\.)t\.me$|(^|\.)telegram\.(me|org)$/i
  * by the `default` case below — no further code change required).
  */
 function resolveContactType(raw: RawSettingsContact): ContactType {
-  const rawType = raw.type as string | null | undefined
+  const rawType = raw.type as string | null | undefined;
 
-  if (rawType === 'whatsapp' || rawType === 'telegram' || rawType === 'phone' || rawType === 'email' || rawType === 'text') {
-    return rawType
+  if (
+    rawType === "whatsapp" ||
+    rawType === "telegram" ||
+    rawType === "phone" ||
+    rawType === "email" ||
+    rawType === "text"
+  ) {
+    return rawType;
   }
 
-  if (rawType === 'link' && raw.value) {
+  if (rawType === "link" && raw.value) {
     try {
-      const url = new URL(raw.value)
-      if (WHATSAPP_HOST_PATTERN.test(url.host)) return 'whatsapp'
-      if (TELEGRAM_HOST_PATTERN.test(url.host)) return 'telegram'
+      const url = new URL(raw.value);
+      if (WHATSAPP_HOST_PATTERN.test(url.host)) return "whatsapp";
+      if (TELEGRAM_HOST_PATTERN.test(url.host)) return "telegram";
     } catch {
       // Not a parseable absolute URL — fall through to 'link'.
     }
-    return 'link'
+    return "link";
   }
 
-  return 'text'
+  return "text";
 }
 
 /** Normalizes one raw Payload contact entry into the component's Contact shape. */
-function mapSettingsContactToContact(raw: RawSettingsContact, index: number): Contact {
+function mapSettingsContactToContact(
+  raw: RawSettingsContact,
+  index: number,
+): Contact {
   return {
     id: raw.id ?? `contact-${index}`,
-    title: raw.title ?? '',
-    value: raw.value ?? '',
+    title: raw.title ?? "",
+    value: raw.value ?? "",
     type: resolveContactType(raw),
-    icon: raw.icon ?? '',
-    order: typeof raw.order === 'number' ? raw.order : index,
-  }
+    icon: raw.icon ?? "",
+    order: typeof raw.order === "number" ? raw.order : index,
+  };
 }
 
 /**
@@ -77,9 +86,63 @@ function mapSettingsContactToContact(raw: RawSettingsContact, index: number): Co
  * Returns an empty array (never null/undefined) when settings or contacts
  * are absent, so callers never need a defensive null-check.
  */
-export function mapSettingsContacts(settings: Setting | null | undefined): Contact[] {
-  const raw = settings?.contacts ?? []
-  return raw
-    .map(mapSettingsContactToContact)
-    .sort((a, b) => a.order - b.order)
+export function mapSettingsContacts(
+  settings: Setting | null | undefined,
+): Contact[] {
+  if (!settings) return [];
+
+  const contacts: Contact[] = [];
+
+  /**
+   * Общая почта организации
+   */
+  if (settings.companyEmail) {
+    contacts.push({
+      id: "company-email",
+      title: "Общая почта",
+      value: settings.companyEmail,
+      type: "email",
+      icon: "",
+      order: 0,
+    });
+  }
+
+  /**
+   * Старые контакты организации
+   * Телефон, WhatsApp, Telegram и т.д.
+   */
+  const rawContacts = settings.contacts ?? [];
+
+  contacts.push(...rawContacts.map(mapSettingsContactToContact));
+
+  /**
+   * Менеджеры
+   */
+  const managers = settings.managers ?? [];
+
+  managers.forEach((manager, index) => {
+    if (manager.phone) {
+      contacts.push({
+        id: `manager-phone-${manager.id ?? index}`,
+        title: manager.name,
+        value: manager.phone,
+        type: "phone",
+        icon: "",
+        order: 100 + index,
+      });
+    }
+
+    if (manager.email) {
+      contacts.push({
+        id: `manager-email-${manager.id ?? index}`,
+        title: manager.name,
+        value: manager.email,
+        type: "email",
+        icon: "",
+        order: 200 + index,
+      });
+    }
+  });
+
+  return contacts.sort((a, b) => a.order - b.order);
 }

@@ -1,14 +1,14 @@
-'use client'
+"use client";
 
-import { AnimatePresence } from 'framer-motion'
-import { computeItemOffset } from './geometry'
-import { FloatingContactItem } from './FloatingContactItem'
-import type { MenuEntry } from './types'
+import { AnimatePresence } from "framer-motion";
+import { FloatingContactItem } from "./FloatingContactItem";
+import { computeItemOffset } from "./geometry";
+import type { MenuEntry } from "./types";
 
 interface FloatingContactsMenuProps {
-  entries: MenuEntry[]
-  isOpen: boolean
-  onItemNavigate: () => void
+  entries: MenuEntry[];
+  isOpen: boolean;
+  onItemNavigate: () => void;
 }
 
 /**
@@ -17,7 +17,11 @@ interface FloatingContactsMenuProps {
  * the total visible count, so adding/removing entries re-flows the whole
  * arrangement automatically with no per-count branching here.
  */
-export function FloatingContactsMenu({ entries, isOpen, onItemNavigate }: FloatingContactsMenuProps) {
+export function FloatingContactsMenu({
+  entries,
+  isOpen,
+  onItemNavigate,
+}: FloatingContactsMenuProps) {
   return (
     <AnimatePresence>
       {isOpen &&
@@ -30,5 +34,5 @@ export function FloatingContactsMenu({ entries, isOpen, onItemNavigate }: Floati
           />
         ))}
     </AnimatePresence>
-  )
+  );
 }
