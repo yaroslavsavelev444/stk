@@ -126,7 +126,7 @@ export default async function CategoryProductsPage({
           </Heading>
           {category.description && (
             <Text
-              variant="heading-default-xl"
+              variant="heading-default-l"
               onBackground="neutral-weak"
               wrap="balance"
               style={{ marginTop: "1rem" }}
