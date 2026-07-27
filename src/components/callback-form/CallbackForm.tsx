@@ -222,8 +222,17 @@ export function CallbackForm({
         <SubmitButton />
 
         <p className="text-center text-[13px] leading-relaxed text-[var(--text-muted)]">
-          Нажимая «Отправить заявку», вы соглашаетесь на обработку персональных
-          данных.
+          Нажимая «Отправить заявку», вы даете согласие на обработку
+          персональных данных и соглашаетесь с{" "}
+          <a
+            href="https://stkaktiv.ru/consents/policy"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="underline transition-colors hover:text-[var(--text-primary)]"
+          >
+            Политикой обработки персональных данных
+          </a>
+          .
         </p>
       </form>
     </div>
