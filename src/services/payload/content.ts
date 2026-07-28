@@ -1,5 +1,6 @@
 // src/services/payload/content.ts
 import { unstable_cache } from "next/cache";
+import type { WhyUsItem } from "@/modules/home/types";
 import type { AboutContent, HomeContent, Media } from "@/payload-types";
 import { aboutContentDefaults, homeContentDefaults } from "./content-defaults";
 import { getPayloadInstance } from "./getPayload";
@@ -10,8 +11,6 @@ async function fetchHomeContent(): Promise<HomeContent | null> {
   return (result as HomeContent) ?? null;
 }
 
-// В development отключаем кэш, чтобы видеть изменения на лету (тот же
-// паттерн, что и в остальных services/payload/*).
 export const getCachedHomeContent =
   process.env.NODE_ENV === "development"
     ? fetchHomeContent
@@ -44,11 +43,6 @@ export interface HomeAboutIntroContent {
 
 export type HomeFeatureCard = NonNullable<HomeContent["featureCards"]>[number];
 
-/**
- * Блок "О компании" на главной. Резолвит секцию из CMS с фолбэком на
- * дефолтный контент (см. content-defaults.ts), чтобы отсутствие/удаление
- * записи в админке не ломало главную страницу.
- */
 export async function getHomeAboutIntro(): Promise<HomeAboutIntroContent> {
   const content = await getCachedHomeContent();
   const intro = content?.aboutIntro ?? homeContentDefaults.aboutIntro;
@@ -64,13 +58,41 @@ export async function getHomeAboutIntro(): Promise<HomeAboutIntroContent> {
   };
 }
 
-/** Карточки блока преимуществ перед "Почему выбирают СТК-Актив". */
 export async function getHomeFeatureCards(): Promise<HomeFeatureCard[]> {
   const content = await getCachedHomeContent();
   const cards = content?.featureCards;
   return Array.isArray(cards) && cards.length > 0
     ? cards
     : (homeContentDefaults.featureCards ?? []);
+}
+
+// ↓ новое: контент секции "Почему выбирают СТК-Актив"
+export interface HomeWhyUsContent {
+  heading: string;
+  subheading: string;
+  items: WhyUsItem[];
+}
+
+/**
+ * Секция "Почему выбирают СТК-Актив" на главной. Как и остальные секции,
+ * резолвится из CMS с фолбэком на дефолтный контент (content-defaults.ts).
+ * Фолбэк применяется целиком на группу whyUs, а не поэлементно на items —
+ * т.к. вёрстка рассчитана ровно на 4 карточки (см. HomeContent.ts), частично
+ * заполненный набор из CMS показываем как есть без подмешивания дефолтов.
+ */
+export async function getHomeWhyUs(): Promise<HomeWhyUsContent> {
+  const content = await getCachedHomeContent();
+  const whyUs = content?.whyUs ?? homeContentDefaults.whyUs;
+
+  return {
+    heading: whyUs.heading,
+    subheading: whyUs.subheading,
+    items: (whyUs.items ?? []).map((item) => ({
+      title: item.title,
+      description: item.description,
+      icon: item.icon,
+    })),
+  };
 }
 
 export interface AboutPageSections {
@@ -86,12 +108,6 @@ export interface AboutPageSections {
   directions: NonNullable<AboutContent["directions"]>;
 }
 
-/**
- * Контент страницы "О нас" (диапазон от блока "О компании" до "История
- * компании"). Фолбэк применяется по каждой секции отдельно: если раздел
- * не задан или был удалён в админке, страница показывает дефолтный текст
- * вместо падения/пустоты.
- */
 export async function getAboutContent(): Promise<AboutPageSections> {
   const content = await getCachedAboutContent();
 

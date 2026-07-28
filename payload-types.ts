@@ -892,18 +892,6 @@ export interface SettingsSelect<T extends boolean = true> {
   createdAt?: T;
   globalType?: T;
 }
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "home-content".
- *
- * NOTE: `payload generate:types` currently fails in this environment with
- * `ERR_MODULE_NOT_FOUND: Cannot find package '@/services'` (pre-existing,
- * reproducible on master before this change — unrelated to home-content/
- * about-content). This interface was written by hand to match
- * src/payload/globals/HomeContent.ts field-for-field; re-running
- * `generate:types` once that issue is fixed will regenerate it and should
- * produce an equivalent shape.
- */
 export interface HomeContent {
   id: string;
   aboutIntro?: {
@@ -913,9 +901,6 @@ export interface HomeContent {
     image?: (string | null) | Media;
     imageAlt: string;
   };
-  /**
-   * Блок из карточек перед секцией «Почему выбирают СТК-Актив». Количество карточек должно быть чётным — на десктопе они располагаются по 2 в ряд.
-   */
   featureCards?:
     | {
         image: string | Media;
@@ -929,6 +914,17 @@ export interface HomeContent {
         id?: string | null;
       }[]
     | null;
+  // ↓ новое
+  whyUs?: {
+    heading: string;
+    subheading: string;
+    items: {
+      title: string;
+      description: string;
+      icon: "factory" | "shield" | "certificate" | "route";
+      id?: string | null;
+    }[];
+  };
   updatedAt?: string | null;
   createdAt?: string | null;
 }

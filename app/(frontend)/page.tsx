@@ -8,8 +8,12 @@ import { mapHomeAboutIntro } from "@/modules/about/utils/mapAboutContent";
 import { FeatureCards, TrustBar, WhyUsSection } from "@/modules/home";
 import { CertificatesSection } from "@/modules/home/components/CertificatesSection";
 import { ReviewsSection } from "@/modules/home/components/ReviewsSection";
-import { baseURL, home, trustStats, whyUsItems } from "@/resources/content";
-import { getCachedSettings, getHomeAboutIntro } from "@/services/payload";
+import { baseURL, home, trustStats } from "@/resources/content"; // ← whyUsItems убран
+import {
+  getCachedSettings,
+  getHomeAboutIntro,
+  getHomeWhyUs,
+} from "@/services/payload";
 
 export async function generateMetadata() {
   return Meta.generate({
@@ -24,6 +28,7 @@ export async function generateMetadata() {
 export default async function Home() {
   const settings = await getCachedSettings();
   const aboutIntro = mapHomeAboutIntro(await getHomeAboutIntro());
+  const whyUs = await getHomeWhyUs(); // ← новое
 
   return (
     <Column maxWidth="m" gap="0" paddingY="0" horizontal="center">
@@ -36,8 +41,6 @@ export default async function Home() {
         image={`/api/og/generate?title=${encodeURIComponent(home.title)}`}
       />
 
-      {/* Без Reveal: Hero — первый экран, он должен быть виден сразу и
-          полностью, а не после срабатывания scroll-in-view анимации. */}
       <HeroSection heroBackground={settings?.heroBackground} />
 
       <div id="main-content" />
@@ -48,10 +51,13 @@ export default async function Home() {
           <AboutHero hero={aboutIntro} />
         </Reveal>
 
-        {/* Тёмная полоса доверия — контраст между интро и аргументами */}
         <TrustBar stats={trustStats} />
 
-        <WhyUsSection items={whyUsItems} />
+        <WhyUsSection
+          heading={whyUs.heading}
+          subheading={whyUs.subheading}
+          items={whyUs.items}
+        />
 
         <Reveal translateY={16} fillWidth delay={0.1}>
           <CategoriesGrid />

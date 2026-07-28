@@ -6,6 +6,7 @@
 // что использовался в коде раньше (src/resources/content.tsx), поэтому
 // значения по умолчанию совпадают с текущей версткой один в один.
 import type { AboutContent, HomeContent } from "@/payload-types";
+import { whyUsSource } from "@/resources/why-us-content-source.ts";
 // Импортируем из about-content-source.ts (обычный .ts, без JSX), а не из
 // content.tsx напрямую: этот файл (через seed-скрипт scripts/seed-content.ts)
 // должен уметь загружаться инструментами запуска отдельных TS-файлов
@@ -30,6 +31,7 @@ type NonNull<T> = NonNullable<T>;
 export const homeContentDefaults: {
   aboutIntro: NonNull<HomeContent["aboutIntro"]>;
   featureCards: NonNull<HomeContent["featureCards"]>;
+  whyUs: NonNull<HomeContent["whyUs"]>; // ← новое
 } = {
   aboutIntro: {
     eyebrow: homeAboutIntroSource.eyebrow,
@@ -37,10 +39,13 @@ export const homeContentDefaults: {
     lead: homeAboutIntroSource.lead,
     imageAlt: homeAboutIntroSource.heroImageAlt,
   },
-  // Блок карточек — новый, исторического контента для него нет: если
-  // в CMS ничего не настроено, блок просто не рендерится (см. CertificatesSection
-  // для того же паттерна "нет данных — секции нет").
   featureCards: [],
+  // ↓ новое: резервный контент секции "Почему выбирают СТК-Актив"
+  whyUs: {
+    heading: whyUsSource.heading,
+    subheading: whyUsSource.subheading,
+    items: whyUsSource.items.map((item) => ({ ...item })),
+  },
 };
 
 export const aboutContentDefaults: {

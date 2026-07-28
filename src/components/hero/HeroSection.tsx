@@ -76,7 +76,8 @@ export function HeroSection({ heroBackground }: HeroSectionProps) {
             align="center"
             style={onMediaTextStyle}
           >
-            <span style={{ color: "var(--accent)" }}>СТК</span>{" "}
+            <span style={{ color: "var(--accent)" }}>СТК</span>
+            {"-"}
             <span style={{ color: "var(--primary)" }}>АКТИВ</span>
           </Heading>
         </RevealFx>

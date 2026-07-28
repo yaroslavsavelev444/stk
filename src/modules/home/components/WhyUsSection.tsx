@@ -10,19 +10,14 @@ const ICON_MAP: Record<WhyUsIconKey, typeof Factory> = {
 };
 
 interface WhyUsSectionProps {
-  heading?: string;
-  subheading?: string;
+  heading: string; // ← больше не дефолтится в компоненте
+  subheading: string; // ← источник контента — CMS/content-defaults
   items: WhyUsItem[];
 }
 
-/**
- * Bento-грид преимуществ: первая карточка — "hero" (2 колонки, акцентный
- * градиент), остальные — компактные нейтральные. Такая асимметрия читается
- * как "главный аргумент + поддерживающие", а не как ровный список.
- */
 export function WhyUsSection({
-  heading = "Почему выбирают СТК-Актив",
-  subheading = "Четыре причины доверить нам производство и поставку дорожных знаков",
+  heading,
+  subheading,
   items,
 }: WhyUsSectionProps) {
   return (
@@ -65,13 +60,11 @@ export function WhyUsSection({
                       : "none",
                   }}
                 >
-                  {/* Декоративный акцентный круг — усиливается на hover */}
                   <div
                     className="pointer-events-none absolute -right-8 -top-8 h-32 w-32 rounded-full opacity-10 transition-transform duration-500 group-hover:scale-125"
                     style={{ background: isHero ? "#fff" : "var(--primary)" }}
                     aria-hidden="true"
                   />
-
                   <div className="relative z-10 flex flex-col gap-4">
                     <div
                       className="flex h-11 w-11 items-center justify-center rounded-xl"
@@ -87,7 +80,6 @@ export function WhyUsSection({
                         color={isHero ? "#fff" : "var(--primary)"}
                       />
                     </div>
-
                     <h3
                       className={
                         isHero
@@ -97,7 +89,6 @@ export function WhyUsSection({
                     >
                       {item.title}
                     </h3>
-
                     <p
                       className={
                         isHero
