@@ -132,7 +132,7 @@ export async function FeatureCards() {
   return (
     // Внешний Reveal — внутри условия на пустые данные, иначе пустая
     // обёртка всё равно становится flex-элементом родительского списка
-    // секций и добавляет лишний gap до и после себя.
+    // секций и добавляет лишний gap до и после себяsdfsdf.
     <Reveal translateY={16} fillWidth>
       <section className="w-full max-w-6xl mx-auto px-4 sm:px-6 mt-12">
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 md:gap-6">
