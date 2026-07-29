@@ -65,8 +65,13 @@ const ProductTemplate: React.FC<ProductTemplateProps> = ({
           gap: var(--col-gap);
           max-width: 1400px;
           margin: 0 auto;
+           min-width: 0;
+          max-width: 100%;
           padding: clamp(1.5rem, 4vw, 3rem) clamp(1rem, 4vw, 2rem);
         }
+        .product-col {
+  min-width: 0; 
+}
         @media (min-width: 768px) {
           .product-grid {
             grid-template-columns: 280px 1fr;

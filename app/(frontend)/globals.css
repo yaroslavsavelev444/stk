@@ -1,10 +1,12 @@
 @import "tailwindcss";
 @import "./theme.css";
+
 :root {
 
   --sticky-header-height: 124px;
 
 }
+
 *,
 *::before,
 *::after {
@@ -18,6 +20,7 @@ html {
      горизонтальный скролл на ширину скроллбара. */
   overflow-x: hidden;
 }
+
 
 /* ===========================================================================
    Lenis — обязательные стили (эквивалент lenis/dist/lenis.css, инлайн, чтобы
@@ -58,7 +61,7 @@ html,
 body {
   margin: 0;
   padding: 0;
-
+  overscroll-behavior-y: none;
   background: var(--background);
   color: var(--text-primary);
 
@@ -76,6 +79,7 @@ body {
 
 body {
   min-height: 100vh;
+  min-height: 100dvh;
 }
 
 a {
@@ -141,7 +145,7 @@ div[class*="page-background"] {
 [aria-label*="Close"],
 button.close,
 .close-button,
-svg + button,
+svg+button,
 button[aria-label="Close modal"] {
   display: none !important;
 }
@@ -196,6 +200,7 @@ div[class*="px-8"].flex-column {
 .search-palette-wrapper {
   isolation: isolate;
 }
+
 body {
   background: transparent !important;
 }

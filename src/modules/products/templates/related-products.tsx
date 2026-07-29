@@ -1,26 +1,29 @@
 // @modules/products/components/related-products.tsx
-import { ProductsGrid } from "@/components/products/ProductsGrid"
-import type { Product } from "@/payload-types"
+import { ProductsGrid } from "@/components/products/ProductsGrid";
+import type { Product } from "@/payload-types";
 
 type RelatedProductsProps = {
-  product: Product
-  countryCode?: string // оставил для совместимости, если где-то используется
-}
+  product: Product;
+  countryCode?: string; // оставил для совместимости, если где-то используется
+};
 
 export default async function RelatedProducts({
   product,
 }: RelatedProductsProps) {
   // Показываем блок ТОЛЬКО если админ выбрал рекомендованные товары
-  if (!product.recommendedProducts || product.recommendedProducts.length === 0) {
-    return null
+  if (
+    !product.recommendedProducts ||
+    product.recommendedProducts.length === 0
+  ) {
+    return null;
   }
 
   // Фильтруем на случай, если какие-то товары не опубликованы
-  const recommended = product.recommendedProducts.filter((p: any) => 
-    p && (typeof p === 'object' ? p.isPublished !== false : true)
-  ) as Product[]
+  const recommended = product.recommendedProducts.filter(
+    (p: any) => p && (typeof p === "object" ? p.isPublished !== false : true),
+  ) as Product[];
 
-  if (recommended.length === 0) return null
+  if (recommended.length === 0) return null;
 
   return (
     <div className="product-page-constraint my-16 lg:my-32">
@@ -36,5 +39,5 @@ export default async function RelatedProducts({
         emptyMessage="Рекомендуемые товары не найдены"
       />
     </div>
-  )
+  );
 }

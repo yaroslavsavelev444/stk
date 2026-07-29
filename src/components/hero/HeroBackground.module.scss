@@ -1,11 +1,11 @@
+
 .wrapper {
   position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  // Растягиваем обёртку чтобы параллакс не обнажал края
-  bottom: 0;
-  z-index: -1;
+  inset: 0;
+  height: 100vh;
+  height: 100dvh; // dynamic viewport height on mobile; desktop browsers that
+                   // don't support dvh simply keep the 100vh above (no-op there)
+  z-index: 0;      // was -1 — see note below
   overflow: hidden;
   pointer-events: none;
 }
