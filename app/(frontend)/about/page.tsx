@@ -24,6 +24,7 @@ import {
   mapAboutStandards,
   mapIntroToHero,
 } from "@/modules/about/utils/mapAboutContent";
+import { CertificatesSection } from "@/modules/home/components/CertificatesSection";
 import { aboutPage, baseURL } from "@/resources/content";
 import { getAboutContent } from "@/services/payload/content";
 
@@ -50,7 +51,6 @@ export default async function AboutPage() {
   const geography = mapAboutGeography(content.geography);
   const directions = mapAboutDirections(content.directions);
 
-  console.log("geography", directions);
   return (
     <Column maxWidth="m" gap="0" paddingY="12" horizontal="center">
       <Schema
@@ -91,14 +91,16 @@ export default async function AboutPage() {
           steps={content.productionWater.steps ?? []}
         />
 
-        <AboutStandards standards={standards} />
-
-        <QualityControlSection
-          heading={content.quality.heading}
-          subheading={content.quality.subheading}
-          checks={content.quality.checks ?? []}
-          brands={standards.filmBrands}
-        />
+        <div className="w-full max-w-6xl mx-auto px-4 sm:px-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-14 items-start">
+            <QualityControlSection
+              heading={content.quality.heading}
+              subheading={content.quality.subheading}
+              checks={content.quality.checks ?? []}
+            />
+            <AboutStandards standards={standards} />
+          </div>
+        </div>
 
         <GeographySection
           heading={geography.heading}
@@ -119,12 +121,12 @@ export default async function AboutPage() {
           items={directions.items}
         />
 
-        <AboutCertificates
+        {/* <AboutCertificates
           heading={aboutPage.certificates.heading}
           subheading={aboutPage.certificates.subheading}
           items={aboutPage.certificates.items}
-        />
-
+        /> */}
+        <CertificatesSection />
         <div className="w-full max-w-6xl mx-auto px-4 sm:px-6">
           <div className="mb-8 flex flex-col gap-2 text-center">
             <h2 className="text-[clamp(1.375rem,2.6vw,1.875rem)] font-bold text-[var(--text-primary)]">

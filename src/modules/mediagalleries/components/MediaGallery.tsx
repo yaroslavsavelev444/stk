@@ -100,6 +100,54 @@ export function MediaGallery({
         on={{
           view: ({ index: currentIndex }) => setLightboxIndex(currentIndex),
         }}
+        controller={{
+          closeOnBackdropClick: true,
+          closeOnPullUp: true,
+          closeOnPullDown: true,
+        }}
+        styles={{
+          root: { "--yarl__color_backdrop": "rgba(0, 0, 0, .9)", zIndex: 1000 },
+        }}
+        render={{
+          buttonClose: () => (
+            <button
+              type="button"
+              aria-label="Закрыть просмотр"
+              onClick={() => setLightboxOpen(false)}
+              className="yarl__button"
+              style={{
+                position: "fixed",
+                top: "max(1rem, env(safe-area-inset-top))",
+                right: "max(1rem, env(safe-area-inset-right))",
+                zIndex: 1001,
+                width: 44,
+                height: 44,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                borderRadius: "999px",
+                border: "none",
+                background: "rgba(0, 0, 0, 0.55)",
+                color: "#fff",
+                cursor: "pointer",
+              }}
+            >
+              <svg
+                width="22"
+                height="22"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <line x1="18" y1="6" x2="6" y2="18" />
+                <line x1="6" y1="6" x2="18" y2="18" />
+              </svg>
+            </button>
+          ),
+        }}
       />
     </section>
   );

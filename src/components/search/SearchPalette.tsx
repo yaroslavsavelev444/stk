@@ -1,21 +1,21 @@
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import { observer } from 'mobx-react-lite';
-import { useSearchStore } from '../context/RootStoreContext';
-import { Modal } from '@once-ui-system/core';
-import { SearchInput } from './SearchInput';
-import { SearchProducts } from './SearchProducts';
-import { SearchEmpty } from './SearchEmpty';
-import type { InputRef } from 'antd';
 import {
-  ArrowUpOutlined,
   ArrowDownOutlined,
-  EnterOutlined,
+  ArrowUpOutlined,
   CloseOutlined,
-} from '@ant-design/icons';
-import { useSearch } from '../hooks/useSearch';
-import { useKeyboard } from '../hooks/useKeyboard';
+  EnterOutlined,
+} from "@ant-design/icons";
+import { Modal } from "@once-ui-system/core";
+import type { InputRef } from "antd";
+import { observer } from "mobx-react-lite";
+import { useEffect, useRef } from "react";
+import { useSearchStore } from "../context/RootStoreContext";
+import { useKeyboard } from "../hooks/useKeyboard";
+import { useSearch } from "../hooks/useSearch";
+import { SearchEmpty } from "./SearchEmpty";
+import { SearchInput } from "./SearchInput";
+import { SearchProducts } from "./SearchProducts";
 
 export const SearchPalette = observer(() => {
   const searchStore = useSearchStore();
@@ -49,10 +49,7 @@ export const SearchPalette = observer(() => {
       >
         <SearchInput ref={inputRef} />
 
-        <div
-          className="p-5 max-h-[60vh] overflow-y-auto"
-          data-lenis-prevent
-        >
+        <div className="p-5 max-h-[60vh] overflow-y-auto" data-lenis-prevent>
           <SearchProducts />
           <SearchEmpty />
         </div>

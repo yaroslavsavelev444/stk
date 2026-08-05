@@ -1,17 +1,18 @@
-import { Suspense } from 'react'
-import { getCachedCategories } from '@/services/payload/categories'
-import { CategoryCard } from './CategoryCard'
-import { CategoryGridSkeleton } from './CategoryGridSkeleton'
-import type { Category } from '@/payload-types'
+import { Suspense } from "react";
+import type { Category } from "@/payload-types";
+import { getCachedCategories } from "@/services/payload/categories";
+import { CategoryCard } from "./CategoryCard";
+import { CategoryGridSkeleton } from "./CategoryGridSkeleton";
 
 /** sizes-хинт для next/image, синхронизирован с брейкпоинтами сетки ниже */
-const CATEGORY_CARD_SIZES = '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'
+const CATEGORY_CARD_SIZES =
+  "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw";
 
 /** sizes-хинт для увеличенных карточек главных категорий (до 2 в ряд) */
-const FEATURED_CARD_SIZES = '(max-width: 640px) 100vw, 50vw'
+const FEATURED_CARD_SIZES = "(max-width: 640px) 100vw, 50vw";
 
 /** Число первых карточек, которые грузим eager (видны на первом экране) */
-const EAGER_COUNT = 3
+const EAGER_COUNT = 3;
 
 function CategoryListItem({
   category,
@@ -19,32 +20,40 @@ function CategoryListItem({
   loading,
   size,
 }: {
-  category: Category
-  sizes: string
-  loading: 'lazy' | 'eager'
-  size?: 'default' | 'large'
+  category: Category;
+  sizes: string;
+  loading: "lazy" | "eager";
+  size?: "default" | "large";
 }) {
   return (
     <div role="listitem">
-      <CategoryCard category={category} sizes={sizes} loading={loading} size={size} />
+      <CategoryCard
+        category={category}
+        sizes={sizes}
+        loading={loading}
+        size={size}
+      />
     </div>
-  )
+  );
 }
 
 async function CategoriesGridContent() {
-  const categories = await getCachedCategories()
+  const categories = await getCachedCategories();
 
   if (!categories?.length) {
     return (
       <p className="text-center py-12 text-[var(--text-secondary)]">
         Категории пока не добавлены
       </p>
-    )
+    );
   }
+  const featured = categories
+    .filter((category) => category.featured)
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
 
-  const featured = categories.filter((category) => category.featured)
-  const normal = categories.filter((category) => !category.featured)
-
+  const normal = categories
+    .filter((category) => !category.featured)
+    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0));
   // Нет главных категорий — сетка не отличается от текущей
   if (featured.length === 0) {
     return (
@@ -53,28 +62,28 @@ async function CategoriesGridContent() {
         role="list"
         aria-label="Категории продукции"
       >
-        {categories.map((category, index) => (
+        {normal.map((category, index) => (
           <CategoryListItem
             key={category.id}
             category={category}
             sizes={CATEGORY_CARD_SIZES}
-            loading={index < EAGER_COUNT ? 'eager' : 'lazy'}
+            loading={index < EAGER_COUNT ? "eager" : "lazy"}
           />
         ))}
       </div>
-    )
+    );
   }
 
   // Единственная главная категория — подставляем рядом первую обычную,
   // чтобы в верхнем ряду не осталось пустого места
-  const pairedNormal = featured.length === 1 ? normal[0] : undefined
-  const restNormal = pairedNormal ? normal.slice(1) : normal
-  const featuredRowHasTwo = featured.length >= 2 || Boolean(pairedNormal)
+  const pairedNormal = featured.length === 1 ? normal[0] : undefined;
+  const restNormal = pairedNormal ? normal.slice(1) : normal;
+  const featuredRowHasTwo = featured.length >= 2 || Boolean(pairedNormal);
 
   return (
     <div className="flex flex-col gap-4 md:gap-5 lg:gap-6">
       <div
-        className={`grid grid-cols-1 ${featuredRowHasTwo ? 'sm:grid-cols-2' : ''} gap-4 md:gap-5 lg:gap-6`}
+        className={`grid grid-cols-1 ${featuredRowHasTwo ? "sm:grid-cols-2" : ""} gap-4 md:gap-5 lg:gap-6`}
         role="list"
         aria-label="Главные категории"
       >
@@ -109,13 +118,13 @@ async function CategoriesGridContent() {
               key={category.id}
               category={category}
               sizes={CATEGORY_CARD_SIZES}
-              loading={index < EAGER_COUNT ? 'eager' : 'lazy'}
+              loading={index < EAGER_COUNT ? "eager" : "lazy"}
             />
           ))}
         </div>
       )}
     </div>
-  )
+  );
 }
 
 export function CategoriesGrid() {
@@ -125,5 +134,5 @@ export function CategoriesGrid() {
         <CategoriesGridContent />
       </Suspense>
     </section>
-  )
+  );
 }

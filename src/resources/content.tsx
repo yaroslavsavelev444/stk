@@ -74,7 +74,7 @@ export const trustStats: TrustStat[] = [
   { value: "8 лет", label: "успешной работы на рынке" },
   { value: "200+", label: "проектов реализуется ежегодно" },
   { value: "100 000+", label: "изготовленных дорожных знаков" },
-  { value: "24", label: "региона поставки продукции" },
+  { value: "68", label: "региона поставки продукции" },
 ];
 
 export const whyUsItems: WhyUsItem[] = [
@@ -356,7 +356,7 @@ const aboutPage: AboutPageContent = {
     { value: "8 лет", label: "успешной работы на рынке" },
     { value: "200+", label: "проектов реализуется ежегодно" },
     { value: "100 000+", label: "изготовленных дорожных знаков" },
-    { value: "24", label: "региона поставки продукции" },
+    { value: "68", label: "региона поставки продукции" },
   ],
 
   directions: {
