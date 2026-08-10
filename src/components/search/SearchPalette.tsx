@@ -9,7 +9,7 @@ import {
 import { Modal } from "@once-ui-system/core";
 import type { InputRef } from "antd";
 import { observer } from "mobx-react-lite";
-import { useEffect, useRef } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 import { useSearchStore } from "../context/RootStoreContext";
 import { useKeyboard } from "../hooks/useKeyboard";
 import { useSearch } from "../hooks/useSearch";
@@ -22,16 +22,12 @@ export const SearchPalette = observer(() => {
   const inputRef = useRef<InputRef>(null);
 
   useSearch();
-  useKeyboard();
+  // useKeyboard();
 
-  useEffect(() => {
-    if (searchStore.isOpen) {
-      // Фокусируем только если инпут ещё не в фокусе
-      const inputElement = inputRef.current?.input;
-      if (inputElement && document.activeElement !== inputElement) {
-        setTimeout(() => inputElement.focus(), 0);
-      }
-    }
+  useLayoutEffect(() => {
+    if (!searchStore.isOpen) return;
+
+    inputRef.current?.focus();
   }, [searchStore.isOpen]);
 
   return (

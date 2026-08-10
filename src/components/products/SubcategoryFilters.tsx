@@ -15,7 +15,13 @@ interface SubcategoryFiltersProps {
 
 function CheckIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 16 16"
+      fill="none"
+      aria-hidden="true"
+    >
       <path
         d="M3 8.5L6.2 11.5L13 4.5"
         stroke="currentColor"
@@ -27,15 +33,25 @@ function CheckIcon() {
   );
 }
 
-function buildHref(categorySlug: string, selectedIds: string[], id: string | null) {
-  // id === null → чип "Все" — всегда сбрасывает выбор.
-  if (id === null) return `/catalog/${categorySlug}`;
+function buildHref(
+  categorySlug: string,
+  selectedIds: string[],
+  id: string | null,
+) {
+  // "Все" всегда сбрасывает выбранную подкатегорию.
+  if (id === null) {
+    return `/catalog/${categorySlug}`;
+  }
 
   const isSelected = selectedIds.includes(id);
-  const next = isSelected ? selectedIds.filter((x) => x !== id) : [...selectedIds, id];
 
-  if (next.length === 0) return `/catalog/${categorySlug}`;
-  return `/catalog/${categorySlug}?sub=${next.map(encodeURIComponent).join(",")}`;
+  // Повторный клик по выбранной подкатегории снимает выбор.
+  if (isSelected) {
+    return `/catalog/${categorySlug}`;
+  }
+
+  // Single-select: новая подкатегория полностью заменяет предыдущую.
+  return `/catalog/${categorySlug}?sub=${encodeURIComponent(id)}`;
 }
 
 function FilterChip({
@@ -83,9 +99,16 @@ function FilterChip({
         <span
           className={cn(
             "rounded-full text-xs font-bold leading-none",
-            isSelected ? "bg-white/20 text-white" : "bg-[var(--surface-secondary)] text-[var(--text-muted)]",
+            isSelected
+              ? "bg-white/20 text-white"
+              : "bg-[var(--surface-secondary)] text-[var(--text-muted)]",
           )}
-          style={{ paddingLeft: "0.375rem", paddingRight: "0.375rem", paddingTop: "0.125rem", paddingBottom: "0.125rem" }}
+          style={{
+            paddingLeft: "0.375rem",
+            paddingRight: "0.375rem",
+            paddingTop: "0.125rem",
+            paddingBottom: "0.125rem",
+          }}
         >
           {count}
         </span>
@@ -102,7 +125,11 @@ function FilterChip({
  * На мобильных — горизонтальная прокрутка в один ряд (чипов может быть
  * много, а вертикальное место дороже); от sm: — обычный перенос строк.
  */
-export function SubcategoryFilters({ items, selectedIds, categorySlug }: SubcategoryFiltersProps) {
+export function SubcategoryFilters({
+  items,
+  selectedIds,
+  categorySlug,
+}: SubcategoryFiltersProps) {
   const allSelected = selectedIds.length === 0;
 
   return (

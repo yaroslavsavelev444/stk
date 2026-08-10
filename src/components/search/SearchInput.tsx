@@ -1,9 +1,9 @@
-import { forwardRef } from 'react';
-import { observer } from 'mobx-react-lite';
-import { useSearchStore } from '../context/RootStoreContext';
-import { Input } from 'antd';
-import type { InputRef } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
+import { LoadingOutlined } from "@ant-design/icons";
+import type { InputRef } from "antd";
+import { Input } from "antd";
+import { observer } from "mobx-react-lite";
+import { forwardRef } from "react";
+import { useSearchStore } from "../context/RootStoreContext";
 
 export const SearchInput = observer(
   forwardRef<InputRef>(function SearchInputRef(props, ref) {
@@ -30,14 +30,15 @@ export const SearchInput = observer(
                      focus:shadow-none"
           autoComplete="off"
           autoCorrect="off"
+          autoFocus
           spellCheck={false}
           suffix={
-            <span className={searchStore.loading ? 'block' : 'hidden'}>
+            <span className={searchStore.loading ? "block" : "hidden"}>
               <LoadingOutlined className="text-[var(--text-muted)]" />
             </span>
           }
         />
       </div>
     );
-  })
+  }),
 );

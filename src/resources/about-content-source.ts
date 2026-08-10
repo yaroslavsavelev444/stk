@@ -257,7 +257,7 @@ export const aboutGeographySource: AboutGeographyContent = {
   heading: "Поставки на федеральные и региональные трассы по всей стране",
   subheading:
     "Реализованы поставки средств дорожной безопасности для ремонта и строительства ключевых автомагистралей федерального значения.",
-  regionsCount: "24",
+  regionsCount: "68",
   routes: [
     {
       name: "М-2 «Крым»",
