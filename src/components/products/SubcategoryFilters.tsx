@@ -38,20 +38,22 @@ function buildHref(
   selectedIds: string[],
   id: string | null,
 ) {
-  // "Все" всегда сбрасывает выбранную подкатегорию.
+  // "Все" сбрасывает все фильтры
   if (id === null) {
     return `/catalog/${categorySlug}`;
   }
 
-  const isSelected = selectedIds.includes(id);
+  const nextSelectedIds = selectedIds.includes(id)
+    ? selectedIds.filter((selectedId) => selectedId !== id)
+    : [...selectedIds, id];
 
-  // Повторный клик по выбранной подкатегории снимает выбор.
-  if (isSelected) {
+  if (nextSelectedIds.length === 0) {
     return `/catalog/${categorySlug}`;
   }
 
-  // Single-select: новая подкатегория полностью заменяет предыдущую.
-  return `/catalog/${categorySlug}?sub=${encodeURIComponent(id)}`;
+  return `/catalog/${categorySlug}?sub=${encodeURIComponent(
+    nextSelectedIds.join(","),
+  )}`;
 }
 
 function FilterChip({

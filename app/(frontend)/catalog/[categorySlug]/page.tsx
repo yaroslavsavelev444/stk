@@ -80,7 +80,7 @@ export default async function CategoryProductsPage({
   const { groups, ungrouped, visibleProducts } = groupProductsBySubcategory({
     products: productsData.docs,
     subcategories,
-    selectedIds,
+    selectedIds: [...selectedIds].reverse(),
   });
 
   // Чипы фильтра показываем только для подкатегорий, в которых реально
@@ -93,10 +93,30 @@ export default async function CategoryProductsPage({
       count: productsData.docs.filter((p) => {
         const id =
           typeof p.subcategory === "string" ? p.subcategory : p.subcategory?.id;
+
         return id === subcategory.id;
       }).length,
     }))
-    .filter((item) => item.count > 0);
+    .filter((item) => item.count > 0)
+    .sort((a, b) => {
+      const aIndex = selectedIds.indexOf(a.id);
+      const bIndex = selectedIds.indexOf(b.id);
+
+      const aSelected = aIndex !== -1;
+      const bSelected = bIndex !== -1;
+
+      // выбранные всегда сверху
+      if (aSelected && !bSelected) return -1;
+      if (!aSelected && bSelected) return 1;
+
+      // порядок выбранных = порядок выбора пользователем
+      if (aSelected && bSelected) {
+        return aIndex - bIndex;
+      }
+
+      // остальные сохраняют исходный порядок
+      return 0;
+    });
 
   const hasSubcategoryLayout = filterItems.length > 0;
   const isEmpty = groups.length === 0 && ungrouped.length === 0;
