@@ -22,7 +22,7 @@ const smtpEnvSchema = z.object({
   EMAIL_FROM_ADDRESS: z
     .string()
     .email("EMAIL_FROM_ADDRESS должен быть валидным email"),
-  EMAIL_FROM_NAME: z.string().default("СТК-Актив"),
+  EMAIL_FROM_NAME: z.string().default("Сайт-авто"),
   EMAIL_MAX_RETRIES: z.coerce.number().int().min(0).max(10).default(3),
   EMAIL_RETRY_DELAY_MS: z.coerce.number().int().min(0).default(1000),
 });

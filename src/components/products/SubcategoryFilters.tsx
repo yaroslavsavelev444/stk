@@ -71,6 +71,11 @@ function FilterChip({
     <Link
       href={href}
       scroll={false}
+      // Чипов на экране до пары десятков, и каждый — отдельная комбинация
+      // фильтра: префетч всех подряд генерировал бы RSC-запросы за страницы,
+      // которые в большинстве случаев так и не откроют. Страница каталога
+      // теперь отдаётся за десятки миллисекунд, задержки по клику не видно.
+      prefetch={false}
       aria-pressed={isSelected}
       className={cn(
         "group/chip relative flex shrink-0 items-center gap-2 rounded-full border py-2.5",

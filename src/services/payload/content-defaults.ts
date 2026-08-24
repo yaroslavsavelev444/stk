@@ -40,7 +40,7 @@ export const homeContentDefaults: {
     imageAlt: homeAboutIntroSource.heroImageAlt,
   },
   featureCards: [],
-  // ↓ новое: резервный контент секции "Почему выбирают СТК-Актив"
+  // ↓ новое: резервный контент секции "Почему выбирают Сайт-авто"
   whyUs: {
     heading: whyUsSource.heading,
     subheading: whyUsSource.subheading,

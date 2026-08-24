@@ -1,16 +1,14 @@
 import { Column, Text } from "@once-ui-system/core";
-import type { Product } from "@/payload-types";
+import type { CatalogCardProduct } from "@/services/catalog/types";
 import { ProductCard } from "./ProductCard";
 
 interface ProductsGridProps {
-  products: Product[];
-  total: number;
+  products: CatalogCardProduct[];
   emptyMessage?: string;
 }
 
 export function ProductsGrid({
   products,
-  total,
   emptyMessage = "Товары не найдены",
 }: ProductsGridProps) {
   if (products.length === 0) {

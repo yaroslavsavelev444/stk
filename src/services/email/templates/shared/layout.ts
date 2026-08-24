@@ -4,7 +4,7 @@ interface EmailLayoutOptions {
 }
 
 const BRAND_COLOR = "#2E2D8F";
-const COMPANY_NAME = "СТК-Актив";
+const COMPANY_NAME = "Сайт-авто";
 
 /**
  * Единая HTML-обёртка для всех писем проекта: инлайн-стили (обязательны

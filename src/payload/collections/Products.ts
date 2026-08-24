@@ -1,18 +1,21 @@
-import type { CollectionConfig } from 'payload'
-import { isAdminOrManager } from '../access/isAdminOrManager.ts'
-import { generateSlug } from '../../utils/generateSlug.ts'
-import { attributesField } from '../fields/attributes.ts'
-import { documentsField } from '../fields/documents.ts'
-import { seoField } from '../fields/seo.ts'
-import { variantFields } from '../fields/variants.ts'
-import { revalidateProductsAfterChange, revalidateProductsAfterDelete } from '../hooks/revalidateProducts.ts'
-import { syncVariants } from '../hooks/syncVariants.ts'
+import type { CollectionConfig } from "payload";
+import { generateSlug } from "../../utils/generateSlug.ts";
+import { isAdminOrManager } from "../access/isAdminOrManager.ts";
+import { attributesField } from "../fields/attributes.ts";
+import { documentsField } from "../fields/documents.ts";
+import { seoField } from "../fields/seo.ts";
+import { variantFields } from "../fields/variants.ts";
+import {
+  revalidateProductsAfterChange,
+  revalidateProductsAfterDelete,
+} from "../hooks/revalidateProducts.ts";
+import { syncVariants } from "../hooks/syncVariants.ts";
 
 export const Products: CollectionConfig = {
-  slug: 'products',
+  slug: "products",
   admin: {
-    useAsTitle: 'name',
-    defaultColumns: ['name', 'category', 'subcategory', 'price', 'isPublished'],
+    useAsTitle: "name",
+    defaultColumns: ["name", "category", "subcategory", "price", "isPublished"],
   },
   access: {
     read: () => true,
@@ -25,51 +28,68 @@ export const Products: CollectionConfig = {
     afterChange: [revalidateProductsAfterChange],
     afterDelete: [revalidateProductsAfterDelete],
   },
+  // Каталог всегда спрашивает товары одинаково: равенство по category +
+  // isPublished (+ subcategory), сортировка по order. Без этого индекса Mongo
+  // делала полный перебор коллекции и сортировку в памяти на КАЖДЫЙ запрос
+  // страницы категории — основной источник нагрузки на CPU.
+  indexes: [{ fields: ["category", "isPublished", "subcategory", "order"] }],
   fields: [
-    { name: 'name', type: 'text', required: true },
+    { name: "name", type: "text", required: true },
     {
-      name: 'slug',
-      type: 'text',
+      name: "slug",
+      type: "text",
       required: true,
       unique: true,
       hooks: { beforeValidate: [generateSlug] },
     },
     {
-      name: 'images',
-      type: 'upload',
-      relationTo: 'media',
+      name: "images",
+      type: "upload",
+      relationTo: "media",
       hasMany: true,
       required: true,
-      validate: (value) => !value || value.length > 0 || 'Добавьте хотя бы одно фото',
+      validate: (value) =>
+        !value || value.length > 0 || "Добавьте хотя бы одно фото",
     },
-    { name: 'description', type: 'textarea', required: true },
-    { name: 'category', type: 'relationship', relationTo: 'categories', required: true },
+    { name: "description", type: "textarea", required: true },
     {
-      name: 'subcategory',
-      type: 'relationship',
-      relationTo: 'subcategories',
-      label: 'Подкатегория',
+      name: "category",
+      type: "relationship",
+      relationTo: "categories",
+      required: true,
+      index: true,
+    },
+    {
+      name: "subcategory",
+      type: "relationship",
+      relationTo: "subcategories",
+      label: "Подкатегория",
       admin: {
-        description: 'Список ограничен подкатегориями выбранной категории. Сначала выберите категорию.',
+        description:
+          "Список ограничен подкатегориями выбранной категории. Сначала выберите категорию.",
         condition: (data) => Boolean(data?.category),
       },
       filterOptions: ({ siblingData }) => {
-        const category = (siblingData as { category?: string } | undefined)?.category
-        if (!category) return false
-        return { category: { equals: category }, isPublished: { equals: true } }
+        const category = (siblingData as { category?: string } | undefined)
+          ?.category;
+        if (!category) return false;
+        return {
+          category: { equals: category },
+          isPublished: { equals: true },
+        };
       },
     },
     {
-      name: 'price',
-      type: 'number',
-      label: 'Цена (базовая)',
+      name: "price",
+      type: "number",
+      label: "Цена (базовая)",
       admin: {
         step: 0.01,
         description:
-          'Базовая цена для каталога и карточек. Если включены варианты — подставляется автоматически как минимальная цена комбинации («от X ₽»).',
+          "Базовая цена для каталога и карточек. Если включены варианты — подставляется автоматически как минимальная цена комбинации («от X ₽»).",
       },
     },
-    { name: 'showPrice', type: 'checkbox', defaultValue: true },
+    { name: "showPrice", type: "checkbox", defaultValue: true },
 
     ...variantFields,
 
@@ -77,38 +97,39 @@ export const Products: CollectionConfig = {
     documentsField,
 
     {
-      name: 'badges',
-      type: 'select',
+      name: "badges",
+      type: "select",
       hasMany: true,
       options: [
-        { label: 'Новинка', value: 'new' },
-        { label: 'Хит', value: 'hit' },
-        { label: 'Акция', value: 'sale' },
-        { label: 'ГОСТ', value: 'gost' },
+        { label: "Новинка", value: "new" },
+        { label: "Хит", value: "hit" },
+        { label: "Акция", value: "sale" },
+        { label: "ГОСТ", value: "gost" },
       ],
-      label: 'Бейджи',
+      label: "Бейджи",
     },
 
     // === Новое поле ===
     {
-      name: 'recommendedProducts',
-      type: 'relationship',
-      relationTo: 'products',
+      name: "recommendedProducts",
+      type: "relationship",
+      relationTo: "products",
       hasMany: true,
-      label: 'Рекомендуемые товары',
+      label: "Рекомендуемые товары",
       admin: {
-        description: 'Выберите товары, которые будут показаны в блоке "Рекомендуемые" на странице этого товара. Порядок важен.',
-        position: 'sidebar',
-        isSortable: true,           // можно менять порядок
+        description:
+          'Выберите товары, которые будут показаны в блоке "Рекомендуемые" на странице этого товара. Порядок важен.',
+        position: "sidebar",
+        isSortable: true, // можно менять порядок
       },
       filterOptions: ({ data }) => ({
-        id: { not_equals: data?.id },        // исключаем сам товар
+        id: { not_equals: data?.id }, // исключаем сам товар
         isPublished: { equals: true },
       }),
     },
 
-    { name: 'order', type: 'number', defaultValue: 0 },
-    { name: 'isPublished', type: 'checkbox', defaultValue: true },
+    { name: "order", type: "number", defaultValue: 0 },
+    { name: "isPublished", type: "checkbox", defaultValue: true },
     seoField,
   ],
-}
+};

@@ -1,40 +1,55 @@
 import { unstable_cache } from "next/cache";
 import type { Where } from "payload";
-import { Product } from "@/payload-types";
+import type { Product } from "@/payload-types";
 import { getPayloadInstance } from "./getPayload";
 
-export interface GetProductsOptions {
-  category?: string;
-  limit?: number;
-  page?: number;
-  sort?: string;
+/** Ссылка на товар для sitemap — без единого лишнего поля. */
+export interface ProductSitemapEntry {
+  slug: string;
+  categoryId: string;
+  updatedAt: string;
 }
 
-// ---- Вспомогательная генерация ключа ----
-function getProductsKey(options: GetProductsOptions): string {
-  const { category, limit, page, sort } = options;
-  return `products-cat-${category || "all"}-l-${limit || 20}-p-${page || 1}-s-${sort || "order"}`;
-}
-
-// ---- Базовые функции (без кэша) ----
-async function fetchProducts(options: GetProductsOptions) {
+/**
+ * Товары для sitemap.
+ *
+ * Раньше здесь бралась выборка целиком (5000 полных документов), из которой
+ * использовались три поля: объект получался в десятки мегабайт, не влезал в
+ * data cache Next.js (лимит 2 МБ) и пересобирался на каждый запрос robots/
+ * sitemap. `select` + depth 0 оставляют ровно нужное; slug категории sitemap
+ * подставляет сам — список категорий он и так грузит.
+ */
+async function fetchProductsForSitemap(
+  limit: number,
+): Promise<ProductSitemapEntry[]> {
   const payload = await getPayloadInstance();
-  const where: Where = { isPublished: { equals: true } };
-  if (options.category) where.category = { equals: options.category };
 
   const result = await payload.find({
     collection: "products",
-    where,
-    sort: options.sort || "order",
-    limit: options.limit || 500,
-    page: options.page || 1,
-    depth: 1,
+    where: { isPublished: { equals: true } },
+    sort: "-updatedAt",
+    limit,
+    pagination: false,
+    depth: 0,
+    select: { slug: true, category: true, updatedAt: true },
   });
-  return {
-    docs: result.docs as unknown as Product[],
-    totalDocs: result.totalDocs,
-  };
+
+  return result.docs.map((doc) => ({
+    slug: doc.slug,
+    categoryId:
+      typeof doc.category === "string" ? doc.category : String(doc.category),
+    updatedAt: doc.updatedAt,
+  }));
 }
+
+export const getCachedProductsForSitemap = (limit = 5000) =>
+  process.env.NODE_ENV === "development"
+    ? () => fetchProductsForSitemap(limit)
+    : unstable_cache(
+        () => fetchProductsForSitemap(limit),
+        [`products-sitemap-${limit}`],
+        { tags: ["products"], revalidate: false },
+      );
 
 async function fetchProductBySlug(slug: string) {
   const payload = await getPayloadInstance();
@@ -51,21 +66,6 @@ async function fetchProductBySlug(slug: string) {
   });
   return result.docs[0] as Product | null;
 }
-
-// ---- Экспортируемые обёртки с условным кэшированием ----
-// ВСЕГДА возвращают функцию, которую нужно вызвать для получения данных.
-// В dev – просто обёртка над fetch*, в prod – мемоизированная через unstable_cache.
-
-export const getCachedProducts = (options: GetProductsOptions) => {
-  if (process.env.NODE_ENV === "development") {
-    return () => fetchProducts(options);
-  }
-  return unstable_cache(
-    () => fetchProducts(options),
-    [getProductsKey(options)],
-    { tags: ["products"], revalidate: false },
-  );
-};
 
 export const getCachedProductBySlug = (slug: string) => {
   if (process.env.NODE_ENV === "development") {

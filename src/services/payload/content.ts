@@ -66,7 +66,7 @@ export async function getHomeFeatureCards(): Promise<HomeFeatureCard[]> {
     : (homeContentDefaults.featureCards ?? []);
 }
 
-// ↓ новое: контент секции "Почему выбирают СТК-Актив"
+// ↓ новое: контент секции "Почему выбирают Сайт-авто"
 export interface HomeWhyUsContent {
   heading: string;
   subheading: string;
@@ -74,7 +74,7 @@ export interface HomeWhyUsContent {
 }
 
 /**
- * Секция "Почему выбирают СТК-Актив" на главной. Как и остальные секции,
+ * Секция "Почему выбирают Сайт-авто" на главной. Как и остальные секции,
  * резолвится из CMS с фолбэком на дефолтный контент (content-defaults.ts).
  * Фолбэк применяется целиком на группу whyUs, а не поэлементно на items —
  * т.к. вёрстка рассчитана ровно на 4 карточки (см. HomeContent.ts), частично

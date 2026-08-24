@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { baseURL } from "@/resources/content";
 import { getCachedCategories } from "@/services/payload/categories";
 import { getCachedConsents } from "@/services/payload/consents";
-import { getCachedProducts } from "@/services/payload/products";
+import { getCachedProductsForSitemap } from "@/services/payload/products";
 
 export const dynamic = "force-dynamic"; // было: export const revalidate = 3600;
 const STATIC_ROUTES: Array<{
@@ -24,7 +24,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // NOTE: если каталог перерастёт несколько тысяч товаров — переходить на
     // generateSitemaps() (чанки по entity id) вместо одного файла, лимит
     // Google — 50 000 URL на sitemap.
-    getCachedProducts({ limit: 5000, sort: "-updatedAt" })(),
+    getCachedProductsForSitemap(5000)(),
   ]);
 
   const staticEntries: MetadataRoute.Sitemap = STATIC_ROUTES.map((route) => ({
@@ -41,16 +41,18 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: 0.8,
   }));
 
-  const productEntries: MetadataRoute.Sitemap = products.docs.map((product) => {
-    const categorySlug =
-      typeof product.category === "object" ? product.category.slug : "";
-    return {
-      url: `${baseURL}/catalog/${categorySlug}/${product.slug}`,
-      lastModified: new Date(product.updatedAt),
-      changeFrequency: "weekly",
-      priority: 0.6,
-    };
-  });
+  // Товары приходят с id категории, а не с populate-нутым документом —
+  // slug берём из уже загруженного списка категорий.
+  const categorySlugById = new Map(
+    categories.map((category) => [category.id, category.slug]),
+  );
+
+  const productEntries: MetadataRoute.Sitemap = products.map((product) => ({
+    url: `${baseURL}/catalog/${categorySlugById.get(product.categoryId) ?? ""}/${product.slug}`,
+    lastModified: new Date(product.updatedAt),
+    changeFrequency: "weekly",
+    priority: 0.6,
+  }));
 
   const consentEntries: MetadataRoute.Sitemap = consents.map((consent) => ({
     url: `${baseURL}/consents/${consent.slug}`,

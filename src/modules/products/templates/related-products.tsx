@@ -1,6 +1,7 @@
 // @modules/products/components/related-products.tsx
 import { ProductsGrid } from "@/components/products/ProductsGrid";
 import type { Product } from "@/payload-types";
+import { toCatalogCardProduct } from "@/services/catalog/fromPayloadProduct";
 
 type RelatedProductsProps = {
   product: Product;
@@ -34,8 +35,7 @@ export default async function RelatedProducts({
       </div>
 
       <ProductsGrid
-        products={recommended}
-        total={recommended.length}
+        products={recommended.map((item) => toCatalogCardProduct(item))}
         emptyMessage="Рекомендуемые товары не найдены"
       />
     </div>

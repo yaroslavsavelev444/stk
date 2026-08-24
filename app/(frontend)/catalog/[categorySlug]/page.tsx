@@ -1,9 +1,6 @@
 import { Column, Heading, Meta, Schema, Text } from "@once-ui-system/core";
 import { notFound } from "next/navigation";
-import { Suspense } from "react";
-import { groupProductsBySubcategory } from "@/components/products/groupProductsBySubcategory";
-import { ProductsBySubcategory } from "@/components/products/ProductsBySubcategory";
-import { ProductsGrid } from "@/components/products/ProductsGrid";
+import { CatalogProducts } from "@/components/products/CatalogProducts";
 import { SubcategoryFilters } from "@/components/products/SubcategoryFilters";
 import { BreadcrumbJsonLd } from "@/components/seo/BreadcrumbJsonLd";
 import {
@@ -11,36 +8,34 @@ import {
   Breadcrumbs,
 } from "@/components/UI/Breadcrumbs/Breadcrumbs";
 import { baseURL } from "@/resources/content";
-import { getCachedCategoryBySlug } from "@/services/payload/categories";
-import { getCachedProducts } from "@/services/payload/products";
-import { getCachedSubcategories } from "@/services/payload/subcategories";
+import {
+  encodeSubParam,
+  getVisibleGroups,
+  parseSubParam,
+} from "@/services/catalog/types";
+import {
+  getCachedCatalogStructure,
+  getCatalogChunk,
+} from "@/services/payload/catalog";
 
 interface Props {
-  params: Promise<{
-    categorySlug: string;
-  }>;
+  params: Promise<{ categorySlug: string }>;
   searchParams: Promise<{ sub?: string }>;
-}
-
-function parseSelectedIds(sub?: string): string[] {
-  if (!sub) return [];
-  return sub
-    .split(",")
-    .map((id) => id.trim())
-    .filter(Boolean);
 }
 
 export async function generateMetadata({ params, searchParams }: Props) {
   const { categorySlug: slug } = await params;
   const { sub } = await searchParams;
-  const category = await getCachedCategoryBySlug(slug)();
+  const structure = await getCachedCatalogStructure(slug)();
 
-  if (!category)
+  if (!structure)
     return Meta.generate({
       title: "Категория не найдена",
       baseURL,
       description: "",
     });
+
+  const { category } = structure;
 
   return {
     ...(await Meta.generate({
@@ -63,69 +58,42 @@ export default async function CategoryProductsPage({
 }: Props) {
   const { categorySlug: slug } = await params;
   const { sub } = await searchParams;
-  const selectedIds = parseSelectedIds(sub);
 
-  const getCategory = getCachedCategoryBySlug(slug);
-  const category = await getCategory();
+  const structure = await getCachedCatalogStructure(slug)();
+  if (!structure) notFound();
 
-  if (!category) notFound();
+  const { category } = structure;
 
-  const subcategories = await getCachedSubcategories(category.id)(); //''
-  const productsData = await getCachedProducts({
-    category: category.id,
-    limit: 1000,
-    sort: "order",
-  })();
+  // Всё, что не является id подкатегории этой категории, отбрасывается: иначе
+  // каждый выдуманный краулером `?sub=` превращался бы в отдельный расчёт.
+  const selectedIds = parseSubParam(sub, structure);
+  const groups = getVisibleGroups(structure, selectedIds);
 
-  const { groups, ungrouped, visibleProducts } = groupProductsBySubcategory({
-    products: productsData.docs,
-    subcategories,
-    selectedIds: [...selectedIds].reverse(),
+  // Сервер рисует только первую порцию — остальное клиент подгружает по мере
+  // прокрутки (см. CatalogProducts и /api/catalog/[categorySlug]/products).
+  const firstChunk = await getCatalogChunk({
+    structure,
+    groups,
+    cursor: { group: 0, page: 0 },
   });
 
-  // Чипы фильтра показываем только для подкатегорий, в которых реально
-  // есть опубликованные товары — фильтр, ведущий в заведомо пустой список,
-  // это плохой UX.
-  const filterItems = subcategories
-    .map((subcategory) => ({
-      id: subcategory.id,
-      name: subcategory.name,
-      count: productsData.docs.filter((p) => {
-        const id =
-          typeof p.subcategory === "string" ? p.subcategory : p.subcategory?.id;
-
-        return id === subcategory.id;
-      }).length,
-    }))
-    .filter((item) => item.count > 0)
-    .sort((a, b) => {
-      const aIndex = selectedIds.indexOf(a.id);
-      const bIndex = selectedIds.indexOf(b.id);
-
-      const aSelected = aIndex !== -1;
-      const bSelected = bIndex !== -1;
-
-      // выбранные всегда сверху
-      if (aSelected && !bSelected) return -1;
-      if (!aSelected && bSelected) return 1;
-
-      // порядок выбранных = порядок выбора пользователем
-      if (aSelected && bSelected) {
-        return aIndex - bIndex;
-      }
-
-      // остальные сохраняют исходный порядок
-      return 0;
-    });
-
-  const hasSubcategoryLayout = filterItems.length > 0;
-  const isEmpty = groups.length === 0 && ungrouped.length === 0;
+  const selected = new Set(selectedIds);
+  const filterItems = [...structure.subcategories].sort((a, b) => {
+    // Выбранные — всегда сверху, внутри каждой части сохраняется порядок
+    // подкатегорий из админки.
+    const aSelected = selected.has(a.id);
+    const bSelected = selected.has(b.id);
+    if (aSelected === bSelected) return 0;
+    return aSelected ? -1 : 1;
+  });
 
   const breadcrumbItems: BreadcrumbItem[] = [
     { title: "Главная", href: "/" },
     { title: "Каталог", href: "/catalog" },
     { title: category.name, href: `/catalog/${slug}` },
   ];
+
+  const subParam = encodeSubParam(selectedIds);
 
   return (
     <Column maxWidth="m" gap="xl" paddingY="12" horizontal="center">
@@ -158,7 +126,7 @@ export default async function CategoryProductsPage({
       </Column>
 
       {/* Фильтр по подкатегориям */}
-      {hasSubcategoryLayout && (
+      {filterItems.length > 0 && (
         <div
           className="w-full max-w-5xl mx-auto"
           style={{ paddingInline: "1rem" }}
@@ -171,31 +139,19 @@ export default async function CategoryProductsPage({
         </div>
       )}
 
-      {/* Товары */}
-      <Suspense
-        fallback={
-          <div className="py-20 text-center text-neutral-weak">
-            Загрузка товаров...
-          </div>
-        }
-      >
-        {isEmpty ? (
-          <ProductsGrid
-            products={[]}
-            total={0}
-            emptyMessage={`В категории "${category.name}"${
-              selectedIds.length > 0 ? " по выбранным подкатегориям" : ""
-            } пока нет товаров`}
-          />
-        ) : hasSubcategoryLayout ? (
-          <ProductsBySubcategory groups={groups} ungrouped={ungrouped} />
-        ) : (
-          <ProductsGrid
-            products={visibleProducts}
-            total={visibleProducts.length}
-          />
-        )}
-      </Suspense>
+      {/* Товары. key сбрасывает ленту при смене фильтра — иначе к новой
+          выборке дописались бы товары из предыдущей. */}
+      <CatalogProducts
+        key={subParam}
+        categorySlug={slug}
+        subParam={subParam}
+        groups={groups}
+        initialItems={firstChunk.items}
+        initialCursor={firstChunk.cursor}
+        emptyMessage={`В категории "${category.name}"${
+          selectedIds.length > 0 ? " по выбранным подкатегориям" : ""
+        } пока нет товаров`}
+      />
     </Column>
   );
 }

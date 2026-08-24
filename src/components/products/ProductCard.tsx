@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Category, Media, Product } from "@/payload-types";
+import type { CatalogCardProduct } from "@/services/catalog/types";
 import "./ProductCard.css";
 
 // ─── Badge configuration ─────────────────────────────────────────────────────
@@ -94,7 +94,12 @@ function GoIcon() {
 // ─── Main component ───────────────────────────────────────────────────────────
 
 interface ProductCardProps {
-  product: Product;
+  /**
+   * Урезанная проекция товара, а не документ Payload целиком: карточке нужны
+   * восемь полей, а полный товар везёт характеристики, варианты, документы и
+   * seo — на длинной странице каталога это мегабайты вместо килобайтов.
+   */
+  product: CatalogCardProduct;
   className?: string;
   sizes?: string;
   loading?: "lazy" | "eager";
@@ -106,55 +111,35 @@ export function ProductCard({
   sizes = "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw",
   loading = "lazy",
 }: ProductCardProps) {
-  const mainImage = product.images?.[0];
-
-  const media =
-    typeof mainImage === "object" && mainImage !== null
-      ? (mainImage as Media)
-      : null;
-
-  const imageUrl = media?.url
-    ? new URL(media.url, "http://localhost").pathname
-    : null;
-
-  const altText = media?.alt || product.name || "Товар";
-
-  const category = product.category as Category | string;
-  const categorySlug = typeof category === "string" ? "" : category?.slug || "";
-
   const showPrice =
     product.showPrice && typeof product.price === "number" && product.price > 0;
 
-  const description = product.description?.trim();
-
-  const badges: string[] = Array.isArray(product.badges) ? product.badges : [];
-
   return (
     <Link
-      href={`/catalog/${categorySlug}/${product.slug}`}
+      href={`/catalog/${product.categorySlug}/${product.slug}`}
       className={`product-card group ${className}`}
       aria-label={product.name}
     >
       <ProductImage
-        imageUrl={imageUrl}
-        altText={altText}
+        imageUrl={product.image?.url ?? null}
+        altText={product.image?.alt || product.name || "Товар"}
         sizes={sizes}
         loading={loading}
-        badges={badges}
+        badges={product.badges}
       />
 
       <div className="product-body">
         <div className="product-text">
           <h3 className="product-name">{product.name}</h3>
-          {description ? (
-            <p className="product-description">{description}</p>
+          {product.description ? (
+            <p className="product-description">{product.description}</p>
           ) : null}
         </div>
 
         <div className="product-footer">
           {showPrice ? (
             <span className="product-price">
-              {product.useVariants ? (
+              {product.priceFrom ? (
                 <span className="product-price-from">от </span>
               ) : null}
               {product.price!.toLocaleString("ru-RU")} ₽
