@@ -85,9 +85,13 @@ export interface CatalogStructure {
  *
  * Отбрасывает всё, чего нет в этой категории: краулеры перебирают произвольные
  * комбинации `sub=`, и без валидации каждый такой URL превращался бы в новый
- * запрос к БД и новую запись в кэше. Порядок результата — всегда порядок
- * подкатегорий в категории, а не порядок в URL, поэтому `sub=a,b` и `sub=b,a`
- * дают идентичную страницу.
+ * запрос к БД. Порядок результата — ПОРЯДОК В URL: он же порядок выбора
+ * пользователем (последняя выбранная подкатегория стоит первой, см. buildHref
+ * в SubcategoryFilters) и он же порядок групп товаров на странице. Поэтому
+ * `sub=a,b` и `sub=b,a` — две разные страницы с разным порядком секций.
+ *
+ * На кэш это не влияет: страницы групп кэшируются по (категория, группа,
+ * номер страницы) и переиспользуются любым порядком и любой комбинацией `sub`.
  */
 export function parseSubParam(
   sub: string | null | undefined,
@@ -95,50 +99,75 @@ export function parseSubParam(
 ): string[] {
   if (!sub) return [];
 
-  const requested = new Set(
-    sub
-      .split(",")
-      .slice(0, MAX_SELECTED_SUBCATEGORIES)
-      .map((id) => id.trim())
-      .filter(Boolean),
+  const known = new Set(
+    structure.subcategories.map((subcategory) => subcategory.id),
   );
 
-  if (requested.size === 0) return [];
+  const selected: string[] = [];
+  const seen = new Set<string>();
 
-  return structure.subcategories
-    .map((subcategory) => subcategory.id)
-    .filter((id) => requested.has(id));
+  for (const raw of sub.split(",").slice(0, MAX_SELECTED_SUBCATEGORIES)) {
+    const id = raw.trim();
+    // Дубль в URL не должен ни ломать порядок, ни удваивать группу: первое
+    // вхождение задаёт позицию, остальные игнорируются.
+    if (!id || seen.has(id) || !known.has(id)) continue;
+    seen.add(id);
+    selected.push(id);
+  }
+
+  return selected;
 }
 
-/** Собирает `sub` обратно в строку запроса (пустой список — параметра нет). */
+/**
+ * Собирает `sub` обратно в строку запроса (пустой список — параметра нет).
+ * Порядок сохраняется: он и есть приоритет подкатегорий.
+ */
 export function encodeSubParam(selectedIds: string[]): string {
   return selectedIds.join(",");
 }
 
 /**
- * Группы, видимые при текущем фильтре.
+ * Группы, видимые при текущем фильтре, — в том порядке, в котором они идут в
+ * ленте товаров.
  *
- * Без фильтра — все непустые подкатегории плюс «Другие товары» в конце.
- * С фильтром — только выбранные подкатегории: раз пользователь явно сузил
- * выборку, товары вне неё показывать не нужно.
+ * Без фильтра — все непустые подкатегории в порядке из админки плюс «Другие
+ * товары» в конце. С фильтром — только выбранные подкатегории, и порядок
+ * задаёт `selectedIds`, то есть выбор пользователя: последняя выбранная
+ * подкатегория идёт первой. Раз пользователь явно сузил выборку, товары вне
+ * неё показывать не нужно.
+ *
+ * Порядок групп — единственный источник порядка товаров: курсор адресует
+ * позицию как (индекс группы, страница внутри группы), поэтому подгрузка
+ * следующих порций идёт по этому же списку и порядок сохраняется на всём
+ * наборе результатов, а не только в первой порции.
  */
 export function getVisibleGroups(
   structure: CatalogStructure,
   selectedIds: string[],
 ): CatalogGroup[] {
-  const selected = new Set(selectedIds);
+  const toGroup = (subcategory: CatalogStructure["subcategories"][number]) => ({
+    key: subcategory.id,
+    name: subcategory.name,
+    total: subcategory.count,
+  });
 
-  const groups: CatalogGroup[] = structure.subcategories
-    .filter(
-      (subcategory) => selected.size === 0 || selected.has(subcategory.id),
-    )
-    .map((subcategory) => ({
-      key: subcategory.id,
-      name: subcategory.name,
-      total: subcategory.count,
-    }));
+  if (selectedIds.length > 0) {
+    const byId = new Map(
+      structure.subcategories.map((subcategory) => [
+        subcategory.id,
+        subcategory,
+      ]),
+    );
 
-  if (selected.size === 0 && structure.otherCount > 0) {
+    return selectedIds
+      .map((id) => byId.get(id))
+      .filter((subcategory) => subcategory !== undefined)
+      .map(toGroup);
+  }
+
+  const groups: CatalogGroup[] = structure.subcategories.map(toGroup);
+
+  if (structure.otherCount > 0) {
     groups.push({
       key: OTHER_GROUP_KEY,
       name: OTHER_GROUP_NAME,

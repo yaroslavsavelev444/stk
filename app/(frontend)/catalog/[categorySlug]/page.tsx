@@ -77,14 +77,18 @@ export default async function CategoryProductsPage({
     cursor: { group: 0, page: 0 },
   });
 
-  const selected = new Set(selectedIds);
+  const selectedOrder = new Map(selectedIds.map((id, index) => [id, index]));
   const filterItems = [...structure.subcategories].sort((a, b) => {
-    // Выбранные — всегда сверху, внутри каждой части сохраняется порядок
-    // подкатегорий из админки.
-    const aSelected = selected.has(a.id);
-    const bSelected = selected.has(b.id);
-    if (aSelected === bSelected) return 0;
-    return aSelected ? -1 : 1;
+    // Выбранные — всегда сверху и ровно в том же порядке, что и секции
+    // товаров (последняя выбранная первой): чип и его товары не должны
+    // «разъезжаться». Невыбранные сохраняют порядок подкатегорий из админки —
+    // sort стабилен, поэтому достаточно вернуть 0.
+    const aOrder = selectedOrder.get(a.id);
+    const bOrder = selectedOrder.get(b.id);
+    if (aOrder !== undefined && bOrder !== undefined) return aOrder - bOrder;
+    if (aOrder !== undefined) return -1;
+    if (bOrder !== undefined) return 1;
+    return 0;
   });
 
   const breadcrumbItems: BreadcrumbItem[] = [
