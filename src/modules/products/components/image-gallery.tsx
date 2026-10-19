@@ -26,8 +26,6 @@ export default function ImageGallery({ product }: ImageGalleryProps) {
     alt: img.alt || "Изображение товара",
   }));
 
-  console.log("slides", slides);
-
   return (
     <div className="flex flex-col gap-4">
       {images.map((img, idx) => {

@@ -2,6 +2,7 @@ import { mongooseAdapter } from "@payloadcms/db-mongodb";
 import { ru } from "@payloadcms/translations/languages/ru";
 import path from "path";
 import { buildConfig } from "payload";
+import sharp from "sharp";
 import { CallbackRequests } from "./src/payload/collections/CallbackRequests.ts";
 import { Categories } from "./src/payload/collections/Categories.ts";
 import { Consents } from "./src/payload/collections/Consents.ts";
@@ -25,6 +26,8 @@ export default buildConfig({
   // Встроенная почта Payload (сброс пароля и т.д.) — та же SMTP-конфигурация,
   // что и у кастомного EmailService, см. src/payload/config/email.ts.
   email: getPayloadEmailAdapter(),
+  // Без sharp Payload не генерирует imageSizes из коллекции Media.
+  sharp,
   // Админка в production открывается на отдельном поддомене
   // (admin.stkaktiv.ru), поэтому его нужно явно разрешить для CORS/CSRF —
   // см. src/payload/config/allowedOrigins.ts.

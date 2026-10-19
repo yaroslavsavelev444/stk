@@ -24,7 +24,7 @@ export function ScrollToTopButton() {
 
   return (
     <IconButton
-      icon="chevron-up"
+      icon="chevronUp"
       size="m"
       variant="secondary"
       onClick={scrollToTop}

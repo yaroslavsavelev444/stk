@@ -49,7 +49,7 @@ export const Footer = async () => {
               width={40}
               style={{ display: "block" }}
             />
-            <Text variant="heading-default-s" weight="strong">
+            <Text variant="heading-strong-s">
               СТК-Актив
             </Text>
           </Row>

@@ -18,6 +18,7 @@ import {
   HiArrowTopRightOnSquare,
   HiArrowUpRight,
   HiCalendarDays,
+  HiChevronUp,
   HiEnvelope,
   HiOutlineDocument,
   HiOutlineEye,
@@ -38,6 +39,7 @@ import { SiFigma, SiJavascript, SiNextdotjs, SiSupabase } from "react-icons/si";
 export const iconLibrary: Record<string, IconType> = {
   arrowUpRight: HiArrowUpRight,
   arrowRight: HiArrowRight,
+  chevronUp: HiChevronUp,
   email: HiEnvelope,
   globe: HiOutlineGlobeAsiaAustralia,
   person: PiUserCircleDuotone,
