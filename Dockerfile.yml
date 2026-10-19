@@ -56,14 +56,7 @@ ENV MONGODB_URI="mongodb://build-time-placeholder/build" \
 ARG BUILD_CPU_LIMIT=1
 ENV RAYON_NUM_THREADS=${BUILD_CPU_LIMIT}
 
-# --mount=type=cache сохраняет кеш Turbopack (см. next.config.mjs,
-# turbopackFileSystemCacheForBuild) МЕЖДУ отдельными запусками `docker
-# build`, даже когда сам образ пересобирается с нуля — BuildKit хранит
-# этот кеш отдельно от слоёв образа. Первый прогон после появления этой
-# строки кеш ещё не имеет и займёт столько же времени, что и раньше;
-# начиная со второго пересобираются только изменившиеся модули.
-RUN --mount=type=cache,target=/app/.next/cache,sharing=locked \
-    pnpm build
+RUN pnpm build
 
 # ---------- runtime ----------
 FROM node:24-slim AS runner

@@ -32,7 +32,7 @@ HEALTH_URL="http://127.0.0.1:3000/api/health"
 
 MAX_WAIT="${MAX_WAIT:-180}"                 # секунд ожидания healthcheck/health-эндпоинта
 SLEEP=3
-BUILD_TIMEOUT="${BUILD_TIMEOUT:-30m}"       # формат timeout(1): 30m, 1800, 2h ...
+BUILD_TIMEOUT="${BUILD_TIMEOUT:-45m}"       # формат timeout(1): 30m, 1800, 2h ...
 DISK_WARN_PCT="${DISK_WARN_PCT:-85}"
 DISK_FAIL_PCT="${DISK_FAIL_PCT:-90}"
 KEEP_IMAGE_VERSIONS="${KEEP_IMAGE_VERSIONS:-5}"   # сколько версионных тегов app хранить
@@ -43,6 +43,7 @@ LOG_DIR="$PROJECT_DIR/logs"
 STATE_DIR="$PROJECT_DIR/.deploy-state"
 STATE_FILE="$STATE_DIR/last_successful_commit"
 MEDIA_SEED_MARKER="$STATE_DIR/media_volume_seeded"
+INDEXES_STATE_FILE="$STATE_DIR/last_indexed_commit"
 EXIT_CODE_FILE="$STATE_DIR/last_exit_code"
 # Отдельно от mongo-data: бэкап должен пережить проблему с самим volume,
 # а не жить с ним на одном "диске данных". По-хорошему BACKUP_DIR стоит
@@ -115,7 +116,8 @@ usage() {
 
 Переменные окружения (все опциональны):
   FORCE=1                 Передеплой, даже если коммит не изменился.
-  BUILD_TIMEOUT=30m       Таймаут 'docker compose build' (формат timeout(1)).
+  FORCE_INDEX=1           Запустить индексатор MongoDB, даже если скрипт не менялся.
+  BUILD_TIMEOUT=45m       Таймаут 'docker compose build' (формат timeout(1)).
   MAX_WAIT=180            Секунд ожидания healthcheck / /api/health.
   DISK_WARN_PCT=85        Порог предупреждения по диску.
   DISK_FAIL_PCT=90        Порог остановки деплоя по диску.
@@ -222,6 +224,32 @@ seed_media_volume_if_needed() {
         || fail "Не удалось засеять volume media-uploads"
     touch "$MEDIA_SEED_MARKER"
     log "✅ Volume media-uploads засеян"
+}
+
+### ── MONGODB INDEXES (только когда есть что обновлять) ─────────────────────
+# Индексатор идемпотентен, но его образ (deps + весь исходник) на слабом
+# диске VPS собирается/распаковывается ~4-5 минут. Запускаем его, только
+# если с последнего успешного прогона изменились скрипт индексов или
+# зависимости. Нет отметки о прогоне (первый деплой после этой правки) —
+# считаем базой текущий рабочий коммит, если он был успешно задеплоен;
+# на свежем сервере (нет last_successful_commit) — запускаем всегда.
+# FORCE_INDEX=1 — принудительный запуск.
+INDEX_INPUT_PATHS=(scripts/create-search-indexes.ts package.json pnpm-lock.yaml)
+
+indexes_need_update() {
+    [[ "${FORCE_INDEX:-0}" == "1" ]] && return 0
+
+    local base=""
+    if [[ -s "$INDEXES_STATE_FILE" ]]; then
+        base=$(cat "$INDEXES_STATE_FILE")
+    elif [[ -s "$STATE_FILE" ]]; then
+        base="$CURRENT_COMMIT"
+    fi
+    [[ -n "$base" ]] || return 0
+
+    # Неизвестный коммит или ошибка git — безопасный вариант: запускаем.
+    git cat-file -e "${base}^{commit}" 2>/dev/null || return 0
+    ! git diff --quiet "$base" "$NEW_COMMIT" -- "${INDEX_INPUT_PATHS[@]}"
 }
 
 ### ── MONGODB BACKUP (обязательный шаг ДО любых изменений) ──────────────────
@@ -484,10 +512,15 @@ run_worker() {
 
     seed_media_volume_if_needed
 
-    log "Создание/обновление индексов MongoDB (scripts/create-search-indexes.ts)..."
-    run_step compose --profile tools build indexer || fail "Не удалось собрать образ для индексатора"
-    run_step compose --profile tools run --rm indexer \
-        || fail "Создание индексов не удалось — деплой остановлен ДО сборки приложения"
+    if indexes_need_update; then
+        log "Создание/обновление индексов MongoDB (scripts/create-search-indexes.ts)..."
+        run_step compose --profile tools build indexer || fail "Не удалось собрать образ для индексатора"
+        run_step compose --profile tools run --rm indexer \
+            || fail "Создание индексов не удалось — деплой остановлен ДО сборки приложения"
+        echo "$NEW_COMMIT" > "$INDEXES_STATE_FILE"
+    else
+        log "Индексы MongoDB актуальны (скрипт индексов и зависимости не менялись) — индексатор пропущен"
+    fi
 
     print_diagnostics
     check_disk_space

@@ -9,12 +9,11 @@ const nextConfig = {
   compress: true,
   turbopack: { root: process.cwd() },
   experimental: {
-    // Кеш Turbopack на диске между сборками: пересчитываются только
-    // изменившиеся модули, а не всё приложение с нуля. На маленьком VPS
-    // (2 vCPU) это резко снижает CPU-нагрузку на КАЖДОМ деплое, кроме
-    // самого первого — см. Dockerfile.yml, кеш примонтирован туда через
-    // BuildKit `--mount=type=cache`, чтобы переживать пересборки образа.
-    turbopackFileSystemCacheForBuild: true,
+    // Кеш Turbopack на диске для `next build` намеренно выключен: на VPS
+    // упираемся в IOPS мелких файлов, и запись кеша занимала ~16 минут
+    // (дольше самой компиляции), а `docker builder prune` в deploy.sh всё
+    // равно регулярно его сбрасывал — выигрыша не было.
+    turbopackFileSystemCacheForBuild: false,
     // Отдельный от Turbopack пул воркеров — для фазы статической
     // генерации страниц (после бандлинга). На 2 vCPU не даём Next
     // поднимать несколько параллельных воркер-процессов одновременно.
