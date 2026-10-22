@@ -1,6 +1,7 @@
 import { Column, Row, Text } from "@once-ui-system/core";
 import Image from "next/image";
 import { getCachedConsents } from "@/services/payload/consents";
+import { getCachedSettings } from "@/services/payload/settings";
 import styles from "./Footer.module.scss";
 import { FooterLegalLinks } from "./FooterLegalLinks";
 import { ScrollToTopButton } from "./ScrollToTopButton";
@@ -14,7 +15,18 @@ import { ScrollToTopButton } from "./ScrollToTopButton";
  */
 export const Footer = async () => {
   const currentYear = new Date().getFullYear();
-  const consents = await getCachedConsents();
+  const [consents, settings] = await Promise.all([
+    getCachedConsents(),
+    getCachedSettings(),
+  ]);
+  const requisites = [
+    settings?.legalName,
+    settings?.inn && `ИНН ${settings.inn}`,
+    settings?.ogrn && `ОГРН ${settings.ogrn}`,
+    settings?.legalAddress,
+  ]
+    .filter(Boolean)
+    .join(" · ");
 
   return (
     <Row
@@ -82,6 +94,20 @@ export const Footer = async () => {
           {/* Соглашения — динамически из Payload, без хардкода /terms и /privacy */}
           <FooterLegalLinks consents={consents} />
         </Row>
+
+        {/* Реквизиты оператора и оговорка об оферте */}
+        <Column gap="4">
+          {requisites && (
+            <Text variant="body-default-xs" onBackground="neutral-weak">
+              {requisites}
+            </Text>
+          )}
+          <Text variant="body-default-xs" onBackground="neutral-weak">
+            Информация на сайте, включая цены, носит справочный характер и не
+            является публичной офертой, определяемой положениями ч. 2 ст. 437
+            ГК РФ.
+          </Text>
+        </Column>
       </Column>
     </Row>
   );

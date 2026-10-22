@@ -67,16 +67,53 @@ async function createIndexes() {
     console.log('✅ Index created: products_published_name_idx');
 
     // 4. ИНДЕКС на slug — для быстрого поиска по URL
-    await products.createIndex(
-      { slug: 1 },
-      { unique: true, name: 'products_slug_unique_idx' }
-    );
-    console.log('✅ Index created: products_slug_unique_idx');
+    //    Payload сам создаёт такой же индекс (slug_1) для unique-поля — если он
+    //    уже есть, MongoDB отвечает IndexOptionsConflict (85): индекс с тем же
+    //    ключом и опциями, только с другим именем. Это не ошибка — пропускаем.
+    try {
+      await products.createIndex(
+        { slug: 1 },
+        { unique: true, name: 'products_slug_unique_idx' }
+      );
+      console.log('✅ Index created: products_slug_unique_idx');
+    } catch (err) {
+      if ((err as { code?: number }).code !== 85) throw err;
+      console.log('✅ Unique slug index already exists (создан Payload)');
+    }
 
     // Список всех индексов для проверки
     const indexes = await products.indexes();
     console.log('\nВсе индексы коллекции products:');
     indexes.forEach((idx) => console.log(' -', idx.name, JSON.stringify(idx.key)));
+
+    // 5. TTL-ИНДЕКС на заявках — автоудаление по сроку хранения ПД (ч. 7 ст. 5 152-ФЗ).
+    //    retainUntil проставляет коллекция CallbackRequests (последнее изменение + 3 года),
+    //    MongoDB удаляет документ, как только эта дата прошла (expireAfterSeconds: 0).
+    //    Бэкапы deploy.sh живут KEEP_BACKUPS=14 дней, поэтому удалённая заявка
+    //    исчезает и из резервных копий не позже чем через 2 недели.
+    const callbackRequests = db.collection('callback-requests');
+
+    // Заявки, созданные до появления поля, получают срок от своего updatedAt
+    // (amount совпадает с CALLBACK_RETENTION_YEARS из src/resources/legal.ts)
+    const backfill = await callbackRequests.updateMany(
+      { retainUntil: { $exists: false } },
+      [
+        {
+          $set: {
+            retainUntil: {
+              $dateAdd: { startDate: '$updatedAt', unit: 'year', amount: 3 },
+            },
+          },
+        },
+      ]
+    );
+    console.log(`✅ retainUntil проставлен у ${backfill.modifiedCount} заявок`);
+
+    await callbackRequests.createIndex(
+      { retainUntil: 1 },
+      { name: 'callback_requests_retention_ttl', expireAfterSeconds: 0 }
+    );
+    console.log('✅ TTL index created: callback_requests_retention_ttl');
 
   } finally {
     await client.close();

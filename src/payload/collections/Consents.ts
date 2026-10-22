@@ -17,6 +17,9 @@ export const Consents: CollectionConfig = {
     update: isAdminOrManager,
     delete: isAdminOrManager,
   },
+  // История редакций: в заявках хранится дата редакции согласия и политики,
+  // по ней из версий восстанавливается текст, с которым согласился человек.
+  versions: { maxPerDoc: 0 },
   hooks: {
     afterChange: [revalidateConsentsAfterChange],
     afterDelete: [revalidateConsentsAfterDelete],

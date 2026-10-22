@@ -6,8 +6,11 @@ export interface CallbackFormValues {
 }
 
 export type CallbackFormErrors = Partial<
-  Record<keyof CallbackFormValues, string>
+  Record<keyof CallbackFormValues | "consent", string>
 >;
+
+export const CONSENT_REQUIRED_MESSAGE =
+  "Для отправки заявки нужно согласие на обработку персональных данных";
 
 export type CallbackFormStatus = "idle" | "submitting" | "success" | "error";
 

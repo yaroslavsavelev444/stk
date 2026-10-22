@@ -1,12 +1,22 @@
 "use client";
 
-import { useActionState, useEffect, useRef, useState } from "react";
+import {
+  type FormEvent,
+  useActionState,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { useFormStatus } from "react-dom";
 import { appToast } from "@/shared/lib/toast";
 import { submitCallbackRequest } from "./actions";
 import { CallbackField } from "./CallbackField";
 import { CallbackSuccessState } from "./CallbackSuccessState";
-import { CallbackActionResult } from "./callback-form";
+import {
+  CONSENT_REQUIRED_MESSAGE,
+  CallbackActionResult,
+} from "./callback-form";
+import { ConsentCheckbox } from "./ConsentCheckbox";
 import { PhoneInput } from "./PhoneInput";
 
 const initialState: CallbackActionResult = { ok: false };
@@ -83,6 +93,7 @@ export function CallbackForm({
     initialState,
   );
   const [isSuccess, setIsSuccess] = useState(false);
+  const [consentError, setConsentError] = useState<string | null>(null);
   const formRef = useRef<HTMLFormElement>(null);
   const prevStateRef = useRef<CallbackActionResult | null>(null);
 
@@ -123,6 +134,16 @@ export function CallbackForm({
     }
   }, [state, onSuccess]);
 
+  // Без отметки согласия заявку не отправляем — экшен проверяет это повторно
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    const consent = event.currentTarget.elements.namedItem("consent");
+    if (consent instanceof HTMLInputElement && !consent.checked) {
+      event.preventDefault();
+      setConsentError(CONSENT_REQUIRED_MESSAGE);
+      consent.focus();
+    }
+  };
+
   if (isSuccess) {
     return (
       <div className={className}>
@@ -147,6 +168,7 @@ export function CallbackForm({
       <form
         ref={formRef}
         action={formAction}
+        onSubmit={handleSubmit}
         noValidate
         className="flex flex-col gap-4"
       >
@@ -210,6 +232,12 @@ export function CallbackForm({
           error={state.errors?.comment}
         />
 
+        <ConsentCheckbox
+          name="consent"
+          error={consentError ?? state.errors?.consent}
+          onChange={() => setConsentError(null)}
+        />
+
         {state.message && !state.ok && (
           <p
             role="alert"
@@ -220,20 +248,6 @@ export function CallbackForm({
         )}
 
         <SubmitButton />
-
-        <p className="text-center text-[13px] leading-relaxed text-[var(--text-muted)]">
-          Нажимая «Отправить заявку», вы даете согласие на обработку
-          персональных данных и соглашаетесь с{" "}
-          <a
-            href="https://stkaktiv.ru/consents/policy"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="underline transition-colors hover:text-[var(--text-primary)]"
-          >
-            Политикой обработки персональных данных
-          </a>
-          .
-        </p>
       </form>
     </div>
   );

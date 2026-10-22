@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useId, useRef, useState } from "react";
 import { IMaskInput } from "react-imask";
 import { isValidRussianPhone } from "@/utils/phone";
 
@@ -55,7 +55,8 @@ export function PhoneInput({
   const displayedError = clientError || serverError || undefined;
 
   // Для a11y
-  const fieldId = `callback-field-${name}`;
+  // useId, а не id из name: на странице может быть две формы (секция и модалка)
+  const fieldId = `callback-field-${name}-${useId()}`;
 
   return (
     <div className="flex flex-col gap-1.5">

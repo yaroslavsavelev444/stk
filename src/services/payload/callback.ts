@@ -9,6 +9,11 @@ export interface CreateCallbackData {
   subject?: string
   productTitle?: string
   productSku?: string
+  consent: {
+    acceptedAt: string
+    consentVersion: string
+    policyVersion: string
+  }
 }
 
 /**
@@ -27,6 +32,7 @@ export async function createCallbackRequest(data: CreateCallbackData): Promise<C
       subject: data.subject,
       productTitle: data.productTitle,
       productSku: data.productSku,
+      consent: data.consent,
       // status не передаём – полагаемся на defaultValue: 'new'
     },
   })

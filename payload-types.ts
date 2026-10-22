@@ -114,11 +114,15 @@ export interface Config {
     | ("ru" | "en")[];
   globals: {
     settings: Setting;
+    "notification-settings": NotificationSetting;
     "home-content": HomeContent;
     "about-content": AboutContent;
   };
   globalsSelect: {
     settings: SettingsSelect<false> | SettingsSelect<true>;
+    "notification-settings":
+      | NotificationSettingsSelect<false>
+      | NotificationSettingsSelect<true>;
     "home-content": HomeContentSelect<false> | HomeContentSelect<true>;
     "about-content": AboutContentSelect<false> | AboutContentSelect<true>;
   };
@@ -335,6 +339,18 @@ export interface CallbackRequest {
   productTitle?: string | null;
   productSku?: string | null;
   status?: ("new" | "processing" | "completed") | null;
+  consent?: {
+    acceptedAt?: string | null;
+    /**
+     * slug документа и дата его последнего изменения
+     */
+    consentVersion?: string | null;
+    policyVersion?: string | null;
+  };
+  /**
+   * Заявка удаляется автоматически через 3 года после последнего изменения.
+   */
+  retainUntil?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -679,6 +695,14 @@ export interface CallbackRequestsSelect<T extends boolean = true> {
   productTitle?: T;
   productSku?: T;
   status?: T;
+  consent?:
+    | T
+    | {
+        acceptedAt?: T;
+        consentVersion?: T;
+        policyVersion?: T;
+      };
+  retainUntil?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -795,6 +819,10 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
 export interface Setting {
   id: string;
   companyName: string;
+  legalName?: string | null;
+  inn?: string | null;
+  ogrn?: string | null;
+  legalAddress?: string | null;
   companyEmail?: string | null;
   logo: string | Media;
   managers?:
@@ -852,6 +880,10 @@ export interface Setting {
  */
 export interface SettingsSelect<T extends boolean = true> {
   companyName?: T;
+  legalName?: T;
+  inn?: T;
+  ogrn?: T;
+  legalAddress?: T;
   logo?: T;
   contacts?:
     | T
@@ -1262,6 +1294,29 @@ export interface CollectionsWidget {
     [k: string]: unknown;
   };
   width: "full";
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notification-settings".
+ */
+export interface NotificationSetting {
+  id: string;
+  /**
+   * Выберите администраторов, которым отправляется письмо о каждой новой заявке с сайта. Если никто не выбран, письмо получают все администраторы.
+   */
+  callbackRecipients?: (string | User)[] | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "notification-settings_select".
+ */
+export interface NotificationSettingsSelect<T extends boolean = true> {
+  callbackRecipients?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

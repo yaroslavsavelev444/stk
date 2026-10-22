@@ -2,6 +2,7 @@
 
 import {
   forwardRef,
+  useId,
   type InputHTMLAttributes,
   type TextareaHTMLAttributes,
 } from "react";
@@ -34,7 +35,8 @@ export const CallbackField = forwardRef<
   { label, name, error, required, hint, as = "input", className, ...rest },
   ref,
 ) {
-  const fieldId = `callback-field-${name}`;
+  // useId, а не id из name: на странице может быть две формы (секция и модалка)
+  const fieldId = `callback-field-${name}-${useId()}`;
   const describedBy = error
     ? `${fieldId}-error`
     : hint

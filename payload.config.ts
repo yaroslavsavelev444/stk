@@ -15,6 +15,7 @@ import { allowedOrigins } from "./src/payload/config/allowedOrigins.ts";
 import { getPayloadEmailAdapter } from "./src/payload/config/email.ts";
 import { AboutContent } from "./src/payload/globals/AboutContent.ts";
 import { HomeContent } from "./src/payload/globals/HomeContent.ts";
+import { NotificationSettings } from "./src/payload/globals/NotificationSettings.ts";
 import { Settings } from "./src/payload/globals/Settings.ts";
 
 export default buildConfig({
@@ -48,7 +49,7 @@ export default buildConfig({
     Consents,
     MediaGalleries,
   ],
-  globals: [Settings, HomeContent, AboutContent],
+  globals: [Settings, NotificationSettings, HomeContent, AboutContent],
   typescript: {
     outputFile: path.resolve(process.cwd(), "payload-types.ts"),
   },

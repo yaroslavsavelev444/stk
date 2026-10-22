@@ -24,6 +24,41 @@ export const Settings: GlobalConfig = {
       required: true,
     },
 
+    /**
+     * Реквизиты оператора — выводятся в подвале сайта (ч. 2 ст. 10 149-ФЗ).
+     * defaultValue подставляется при чтении, пока поле не сохранено в админке.
+     */
+    {
+      type: "collapsible",
+      label: "Реквизиты организации",
+      fields: [
+        {
+          name: "legalName",
+          type: "text",
+          label: "Наименование юрлица",
+          defaultValue: "ООО «СТК-Актив»",
+        },
+        {
+          name: "inn",
+          type: "text",
+          label: "ИНН",
+          defaultValue: "6234175342",
+        },
+        {
+          name: "ogrn",
+          type: "text",
+          label: "ОГРН",
+          defaultValue: "1186234001722",
+        },
+        {
+          name: "legalAddress",
+          type: "text",
+          label: "Юридический адрес",
+          defaultValue: "390026, г. Рязань, ул. Стройкова, д. 112А",
+        },
+      ],
+    },
+
     {
       name: "companyEmail",
       type: "email",
